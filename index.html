@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Akbar's Centered 3D Knowledge Graph</title>
+    <title>Akbar's Combined 3D Knowledge Graph</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { margin: 0; overflow: hidden; font-family: 'Inter', sans-serif; background-color: #1a202c; }
@@ -27,39 +27,74 @@
             background: rgba(255, 255, 255, 0.85);
             padding: 3px 6px;
             border-radius: 4px;
-            /* font-size will be set dynamically */
+            font-size: 10px; /* Original size, good for density */
             color: #2c3e50;
             pointer-events: none;
             white-space: nowrap;
-            transform: translate(-50%, -100%); 
+            transform: translate(-50%, -50%);
             text-align: center;
+            text-shadow: 0px 0px 3px rgba(0,0,0,0.1); /* Subtle shadow for node labels */
         }
         .edge-relation-label {
             background: rgba(60, 60, 60, 0.75);
             color: #E8E8E8;
             padding: 2px 5px;
-            font-size: 9px; 
+            border-radius: 3px;
+            font-size: 11px; /* Increased from 9px for better readability */
             cursor: pointer;
             pointer-events: auto !important;
+            text-shadow: 0px 0px 4px rgba(0,0,0,0.85); /* Shadow for better contrast */
         }
         #definition-display h2 {
             color: #90cdf4;
+        }
+        /* Styling for new Node Inspector Panel */
+        #node-inspector-display {
+             border-top: 1px solid #4A5568; /* md:border-gray-600 */
+             margin-top: 0.75rem; /* mt-3 */
+             padding-top: 0.75rem; /* pt-3 */
+        }
+        #node-inspector-display h2 {
+            font-weight: 600; /* semibold */
+            font-size: 1rem; /* md */
+            margin-bottom: 0.25rem; /* mb-1 */
+            color: #90cdf4; /* Light blue for heading */
+        }
+        #node-inspector-display p, #node-inspector-display ul {
+            font-size: 0.875rem; /* sm */
+        }
+        #node-inspector-display ul {
+            list-style-type: disc;
+            padding-left: 1.5rem; /* ml-6 for Tailwind */
+        }
+         #node-inspector-display strong {
+            color: #a0aec0; /* md:text-gray-400 */
         }
     </style>
 </head>
 <body>
     <div id="info">
-        <h1 class="font-bold text-lg mb-2">Akbar's Centered 3D Knowledge Graph</h1>
+        <h1 class="font-bold text-lg mb-2">Akbar's Combined 3D Knowledge Graph</h1>
         <p>Use your mouse to interact:</p>
         <ul class="list-disc list-inside ml-4 mb-2">
             <li><strong>Left-click & Drag:</strong> Rotate</li>
             <li><strong>Right-click & Drag:</strong> Pan</li>
             <li><strong>Scroll Wheel:</strong> Zoom</li>
         </ul>
-        <p class="text-sm">Nodes sized by connections. Edges are green (neutral/positive) or red (negative context). Click edge labels for details.</p>
+        <p class="text-sm">Nodes are colored by type. Click node spheres or edge labels for details. Edge colors vary by relation type or specific assignment.</p>
         
+        <div id="node-inspector-display" style="display:none;">
+            <h2 id="node-inspector-title">Node Details:</h2>
+            <p><strong>ID:</strong> <span id="node-id-text"></span></p>
+            <p><strong>Type:</strong> <span id="node-type-text"></span></p>
+            <div id="node-connections-details" style="display:none;">
+                <p><strong>Direct Connections:</strong></p>
+                <ul id="node-connections-list"></ul>
+            </div>
+        </div>
+
         <div id="definition-display" class="mt-3 pt-3 border-t border-gray-600" style="display:none;">
-            <h2 class="font-semibold text-md mb-1">Relationship Details:</h2>
+            <h2 id="edge-definition-title">Relationship Details:</h2>
             <p id="definition-text" class="text-sm"></p>
         </div>
     </div>
@@ -71,7 +106,6 @@
     <script>
         const graphData = {
             "nodes": [
-                // ... (Full node list from previous version) ...
                 { "id": "Akbar", "type": "Person" },
                 { "id": "Legal_Entrepreneurship", "type": "Domain" },
                 { "id": "Legal_Tech", "type": "Domain" },
@@ -114,8 +148,6 @@
                 { "id": "MBTI_ENFJ", "type": "Personality_Trait", "displayText": "ENFJ (51%/49%)" }
             ],
             "edges": [
-                // ... (Full edge list from previous version, with definitions) ...
-                // Colors for these edges will now be determined by the new logic below
                 { "source": "Akbar", "target": "Legal_Entrepreneurship", "relation": "operates_in", "definition": "Akbar is actively involved in legal entrepreneurship, seeking innovative solutions in the legal field." },
                 { "source": "Akbar", "target": "Legal_Tech", "relation": "operates_in", "definition": "Akbar utilizes and promotes technology within the legal sector." },
                 { "source": "Akbar", "target": "Venture_Capital", "relation": "operates_in" },
@@ -149,22 +181,23 @@
                 { "source": "Akbar", "target": "Nation's_Best", "relation": "aspires_to_be" },
                 { "source": "Nation's_Best", "target": "World_Government", "relation": "represents_in" },
                 { "source": "Akbar", "target": "Pacifist_Philanthropist", "relation": "identifies_as" },
-                { "source": "Akbar", "target": "Crab_Mentality", "relation": "seeks_to_eradicate", "definition": "Akbar actively works against the 'crab mentality,' where individuals try to pull down those who are succeeding." },
-                { "source": "Akbar", "target": "Inferiority_Complex", "relation": "seeks_to_eradicate", "definition": "Akbar aims to help overcome and eradicate feelings of inferiority, promoting self-worth and confidence." },
-                { "source": "Akbar", "target": "Bureaucratic_Stagnation", "relation": "despises", "definition": "Akbar has a strong aversion to bureaucratic stagnation, viewing it as a significant hindrance to progress and innovation." },
+                { "source": "Akbar", "target": "Crab_Mentality", "relation": "seeks_to_eradicate", "color": 0xDC143C, "definition": "Akbar actively works against the 'crab mentality,' where individuals try to pull down those who are succeeding." },
+                { "source": "Akbar", "target": "Inferiority_Complex", "relation": "seeks_to_eradicate", "color": 0xDC143C, "definition": "Akbar aims to help overcome and eradicate feelings of inferiority, promoting self-worth and confidence." },
+                { "source": "Akbar", "target": "Bureaucratic_Stagnation", "relation": "despises", "color": 0xDC143C, "definition": "Akbar has a strong aversion to bureaucratic stagnation, viewing it as a significant hindrance to progress and innovation." },
                 { "source": "Akbar", "target": "Equal_Access", "relation": "advocates_for" },
                 { "source": "Equal_Access", "target": "Global_Citizenship", "relation": "enables" },
                 { "source": "Akbar", "target": "Global_Citizenship", "relation": "supports" },
-                { "source": "Akbar", "target": "Progressive_Citizenship_Foundation", "relation": "founded", "definition": "Akbar founded the Progressive Citizenship Foundation to promote key societal values and goals." },
-                { "source": "Progressive_Citizenship_Foundation", "target": "Financial_Literacy", "relation": "teaches" },
-                { "source": "Progressive_Citizenship_Foundation", "target": "Dividend_Staking", "relation": "promotes" },
-                { "source": "Progressive_Citizenship_Foundation", "target": "Sustainable_Economy", "relation": "supports" },
-                { "source": "Progressive_Citizenship_Foundation", "target": "Sustainable_Agriculture", "relation": "supports" },
-                { "source": "Progressive_Citizenship_Foundation", "target": "Welfare_Priority", "relation": "prioritizes" },
-                { "source": "Progressive_Citizenship_Foundation", "target": "No_Tax_Policy", "relation": "proposes" },
-                { "source": "Progressive_Citizenship_Foundation", "target": "Financial_Independence", "relation": "empowers" },
-                { "source": "Financial_Independence", "target": "Universal_Prosperity", "relation": "leads_to"},
-                { "source": "Akbar", "target": "MBTI_ENFJ", "relation": "is_mbti_type", "definition": "Akbar's Myers-Briggs Type Indicator is ENFJ (Protagonist), with a 51% Extroverted, 49% Introverted tendency, suggesting a nuanced expression of this type." }
+                { "source": "Akbar", "target": "Progressive_Citizenship_Foundation", "relation": "founded", "color": 0x32CD32, "definition": "Akbar founded the Progressive Citizenship Foundation to promote key societal values and goals." },
+                { "source": "Progressive_Citizenship_Foundation", "target": "Financial_Literacy", "relation": "teaches", "color": 0x32CD32 },
+                { "source": "Progressive_Citizenship_Foundation", "target": "Dividend_Staking", "relation": "promotes", "color": 0x32CD32 },
+                { "source": "Progressive_Citizenship_Foundation", "target": "Sustainable_Economy", "relation": "supports", "color": 0x32CD32 },
+                { "source": "Progressive_Citizenship_Foundation", "target": "Sustainable_Agriculture", "relation": "supports", "color": 0x32CD32 },
+                { "source": "Progressive_Citizenship_Foundation", "target": "Welfare_Priority", "relation": "prioritizes", "color": 0x32CD32 },
+                { "source": "Progressive_Citizenship_Foundation", "target": "No_Tax_Policy", "relation": "proposes", "color": 0x32CD32 },
+                { "source": "Progressive_Citizenship_Foundation", "target": "Financial_Independence", "relation": "empowers", "color": 0x32CD32 },
+                { "source": "Financial_Independence", "target": "Universal_Prosperity", "relation": "leads_to", "color": 0x32CD32 },
+                { "source": "Akbar", "target": "MBTI_ENFJ", "relation": "is_mbti_type", "color": 0x87CEEB, "definition": "Akbar's Myers-Briggs Type Indicator is ENFJ (Protagonist), with a 51% Extroverted, 49% Introverted tendency, suggesting a nuanced expression of this type." },
+                { "source": "Human_Rights_Law", "target": "Global_Citizenship", "relation": "underpins", "color": 0x8FBC8F, "definition": "Human Rights Law provides a foundational framework that supports and is essential for the concept and practice of Global Citizenship." }
             ]
         };
 
@@ -172,23 +205,48 @@
             "Person": 0xFF6347, "Domain": 0x6A5ACD, "Financial_Concept": 0xFFD700,
             "Financial_Vehicle": 0x32CD32, "Strategy": 0x8A2BE2, "Lifestyle": 0xFF69B4,
             "Income_Stream": 0x00CED1, "Financial_Activity": 0xFFA500, "Ideology": 0x00BFFF,
-            "Value": 0x7CFC00, "Aspirational": 0xFF8C00, "Challenge": 0xDC143C, // Challenge nodes are red
+            "Value": 0x7CFC00, "Aspirational": 0xFF8C00, "Challenge": 0xDC143C,
             "Goal": 0x20B2AA, "default": 0xA9A9A9,
             "Foundation": 0x4682B4, "Finance_Value": 0xFFD700, "Policy": 0xFFA07A,
             "Personality_Trait": 0x87CEEB
         };
 
-        let scene, camera, renderer, labelRenderer, controls;
-        const nodes = new Map();
+        let scene, camera, renderer, labelRenderer, controls, raycaster, mouse;
+        const nodes = new Map(); // Stores node mesh by ID
+        const nodeDataMap = new Map(); // Stores node data by ID
+
+        // DOM Elements for info panels
+        const nodeInspectorDisplay = document.getElementById('node-inspector-display');
+        const nodeIdText = document.getElementById('node-id-text');
+        const nodeTypeText = document.getElementById('node-type-text');
+        const nodeConnectionsDetails = document.getElementById('node-connections-details');
+        const nodeConnectionsList = document.getElementById('node-connections-list');
         
-        const definitionDisplay = document.getElementById('definition-display');
-        const definitionText = document.getElementById('definition-text');
+        const edgeDefinitionDisplay = document.getElementById('definition-display');
+        const edgeDefinitionText = document.getElementById('definition-text');
+
+        // Function to generate a color from a string (e.g., relation type)
+        function relationToColor(relationString) {
+            if (!relationString) relationString = "default";
+            let hash = 0;
+            for (let i = 0; i < relationString.length; i++) {
+                hash = relationString.charCodeAt(i) + ((hash << 5) - hash);
+                hash = hash & hash; // Keep it a 32bit int
+            }
+            // Generate a color ensuring some brightness and saturation
+            const h = Math.abs(hash) % 360; // Hue (0-359)
+            const s = 60 + (Math.abs(hash >> 8) % 40); // Saturation (60-99%)
+            const l = 50 + (Math.abs(hash >> 16) % 25); // Lightness (50-74%) to avoid very dark or very light
+            
+            return new THREE.Color(`hsl(${h}, ${s}%, ${l}%)`).getHex();
+        }
+
 
         function init() {
             scene = new THREE.Scene();
             scene.background = new THREE.Color(0x1a202c);
-            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000); // Increased far plane
-            camera.position.set(0, 50, 130); // Adjusted camera start position for centered layout
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.z = 60; 
 
             renderer = new THREE.WebGLRenderer({ antialias: true });
             renderer.setSize(window.innerWidth, window.innerHeight);
@@ -203,158 +261,177 @@
             controls = new THREE.OrbitControls(camera, labelRenderer.domElement);
             controls.enableDamping = true;
             controls.dampingFactor = 0.05;
-            controls.screenSpacePanning = true; // Allow screen space panning
-            controls.minDistance = 10; 
-            controls.maxDistance = 400; // Increased max zoom out distance
-            controls.target.set(0,0,0); // Ensure controls orbit around the center
+            controls.screenSpacePanning = false;
+            controls.minDistance = 5;
+            controls.maxDistance = 200; 
 
-            const ambientLight = new THREE.AmbientLight(0xcccccc, 0.9);
+            raycaster = new THREE.Raycaster();
+            mouse = new THREE.Vector2();
+
+            const ambientLight = new THREE.AmbientLight(0xcccccc, 0.8); 
             scene.add(ambientLight);
-            const directionalLight = new THREE.DirectionalLight(0xffffff, 1.2);
-            directionalLight.position.set(2, 3, 4).normalize(); // Adjusted light direction
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 1.0); 
+            directionalLight.position.set(1.5, 1.5, 1.5).normalize();
             scene.add(directionalLight);
 
-            const degrees = {};
-            graphData.nodes.forEach(node => { degrees[node.id] = 0; });
-            graphData.edges.forEach(edge => {
-                if (degrees[edge.source] !== undefined) degrees[edge.source]++;
-                if (degrees[edge.target] !== undefined) degrees[edge.target]++;
-            });
-            const allDegrees = Object.values(degrees).filter(d => d >= 0);
-            const minDegree = allDegrees.length > 0 ? Math.min(...allDegrees) : 0;
-            const maxDegree = allDegrees.length > 0 ? Math.max(...allDegrees) : 0;
-
-            const baseSphereRadius = 1.5;
-            const nodeGeometry = new THREE.SphereGeometry(baseSphereRadius, 32, 32);
-
-            graphData.nodes.forEach(nodeData => {
-                const nodeType = nodeData.type || 'default';
+            const nodeGeometry = new THREE.SphereGeometry(1.8, 32, 32); 
+            graphData.nodes.forEach(nd => {
+                nodeDataMap.set(nd.id, nd); 
+                const nodeType = nd.type || 'default';
                 const color = nodeColors[nodeType] || nodeColors['default'];
                 const material = new THREE.MeshLambertMaterial({ color: color });
-                const nodeMesh = new THREE.Mesh(nodeGeometry.clone(), material);
-                
-                // --- Centered Layout ---
-                if (nodeData.id === "Akbar") {
-                    nodeMesh.position.set(0, 0, 0);
-                } else {
-                    const R_outer = 90; 
-                    const R_inner = 30; 
-                    const R = R_inner + Math.random() * (R_outer - R_inner);
-                    const theta = Math.random() * Math.PI * 2; 
-                    const phi = Math.acos((2 * Math.random()) - 1); 
-
-                    nodeMesh.position.x = R * Math.sin(phi) * Math.cos(theta);
-                    nodeMesh.position.y = R * Math.sin(phi) * Math.sin(theta); // Changed for more spherical spread
-                    nodeMesh.position.z = R * Math.cos(phi);
-                }
-                // --- End Centered Layout ---
-
-                const degree = degrees[nodeData.id] || 0;
-                const baseNodeScale = 1.0;
-                const minNodeSF = 0.6; const maxNodeSF = 2.2;
-                let nodeScaleFactor = baseNodeScale;
-                if (maxDegree > minDegree) {
-                    nodeScaleFactor = minNodeSF + ((degree - minDegree) / (maxDegree - minDegree)) * (maxNodeSF - minNodeSF);
-                } else if (degree > 0) { nodeScaleFactor = 1.2 * baseNodeScale; } 
-                else { nodeScaleFactor = 0.5 * baseNodeScale; }
-                nodeScaleFactor = Math.max(minNodeSF, Math.min(maxNodeSF, nodeScaleFactor));
-                nodeMesh.scale.set(nodeScaleFactor, nodeScaleFactor, nodeScaleFactor);
-
+                const nodeMesh = new THREE.Mesh(nodeGeometry, material);
+                nodeMesh.position.set(
+                    (Math.random() - 0.5) * 60, // Reduced spread from 80
+                    (Math.random() - 0.5) * 60,
+                    (Math.random() - 0.5) * 60
+                );
+                nodeMesh.userData = { id: nd.id, type: nd.type, originalData: nd }; 
                 scene.add(nodeMesh);
-                nodes.set(nodeData.id, nodeMesh);
+                nodes.set(nd.id, nodeMesh);
 
                 const labelDiv = document.createElement('div');
                 labelDiv.className = 'node-label';
-                labelDiv.textContent = (nodeData.displayText || nodeData.id).replace(/_/g, ' ');
-                
-                const minLabelFS = 7; const maxLabelFS = 16;
-                let labelFontSize = 10;
-                 if (maxDegree > minDegree) {
-                    labelFontSize = minLabelFS + ((degree - minDegree) / (maxDegree - minDegree)) * (maxLabelFS - minLabelFS);
-                } else if (degree > 0) { labelFontSize = 11; } 
-                else { labelFontSize = 7; }
-                labelDiv.style.fontSize = Math.max(minLabelFS, Math.min(maxLabelFS, labelFontSize)) + 'px';
-
+                labelDiv.textContent = (nd.displayText || nd.id).replace(/_/g, ' ');
                 const label = new THREE.CSS2DObject(labelDiv);
                 label.position.copy(nodeMesh.position);
-                label.position.y += (baseSphereRadius * nodeScaleFactor) + 0.8;
+                label.position.y += 3.0; 
                 scene.add(label);
                 nodeMesh.userData.label = label;
             });
 
-            graphData.edges.forEach((edgeData, index) => {
-                const sourceNode = nodes.get(edgeData.source);
-                const targetNodeMesh = nodes.get(edgeData.target); // Mesh of the target
-                if (sourceNode && targetNodeMesh) {
-                    const sourcePos = sourceNode.position;
-                    const targetPos = targetNodeMesh.position;
-
-                    // --- Edge Color Logic (Red/Green) ---
-                    let determinedEdgeColor = 0x32CD32; // Default Green
-                    const lowerCaseRelation = edgeData.relation.toLowerCase();
-                    const negativeKeywords = ["despis", "eradicate"]; // "despise", "despises", "eradicate"
+            graphData.edges.forEach(edgeData => {
+                const sourceNodeMesh = nodes.get(edgeData.source);
+                const targetNodeMesh = nodes.get(edgeData.target);
+                if (sourceNodeMesh && targetNodeMesh) {
+                    const points = [sourceNodeMesh.position, targetNodeMesh.position];
+                    const edgeGeometry = new THREE.BufferGeometry().setFromPoints(points);
                     
-                    const targetNodeData = graphData.nodes.find(n => n.id === edgeData.target);
-
-                    if (negativeKeywords.some(keyword => lowerCaseRelation.includes(keyword)) ||
-                        (edgeData.source === "Akbar" && targetNodeData && targetNodeData.type === "Challenge")) {
-                        determinedEdgeColor = 0xDC143C; // Red
+                    let edgeColorToUse;
+                    if (edgeData.color !== undefined) {
+                        edgeColorToUse = edgeData.color; // Use pre-defined color
+                    } else if (edgeData.relation) {
+                        edgeColorToUse = relationToColor(edgeData.relation); // Generate color from relation type
+                    } else {
+                        edgeColorToUse = 0xAAAAAA; // Fallback grey
                     }
-                    // --- End Edge Color Logic ---
 
                     const edgeMaterial = new THREE.LineBasicMaterial({ 
-                        color: determinedEdgeColor,
+                        color: edgeColorToUse,
                         transparent: true,
-                        opacity: 0.7 
+                        opacity: 0.8 
                     });
-
-                    const distance = sourcePos.distanceTo(targetPos);
-                    const midPoint = new THREE.Vector3().addVectors(sourcePos, targetPos).multiplyScalar(0.5);
-                    
-                    const normalVec = new THREE.Vector3().subVectors(targetPos, sourcePos).normalize();
-                    let controlOffsetVec;
-                    if (Math.abs(normalVec.z) < 0.99) { 
-                        controlOffsetVec = new THREE.Vector3().crossVectors(normalVec, new THREE.Vector3(0,0,1)).normalize();
-                    } else { 
-                         controlOffsetVec = new THREE.Vector3().crossVectors(normalVec, new THREE.Vector3(0,1,0)).normalize();
-                    }
-                    const curveBow = Math.min(distance * 0.2, 15);
-                    const bowDir = (index % 2 === 0) ? 1 : -1; 
-                    const controlPt = new THREE.Vector3().copy(midPoint).addScaledVector(controlOffsetVec, curveBow * bowDir);
-
-                    const curve = new THREE.QuadraticBezierCurve3(sourcePos, controlPt, targetPos);
-                    const curvePoints = curve.getPoints(20); 
-                    const curveGeometry = new THREE.BufferGeometry().setFromPoints(curvePoints);
-                    const edge = new THREE.Line(curveGeometry, edgeMaterial);
+                    const edge = new THREE.Line(edgeGeometry, edgeMaterial);
+                    edge.userData = { id: `${edgeData.source}_${edgeData.target}_${edgeData.relation}`, originalData: edgeData };
                     scene.add(edge);
 
                     if (edgeData.relation) {
-                        const curveMidpoint = curve.getPoint(0.5); 
+                        const midpoint = new THREE.Vector3().addVectors(sourceNodeMesh.position, targetNodeMesh.position).multiplyScalar(0.5);
                         const relationLabelDiv = document.createElement('div');
                         relationLabelDiv.className = 'node-label edge-relation-label';
                         relationLabelDiv.textContent = edgeData.relation.replace(/_/g, ' ');
                         
-                        relationLabelDiv.addEventListener('click', () => {
+                        relationLabelDiv.addEventListener('click', (event) => {
+                            event.stopPropagation(); 
+                            hideNodeInspector(); 
                             if (edgeData.definition) {
-                                definitionText.innerHTML = edgeData.definition.replace(/\n/g, '<br>');
-                                definitionDisplay.style.display = 'block';
+                                edgeDefinitionText.innerHTML = edgeData.definition.replace(/\n/g, '<br>');
+                                edgeDefinitionDisplay.style.display = 'block';
                             } else {
-                                definitionText.textContent = 'No specific details available for this relationship.';
-                                definitionDisplay.style.display = 'block';
+                                edgeDefinitionText.textContent = 'No specific details available for this relationship.';
+                                edgeDefinitionDisplay.style.display = 'block';
                             }
                         });
 
                         const relationLabel = new THREE.CSS2DObject(relationLabelDiv);
-                        relationLabel.position.copy(curveMidpoint);
+                        relationLabel.position.copy(midpoint);
                         scene.add(relationLabel);
                         edge.userData.label = relationLabel; 
                     }
                 }
             });
+            
+            renderer.domElement.addEventListener('click', onNodeClick, false);
+            labelRenderer.domElement.addEventListener('click', (event) => {
+                if (event.target === labelRenderer.domElement || event.target === renderer.domElement) {
+                    const intersects = raycaster.intersectObjects(Array.from(nodes.values()));
+                    if (intersects.length === 0) { 
+                         hideEdgeDefinition();
+                         hideNodeInspector();
+                    }
+                }
+            }, false);
+
 
             window.addEventListener('resize', onWindowResize, false);
-            controls.update(); // Initial update for controls target
         }
+        
+        function hideEdgeDefinition() {
+            edgeDefinitionDisplay.style.display = 'none';
+        }
+        function hideNodeInspector() {
+            nodeInspectorDisplay.style.display = 'none';
+        }
+
+        function onNodeClick(event) {
+            event.preventDefault();
+        
+            const rect = renderer.domElement.getBoundingClientRect();
+            mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+            mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+        
+            raycaster.setFromCamera(mouse, camera);
+        
+            const intersects = raycaster.intersectObjects(Array.from(nodes.values())); 
+        
+            if (intersects.length > 0) {
+                const clickedNodeMesh = intersects[0].object;
+                const nodeData = clickedNodeMesh.userData.originalData;
+                
+                hideEdgeDefinition(); 
+
+                nodeIdText.textContent = (nodeData.displayText || nodeData.id).replace(/_/g, ' ');
+                nodeTypeText.textContent = nodeData.type.replace(/_/g, ' ');
+                
+                nodeConnectionsList.innerHTML = ''; 
+                let hasConnections = false;
+                graphData.edges.forEach(edge => {
+                    let connectedNodeId = null;
+                    let relationType = '';
+                    let relationText = edge.relation ? edge.relation.replace(/_/g, ' ') : 'related to';
+                    
+                    if (edge.source === nodeData.id) {
+                        connectedNodeId = edge.target;
+                        relationType = relationText + " &rarr;";
+                        hasConnections = true;
+                    } else if (edge.target === nodeData.id) {
+                        connectedNodeId = edge.source;
+                        relationType = "&larr; " + relationText;
+                        hasConnections = true;
+                    }
+
+                    if (connectedNodeId) {
+                        const connectedNodeData = nodeDataMap.get(connectedNodeId);
+                        const connectedNodeDisplay = (connectedNodeData.displayText || connectedNodeData.id).replace(/_/g, ' ');
+                        const listItem = document.createElement('li');
+                        listItem.innerHTML = `${relationType} ${connectedNodeDisplay} (<em>${connectedNodeData.type.replace(/_/g, ' ')}</em>)`;
+                        nodeConnectionsList.appendChild(listItem);
+                    }
+                });
+
+                if (hasConnections) {
+                    nodeConnectionsDetails.style.display = 'block';
+                } else {
+                    nodeConnectionsDetails.style.display = 'none';
+                }
+
+                nodeInspectorDisplay.style.display = 'block';
+
+            } else {
+                // This is handled by the labelRenderer.domElement click listener
+            }
+        }
+
 
         function onWindowResize() {
             camera.aspect = window.innerWidth / window.innerHeight;
@@ -370,10 +447,26 @@
             nodes.forEach((nodeMesh) => {
                 if (nodeMesh.userData.label) {
                     nodeMesh.userData.label.position.copy(nodeMesh.position);
-                    nodeMesh.userData.label.position.y += (1.5 * nodeMesh.scale.y) + 0.8; 
+                    nodeMesh.userData.label.position.y += 3.0; 
                 }
             });
             
+             scene.children.forEach(child => {
+                if (child.type === 'Line' && child.userData.label && child.userData.originalData) {
+                    const edgeData = child.userData.originalData;
+                    const sourceNodeMesh = nodes.get(edgeData.source);
+                    const targetNodeMesh = nodes.get(edgeData.target);
+                    if (sourceNodeMesh && targetNodeMesh) {
+                        child.geometry.setFromPoints([sourceNodeMesh.position, targetNodeMesh.position]);
+                        child.geometry.attributes.position.needsUpdate = true; 
+
+                        const midpoint = new THREE.Vector3().addVectors(sourceNodeMesh.position, targetNodeMesh.position).multiplyScalar(0.5);
+                        child.userData.label.position.copy(midpoint);
+                    }
+                }
+            });
+
+
             renderer.render(scene, camera);
             labelRenderer.render(scene, camera);
         }

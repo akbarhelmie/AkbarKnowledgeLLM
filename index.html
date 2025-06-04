@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Akbar's Advanced 3D Knowledge Graph (Fixed)</title>
+    <title>Akbar's 3D Knowledge Graph (Reverted)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { margin: 0; overflow: hidden; font-family: 'Inter', sans-serif; background-color: #1a202c; }
@@ -12,66 +12,107 @@
             position: absolute;
             top: 10px;
             left: 10px;
-            background: rgba(26, 32, 44, 0.85); /* Tailwind gray-900 with opacity */
+            background: rgba(0, 0, 0, 0.75);
             color: white;
-            padding: 12px;
+            padding: 12px; /* Increased padding slightly */
             border-radius: 8px;
             z-index: 100;
-            font-size: 13px; /* Slightly smaller base font */
-            max-width: 340px; 
-            max-height: calc(100vh - 20px); /* Max height with padding */
+            font-size: 13px; /* Adjusted base font size */
+            max-width: 330px; /* Adjusted max width */
+            max-height: calc(100vh - 20px); 
             overflow-y: auto;
-            border: 1px solid #4A5568; /* Tailwind gray-600 */
+            border: 1px solid #4A5568; /* Added a subtle border */
         }
-        .info-section {
-            margin-top: 0.75rem; /* mt-3 */
-            padding-top: 0.75rem; /* pt-3 */
-            border-top: 1px solid #4A5568; /* Tailwind gray-600 */
+        .info-section { /* For consistent spacing of inspector/definition panels */
+            margin-top: 0.75rem; 
+            padding-top: 0.75rem; 
+            border-top: 1px solid #4A5568; 
         }
-        .info-section h2, #filter-section h2 {
-            font-weight: 600; /* semibold */
-            font-size: 0.9rem; /* Smaller heading */
-            margin-bottom: 0.5rem; /* mb-2 */
-            color: #63B3ED; /* Tailwind blue-400 */
+        .info-section h2 {
+            font-weight: 600; 
+            font-size: 1rem; 
+            margin-bottom: 0.25rem; 
+            color: #90cdf4; 
         }
         .node-label {
             position: absolute;
-            background: rgba(237, 242, 247, 0.9); /* Tailwind gray-200 with opacity */
-            padding: 2px 5px;
-            border-radius: 3px;
-            font-size: 9px;
-            color: #1A202C; /* Tailwind gray-900 */
+            background: rgba(255, 255, 255, 0.85);
+            padding: 3px 6px;
+            border-radius: 4px;
+            font-size: 10px;
+            color: #2c3e50;
             pointer-events: none;
             white-space: nowrap;
             transform: translate(-50%, -50%);
             text-align: center;
-            border: 1px solid #A0AEC0; /* Tailwind gray-500 */
         }
         .edge-relation-label {
-            background: rgba(45, 55, 72, 0.85); /* Tailwind gray-700 with opacity */
-            color: #E2E8F0; /* Tailwind gray-300 */
-            padding: 2px 4px;
-            font-size: 8px;
+            background: rgba(60, 60, 60, 0.75);
+            color: #E8E8E8;
+            padding: 2px 5px;
+            font-size: 9px;
             cursor: pointer;
             pointer-events: auto !important;
-            border: 1px solid #718096; /* Tailwind gray-500 */
         }
-        #filter-section label {
-            display: block;
-            margin-bottom: 4px;
-            font-size: 0.8rem;
-            cursor: pointer;
-        }
-        #filter-section input[type="checkbox"] {
-            margin-right: 6px;
-            accent-color: #63B3ED; /* Tailwind blue-400 */
-        }
-        #node-inspector-display p, #node-inspector-display ul, #definition-text {
-            font-size: 0.8rem; 
+        #node-inspector-display p, #node-inspector-display ul, #definition-text { /* Target paragraphs and lists in inspector */
+            font-size: 0.875rem; /* Tailwind text-sm */
         }
         #node-inspector-display ul {
             list-style-type: disc;
-            padding-left: 1.25rem; /* Roughly ml-5 */
+            padding-left: 1.5rem; /* Tailwind ml-6 equivalent */
         }
-         #node-inspector-display strong {
-            color: #A0AEC0;
+         #node-inspector-display strong { /* Make property names slightly distinct */
+            color: #a0aec0; /* Tailwind gray-400 */
+        }
+    </style>
+</head>
+<body>
+    <div id="info">
+        <h1 class="font-bold text-lg mb-2">Akbar's 3D Knowledge Graph</h1>
+        <p class="text-sm">Use your mouse to interact:</p>
+        <ul class="list-disc list-inside ml-4 mb-2 text-sm">
+            <li><strong>Left-click & Drag:</strong> Rotate</li>
+            <li><strong>Right-click & Drag:</strong> Pan</li>
+            <li><strong>Scroll Wheel:</strong> Zoom</li>
+        </ul>
+        <p class="text-sm">Click node spheres or edge labels for details.</p>
+        
+        <div id="node-inspector-display" class="info-section" style="display:none;">
+            <h2 id="node-inspector-title">Node Details:</h2>
+            <p><strong>ID:</strong> <span id="node-id-text"></span></p>
+            <p><strong>Type:</strong> <span id="node-type-text"></span></p>
+            <div id="node-connections-details" style="display:none;">
+                <p class="mt-1"><strong>Direct Connections:</strong></p>
+                <ul id="node-connections-list" class="max-h-40 overflow-y-auto"></ul>
+            </div>
+        </div>
+
+        <div id="definition-display" class="info-section" style="display:none;">
+            <h2 id="edge-definition-title">Relationship Details:</h2>
+            <p id="definition-text"></p>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/renderers/CSS2DRenderer.js"></script>
+
+    <script>
+        // --- START OF GRAPH DATA ---
+        const graphData = {
+            "nodes": [
+                { "id": "Akbar", "type": "Person" },
+                { "id": "Legal_Entrepreneurship", "type": "Domain" },
+                { "id": "Legal_Tech", "type": "Domain" },
+                { "id": "Venture_Capital", "type": "Financial_Concept" },
+                { "id": "Legal_Tech_Innovation", "type": "Domain" },
+                { "id": "Human_Rights_Law", "type": "Domain" },
+                { "id": "Sovereign_Wealth_Funds", "type": "Financial_Vehicle" },
+                { "id": "High_Net_Worth_Client_Strategies", "type": "Strategy" },
+                { "id": "Dividend_Staking_Lifestyle", "type": "Lifestyle" },
+                { "id": "Dividends_Income", "type": "Income_Stream" },
+                { "id": "Crypto_Investing", "type": "Financial_Activity" },
+                { "id": "Staking_Rewards", "type": "Income_Stream" },
+                { "id": "Sovereign_Wealth_Strategies", "type": "Strategy" },
+                { "id": "Hedge_Funds", "type": "Financial_Vehicle" },
+                { "id": "Investment_Capital", "

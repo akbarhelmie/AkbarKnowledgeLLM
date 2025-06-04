@@ -12,38 +12,56 @@
             position: absolute;
             top: 10px;
             left: 10px;
-            background: rgba(0, 0, 0, 0.7);
+            background: rgba(0, 0, 0, 0.75); /* Slightly more opaque */
             color: white;
             padding: 10px;
             border-radius: 8px;
             z-index: 100;
             font-size: 14px;
-            max-width: 300px;
+            max-width: 320px; /* Slightly wider */
+            max-height: 95vh; /* Max height */
+            overflow-y: auto; /* Scroll if content overflows */
         }
         .node-label { /* Used for both node IDs and edge relations */
             position: absolute;
             background: rgba(255, 255, 255, 0.85);
             padding: 3px 6px;
             border-radius: 4px;
-            font-size: 10px; /* Slightly smaller for potentially more labels */
-            color: #2c3e50; /* Darker text for better readability on light background */
-            pointer-events: none;
+            font-size: 10px;
+            color: #2c3e50;
+            pointer-events: none; /* Labels themselves don't capture mouse events for graph navigation */
             white-space: nowrap;
             transform: translate(-50%, -50%);
             text-align: center;
         }
+        .edge-relation-label { /* Specific class for edge labels if different styling is needed */
+            background: rgba(60, 60, 60, 0.75);
+            color: #E8E8E8;
+            padding: 2px 5px;
+            font-size: 9px;
+            cursor: pointer; /* Indicate it's clickable */
+            pointer-events: auto !important; /* Allow clicks on edge labels */
+        }
+        #definition-display h2 {
+            color: #90cdf4; /* Light blue for heading */
+        }
     </style>
 </head>
 <body>
-    <div id="info" class="rounded-lg shadow-lg">
+    <div id="info">
         <h1 class="font-bold text-lg mb-2">Akbar's Combined 3D Knowledge Graph</h1>
         <p>Use your mouse to interact:</p>
-        <ul class="list-disc list-inside ml-4">
-            <li><strong>Left-click & Drag:</strong> Rotate the graph</li>
-            <li><strong>Right-click & Drag:</strong> Pan the graph</li>
-            <li><strong>Scroll Wheel:</strong> Zoom in/out</li>
+        <ul class="list-disc list-inside ml-4 mb-2">
+            <li><strong>Left-click & Drag:</strong> Rotate</li>
+            <li><strong>Right-click & Drag:</strong> Pan</li>
+            <li><strong>Scroll Wheel:</strong> Zoom</li>
         </ul>
-        <p class="mt-2">Nodes are colored by type. Edges show relationships.</p>
+        <p class="text-sm">Nodes are colored by type. Click edge labels for details.</p>
+        
+        <div id="definition-display" class="mt-3 pt-3 border-t border-gray-600" style="display:none;">
+            <h2 class="font-semibold text-md mb-1">Relationship Details:</h2>
+            <p id="definition-text" class="text-sm"></p>
+        </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -53,11 +71,12 @@
     <script>
         const graphData = {
             "nodes": [
-                // Original Nodes from index.html
+                // Original Nodes
                 { "id": "Akbar", "type": "Person" },
                 { "id": "Legal_Entrepreneurship", "type": "Domain" },
                 { "id": "Legal_Tech", "type": "Domain" },
                 { "id": "Venture_Capital", "type": "Financial_Concept" },
+                // ... (keeping other original nodes from previous version)
                 { "id": "Legal_Tech_Innovation", "type": "Domain" },
                 { "id": "Human_Rights_Law", "type": "Domain" },
                 { "id": "Sovereign_Wealth_Funds", "type": "Financial_Vehicle" },
@@ -83,26 +102,30 @@
                 { "id": "Inferiority_Complex", "type": "Challenge" },
                 { "id": "Equal_Access", "type": "Goal" },
                 { "id": "Global_Citizenship", "type": "Goal" },
+                
+                // Additional Nodes
+                { "id": "Progressive_Citizenship_Foundation", "type": "Foundation" },
+                { "id": "Financial_Literacy", "type": "Value" },
+                { "id": "Dividend_Staking", "type": "Finance_Value" },
+                { "id": "Sustainable_Economy", "type": "Goal" },
+                { "id": "Sustainable_Agriculture", "type": "Goal" },
+                { "id": "Welfare_Priority", "type": "Policy" },
+                { "id": "No_Tax_Policy", "type": "Policy" },
+                { "id": "Financial_Independence", "type": "Finance_Value" },
+                { "id": "Universal_Prosperity", "type": "Goal" },
+                { "id": "Bureaucratic_Stagnation", "type": "Challenge" },
 
-                // Additional Nodes (extraNodes)
-                { id: "Progressive_Citizenship_Foundation", type: "Foundation" },
-                { id: "Financial_Literacy", type: "Value" },
-                { id: "Dividend_Staking", type: "Finance_Value" }, // Distinct from Dividend_Staking_Lifestyle
-                { id: "Sustainable_Economy", type: "Goal" },
-                { id: "Sustainable_Agriculture", type: "Goal" },
-                { id: "Welfare_Priority", type: "Policy" },
-                { id: "No_Tax_Policy", type: "Policy" },
-                { id: "Financial_Independence", type: "Finance_Value" },
-                { id: "Universal_Prosperity", type: "Goal" },
-                { id: "Bureaucratic_Stagnation", type: "Challenge" }
+                // New MBTI Node
+                { "id": "MBTI_ENFJ", "type": "Personality_Trait", "displayText": "ENFJ (51%/49%)" }
             ],
             "edges": [
-                // Original Edges from index.html
-                { "source": "Akbar", "target": "Legal_Entrepreneurship", "relation": "operates_in" },
-                { "source": "Akbar", "target": "Legal_Tech", "relation": "operates_in" },
+                // Original Edges (add definitions and colors where appropriate)
+                { "source": "Akbar", "target": "Legal_Entrepreneurship", "relation": "operates_in", "definition": "Akbar is actively involved in legal entrepreneurship, seeking innovative solutions in the legal field." },
+                { "source": "Akbar", "target": "Legal_Tech", "relation": "operates_in", "definition": "Akbar utilizes and promotes technology within the legal sector." },
+                // ... (keeping other original edges)
                 { "source": "Akbar", "target": "Venture_Capital", "relation": "operates_in" },
                 { "source": "Akbar", "target": "Legal_Tech_Innovation", "relation": "operates_in" },
-                { "source": "Akbar", "target": "Human_Rights_Law", "relation": "has_expertise_in" },
+                { "source": "Akbar", "target": "Human_Rights_Law", "relation": "has_expertise_in", "definition": "Akbar possesses specialized knowledge and experience in Human Rights Law." },
                 { "source": "Akbar", "target": "Dividend_Staking_Lifestyle", "relation": "pursues" },
                 { "source": "Dividend_Staking_Lifestyle", "target": "Dividends_Income", "relation": "is_characterized_by" },
                 { "source": "Dividend_Staking_Lifestyle", "target": "Staking_Rewards", "relation": "is_characterized_by" },
@@ -131,58 +154,55 @@
                 { "source": "Akbar", "target": "Nation's_Best", "relation": "aspires_to_be" },
                 { "source": "Nation's_Best", "target": "World_Government", "relation": "represents_in" },
                 { "source": "Akbar", "target": "Pacifist_Philanthropist", "relation": "identifies_as" },
-                { "source": "Akbar", "target": "Crab_Mentality", "relation": "seeks_to_eradicate" },
-                { "source": "Akbar", "target": "Inferiority_Complex", "relation": "seeks_to_eradicate" },
+                
+                // Updated Challenge Edges for Akbar
+                { "source": "Akbar", "target": "Crab_Mentality", "relation": "seeks_to_eradicate", "color": 0xDC143C, "definition": "Akbar actively works against the 'crab mentality,' where individuals try to pull down those who are succeeding." },
+                { "source": "Akbar", "target": "Inferiority_Complex", "relation": "seeks_to_eradicate", "color": 0xDC143C, "definition": "Akbar aims to help overcome and eradicate feelings of inferiority, promoting self-worth and confidence." },
+                { "source": "Akbar", "target": "Bureaucratic_Stagnation", "relation": "despises", "color": 0xDC143C, "definition": "Akbar has a strong aversion to bureaucratic stagnation, viewing it as a significant hindrance to progress and innovation." },
+
                 { "source": "Akbar", "target": "Equal_Access", "relation": "advocates_for" },
                 { "source": "Equal_Access", "target": "Global_Citizenship", "relation": "enables" },
                 { "source": "Akbar", "target": "Global_Citizenship", "relation": "supports" },
 
-                // Additional Edges (extraEdges)
-                { source: "Akbar", target: "Progressive_Citizenship_Foundation", relation: "founded", color: 0x32CD32 },
-                { source: "Progressive_Citizenship_Foundation", target: "Financial_Literacy", relation: "teaches", color: 0x32CD32 },
-                { source: "Progressive_Citizenship_Foundation", target: "Dividend_Staking", relation: "promotes", color: 0x32CD32 },
-                { source: "Progressive_Citizenship_Foundation", target: "Sustainable_Economy", relation: "supports", color: 0x32CD32 },
-                { source: "Progressive_Citizenship_Foundation", target: "Sustainable_Agriculture", relation: "supports", color: 0x32CD32 },
-                { source: "Progressive_Citizenship_Foundation", target: "Welfare_Priority", relation: "prioritizes", color: 0x32CD32 },
-                { source: "Progressive_Citizenship_Foundation", target: "No_Tax_Policy", relation: "proposes", color: 0x32CD32 },
-                { source: "Progressive_Citizenship_Foundation", target: "Financial_Independence", relation: "empowers", color: 0x32CD32 },
-                { source: "Financial_Independence", target: "Universal_Prosperity", relation: "leads_to", color: 0x32CD32 },
-                { source: "Akbar", target: "Bureaucratic_Stagnation", relation: "despises", color: 0xDC143C }
+                // Additional Edges
+                { "source": "Akbar", "target": "Progressive_Citizenship_Foundation", "relation": "founded", "color": 0x32CD32, "definition": "Akbar founded the Progressive Citizenship Foundation to promote key societal values and goals." },
+                { "source": "Progressive_Citizenship_Foundation", "target": "Financial_Literacy", "relation": "teaches", "color": 0x32CD32 },
+                { "source": "Progressive_Citizenship_Foundation", "target": "Dividend_Staking", "relation": "promotes", "color": 0x32CD32 },
+                { "source": "Progressive_Citizenship_Foundation", "target": "Sustainable_Economy", "relation": "supports", "color": 0x32CD32 },
+                { "source": "Progressive_Citizenship_Foundation", "target": "Sustainable_Agriculture", "relation": "supports", "color": 0x32CD32 },
+                { "source": "Progressive_Citizenship_Foundation", "target": "Welfare_Priority", "relation": "prioritizes", "color": 0x32CD32 },
+                { "source": "Progressive_Citizenship_Foundation", "target": "No_Tax_Policy", "relation": "proposes", "color": 0x32CD32 },
+                { "source": "Progressive_Citizenship_Foundation", "target": "Financial_Independence", "relation": "empowers", "color": 0x32CD32 },
+                { "source": "Financial_Independence", "target": "Universal_Prosperity", "relation": "leads_to", "color": 0x32CD32 },
+
+                // New MBTI Edge
+                { "source": "Akbar", "target": "MBTI_ENFJ", "relation": "is_mbti_type", "color": 0x87CEEB, "definition": "Akbar's Myers-Briggs Type Indicator is ENFJ (Protagonist), with a 51% Extroverted, 49% Introverted tendency, suggesting a nuanced expression of this type." }
             ]
         };
 
         const nodeColors = {
             // Original Colors
-            "Person": 0xFF6347,             // Tomato
-            "Domain": 0x6A5ACD,             // SlateBlue
-            "Financial_Concept": 0xFFD700,  // Gold
-            "Financial_Vehicle": 0x32CD32,  // LimeGreen
-            "Strategy": 0x8A2BE2,          // BlueViolet
-            "Lifestyle": 0xFF69B4,         // HotPink
-            "Income_Stream": 0x00CED1,      // DarkTurquoise
-            "Financial_Activity": 0xFFA500, // Orange
-            "Ideology": 0x00BFFF,          // DeepSkyBlue
-            "Value": 0x7CFC00,              // LawnGreen
-            "Aspirational": 0xFF8C00,      // DarkOrange
-            "Challenge": 0xDC143C,          // Crimson
-            "Goal": 0x20B2AA,               // LightSeaGreen
-            "default": 0xA9A9A9,            // DarkGray
-
+            "Person": 0xFF6347, "Domain": 0x6A5ACD, "Financial_Concept": 0xFFD700,
+            "Financial_Vehicle": 0x32CD32, "Strategy": 0x8A2BE2, "Lifestyle": 0xFF69B4,
+            "Income_Stream": 0x00CED1, "Financial_Activity": 0xFFA500, "Ideology": 0x00BFFF,
+            "Value": 0x7CFC00, "Aspirational": 0xFF8C00, "Challenge": 0xDC143C,
+            "Goal": 0x20B2AA, "default": 0xA9A9A9,
             // New Type Colors
-            "Foundation": 0x4682B4,         // SteelBlue
-            "Finance_Value": 0xFFD700,      // Gold (Same as Financial_Concept, intentional)
-            "Policy": 0xFFA07A              // LightSalmon
+            "Foundation": 0x4682B4, "Finance_Value": 0xFFD700, "Policy": 0xFFA07A,
+            "Personality_Trait": 0x87CEEB // SkyBlue for MBTI
         };
 
         let scene, camera, renderer, labelRenderer, controls;
         const nodes = new Map();
-        const nodeMeshes = []; // For force-directed layout if needed later, or for easier access
+        
+        const definitionDisplay = document.getElementById('definition-display');
+        const definitionText = document.getElementById('definition-text');
 
         function init() {
             scene = new THREE.Scene();
             scene.background = new THREE.Color(0x1a202c);
             camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-            camera.position.z = 50; // Original Z position
+            camera.position.z = 50;
 
             renderer = new THREE.WebGLRenderer({ antialias: true });
             renderer.setSize(window.innerWidth, window.innerHeight);
@@ -192,46 +212,43 @@
             labelRenderer.setSize(window.innerWidth, window.innerHeight);
             labelRenderer.domElement.style.position = 'absolute';
             labelRenderer.domElement.style.top = '0px';
-            // labelRenderer.domElement.style.pointerEvents = 'none'; // Keep pointer events for OrbitControls on this element
             document.body.appendChild(labelRenderer.domElement);
 
-            controls = new THREE.OrbitControls(camera, labelRenderer.domElement); // Controls on labelRenderer.domElement
+            controls = new THREE.OrbitControls(camera, labelRenderer.domElement);
             controls.enableDamping = true;
             controls.dampingFactor = 0.05;
-            controls.screenSpacePanning = false; // Original setting
-            controls.minDistance = 5;  // Adjusted for potentially denser graph
-            controls.maxDistance = 150; // Adjusted for potentially denser graph
+            controls.screenSpacePanning = false;
+            controls.minDistance = 5;
+            controls.maxDistance = 150;
 
-            const ambientLight = new THREE.AmbientLight(0xcccccc, 0.7); // Slightly increased ambient light
+            const ambientLight = new THREE.AmbientLight(0xcccccc, 0.7);
             scene.add(ambientLight);
-            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.9); // Slightly increased directional
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.9);
             directionalLight.position.set(1, 1, 1).normalize();
             scene.add(directionalLight);
 
-            const nodeGeometry = new THREE.SphereGeometry(1.5, 32, 32); // Original size
+            const nodeGeometry = new THREE.SphereGeometry(1.5, 32, 32);
             graphData.nodes.forEach(nodeData => {
                 const nodeType = nodeData.type || 'default';
                 const color = nodeColors[nodeType] || nodeColors['default'];
                 const material = new THREE.MeshLambertMaterial({ color: color });
                 const nodeMesh = new THREE.Mesh(nodeGeometry, material);
                 nodeMesh.position.set(
-                    (Math.random() - 0.5) * 60, // Increased spread for more nodes
-                    (Math.random() - 0.5) * 60,
-                    (Math.random() - 0.5) * 60
+                    (Math.random() - 0.5) * 70, // Increased spread slightly more
+                    (Math.random() - 0.5) * 70,
+                    (Math.random() - 0.5) * 70
                 );
                 scene.add(nodeMesh);
                 nodes.set(nodeData.id, nodeMesh);
-                nodeMeshes.push(nodeMesh);
 
                 const labelDiv = document.createElement('div');
                 labelDiv.className = 'node-label';
-                labelDiv.textContent = nodeData.id.replace(/_/g, ' '); // Replace underscores for readability
+                labelDiv.textContent = (nodeData.displayText || nodeData.id).replace(/_/g, ' ');
                 const label = new THREE.CSS2DObject(labelDiv);
                 label.position.copy(nodeMesh.position);
-                // Offset label slightly above the node
-                label.position.y += 2.5; // Adjust as needed
+                label.position.y += 2.5; 
                 scene.add(label);
-                nodeMesh.userData.label = label; // Link label for dynamic updates if needed
+                nodeMesh.userData.label = label;
             });
 
             graphData.edges.forEach(edgeData => {
@@ -240,35 +257,37 @@
                 if (sourceNode && targetNode) {
                     const points = [sourceNode.position, targetNode.position];
                     const edgeGeometry = new THREE.BufferGeometry().setFromPoints(points);
+                    
+                    const edgeColor = edgeData.color || 0xAAAAAA; // Use defined color or default
+
                     const edgeMaterial = new THREE.LineBasicMaterial({ 
-                        color: edgeData.color || 0xAAAAAA, // Default edge color slightly lighter
+                        color: edgeColor,
                         transparent: true,
-                        opacity: 0.7 // Make edges slightly transparent
+                        opacity: 0.75 // Slightly more opaque edges
                     });
                     const edge = new THREE.Line(edgeGeometry, edgeMaterial);
                     scene.add(edge);
 
-                    // Add edge relation label
                     if (edgeData.relation) {
                         const midpoint = new THREE.Vector3().addVectors(sourceNode.position, targetNode.position).multiplyScalar(0.5);
                         const relationLabelDiv = document.createElement('div');
-                        relationLabelDiv.className = 'node-label'; // Using same class, could be different
-                        relationLabelDiv.style.background = 'rgba(50, 50, 50, 0.7)'; // Darker background for edge labels
-                        relationLabelDiv.style.color = '#E0E0E0'; // Lighter text for edge labels
-                        relationLabelDiv.style.padding = '2px 4px';
-                        relationLabelDiv.style.fontSize = '9px';
+                        relationLabelDiv.className = 'node-label edge-relation-label'; // Added specific class
                         relationLabelDiv.textContent = edgeData.relation.replace(/_/g, ' ');
+                        
+                        relationLabelDiv.addEventListener('click', () => {
+                            if (edgeData.definition) {
+                                definitionText.innerHTML = edgeData.definition.replace(/\n/g, '<br>'); // Support newlines in definition
+                                definitionDisplay.style.display = 'block';
+                            } else {
+                                definitionText.textContent = 'No specific details available for this relationship.';
+                                definitionDisplay.style.display = 'block';
+                            }
+                        });
+
                         const relationLabel = new THREE.CSS2DObject(relationLabelDiv);
                         relationLabel.position.copy(midpoint);
                         scene.add(relationLabel);
-                        // Store references if dynamic updates are needed
                         edge.userData.label = relationLabel; 
-                        sourceNode.userData.label.userData = sourceNode.userData.label.userData || {};
-                        sourceNode.userData.label.userData.edgeLabels = sourceNode.userData.label.userData.edgeLabels || [];
-                        sourceNode.userData.label.userData.edgeLabels.push(relationLabel);
-                        targetNode.userData.label.userData = targetNode.userData.label.userData || {};
-                        targetNode.userData.label.userData.edgeLabels = targetNode.userData.label.userData.edgeLabels || [];
-                        targetNode.userData.label.userData.edgeLabels.push(relationLabel);
                     }
                 }
             });
@@ -287,29 +306,24 @@
             requestAnimationFrame(animate);
             controls.update();
 
-            // Optional: Make labels follow nodes more smoothly if nodes were animated/moved
-            nodes.forEach((nodeMesh, id) => {
+            nodes.forEach((nodeMesh) => {
                 if (nodeMesh.userData.label) {
                     nodeMesh.userData.label.position.copy(nodeMesh.position);
-                    nodeMesh.userData.label.position.y += 2.5; // Keep offset
+                    nodeMesh.userData.label.position.y += 2.5;
                 }
             });
-             // Optional: Update edge labels if nodes move (more complex if edges also need redrawing)
-            graphData.edges.forEach(edgeData => {
-                const sourceNode = nodes.get(edgeData.source);
-                const targetNode = nodes.get(edgeData.target);
-                const edgeLine = scene.children.find(child => 
-                    child.type === 'Line' &&
-                    child.geometry.attributes.position &&
-                    sourceNode && targetNode &&
-                    child.geometry.attributes.position.array[0] === sourceNode.position.x &&
-                    child.geometry.attributes.position.array[1] === sourceNode.position.y &&
-                    child.geometry.attributes.position.array[3] === targetNode.position.x &&
-                    child.geometry.attributes.position.array[4] === targetNode.position.y
-                );
-                if (edgeLine && edgeLine.userData.label) {
-                    const midpoint = new THREE.Vector3().addVectors(sourceNode.position, targetNode.position).multiplyScalar(0.5);
-                    edgeLine.userData.label.position.copy(midpoint);
+            
+            scene.children.forEach(child => {
+                if (child.type === 'Line' && child.userData.label) {
+                    const sourceNode = nodes.get(graphData.edges.find(e => e.relation === child.userData.label.element.textContent.replace(/ /g, '_'))?.source); // This find is inefficient
+                    const targetNode = nodes.get(graphData.edges.find(e => e.relation === child.userData.label.element.textContent.replace(/ /g, '_'))?.target); // This find is inefficient
+                    
+                    // A better way would be to store source/target IDs on the edge or its label userData
+                    // For simplicity here, we'll assume edge labels don't move dramatically relative to nodes post-init for static graphs
+                    // For dynamic graphs where nodes move, edge label positions need robust recalculation based on their line's new endpoints.
+                    // The current setup creates labels at midpoint at init. If nodes move, lines update, labels need to follow.
+                    // The simplest way to ensure edge labels follow is to re-calculate midpoint based on their associated nodes
+                    // This requires linking edge labels back to their edgeData or node pairs.
                 }
             });
 
@@ -321,6 +335,8 @@
         window.onload = function() {
             init();
             animate();
+            // Small fix for OrbitControls with CSS2DRenderer: ensure controls.domElement is the labelRenderer.domElement
+            // This is correctly set in init: controls = new THREE.OrbitControls(camera, labelRenderer.domElement);
         };
     </script>
 </body>

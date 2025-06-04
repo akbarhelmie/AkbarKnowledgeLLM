@@ -80,7 +80,7 @@
             <li><strong>Right-click & Drag:</strong> Pan</li>
             <li><strong>Scroll Wheel:</strong> Zoom</li>
         </ul>
-        <p class="text-sm">Nodes are colored by type (Finance nodes are blue) and positioned directionally in dispersed clouds. Click elements for details. Edge colors vary.</p>
+        <p class="text-sm">Nodes form an overall spherical shape with directional category clouds. Finance nodes are blue. Click elements for details.</p>
         
         <div id="node-inspector-display" style="display:none;">
             <h2 id="node-inspector-title">Node Details:</h2>
@@ -227,43 +227,29 @@
 
         const SPREAD_DISTANCE = 75; 
 
-        function getNodeCategory(node) {
+        function getNodeCategory(node) { // Category definitions remain the same
             const id = node.id;
             const type = node.type;
-
-            // FINANCE: North (+Y), Blue color
             const financeTypes = ["Financial_Concept", "Financial_Vehicle", "Income_Stream", "Financial_Activity", "Finance_Value"];
             const financeIds = ["Dividend_Staking_Lifestyle"]; 
             if (financeTypes.includes(type) || financeIds.includes(id)) return 'FINANCE';
-
-            // FEELINGS/PSYCHOLOGY: West (-X)
             const feelingsIds = ["Adaptability", "Creativity", "Proactiveness", "Crab_Mentality", "Inferiority_Complex", "MBTI_ENFJ"];
-            if (feelingsIds.includes(id) || type === "Personality_Trait" || (type === "Challenge" && !["Bureaucratic_Stagnation"].includes(id))) {
-                return 'FEELINGS';
-            }
-            
-            // HUMAN WELFARE/SOCIETAL: East (+X)
+            if (feelingsIds.includes(id) || type === "Personality_Trait" || (type === "Challenge" && !["Bureaucratic_Stagnation"].includes(id))) return 'FEELINGS';
             const welfareTypes = ["Goal", "Foundation", "Policy", "Aspirational"];
             const welfareIdeologies = ["Progressivism", "Pacifist_Philanthropist"];
             const welfareValueIds = ["Financial_Literacy"]; 
             if (welfareTypes.includes(type) || welfareIdeologies.includes(id) || welfareValueIds.includes(id)) return 'WELFARE';
-
-            // LEGAL: South (-Y)
             const legalDomainIds = ["Legal_Entrepreneurship", "Legal_Tech", "Legal_Tech_Innovation", "Human_Rights_Law"];
             const legalIdeologyIds = ["Legal_Reformation"];
             if ((type === "Domain" && legalDomainIds.includes(id)) || legalIdeologyIds.includes(id)) return 'LEGAL';
-
             if (id === "Akbar") return 'CENTER';
             return 'OTHER';
         }
 
-        function relationToColor(relationString) {
+        function relationToColor(relationString) { // Edge coloring remains the same
             if (!relationString) relationString = "default";
             let hash = 0;
-            for (let i = 0; i < relationString.length; i++) {
-                hash = relationString.charCodeAt(i) + ((hash << 5) - hash);
-                hash = hash & hash; 
-            }
+            for (let i = 0; i < relationString.length; i++) { hash = relationString.charCodeAt(i) + ((hash << 5) - hash); hash = hash & hash; }
             const h = Math.abs(hash) % 360; 
             const s = 60 + (Math.abs(hash >> 8) % 40); 
             const l = 50 + (Math.abs(hash >> 16) % 25); 
@@ -274,7 +260,8 @@
             scene = new THREE.Scene();
             scene.background = new THREE.Color(0x1a202c);
             camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-            camera.position.z = SPREAD_DISTANCE * 1.8; // Adjusted camera for wider view
+            // Adjusted camera Z to better view the spherical layout
+            camera.position.z = SPREAD_DISTANCE * 2.2; 
 
             renderer = new THREE.WebGLRenderer({ antialias: true });
             renderer.setSize(window.innerWidth, window.innerHeight);
@@ -290,8 +277,8 @@
             controls.enableDamping = true;
             controls.dampingFactor = 0.05;
             controls.screenSpacePanning = false;
-            controls.minDistance = 10; // Increased minDistance
-            controls.maxDistance = SPREAD_DISTANCE * 5; // Increased maxDistance
+            controls.minDistance = 15; // Adjusted minDistance
+            controls.maxDistance = SPREAD_DISTANCE * 6; // Adjusted maxDistance
 
             raycaster = new THREE.Raycaster();
             mouse = new THREE.Vector2();
@@ -309,64 +296,71 @@
                 nd.category = category; 
 
                 let nodeColorVal = nodeColors[nd.type] || nodeColors['default'];
-                if (category === 'FINANCE') {
-                    nodeColorVal = 0x1E90FF; 
-                }
+                if (category === 'FINANCE') { nodeColorVal = 0x1E90FF; }
                 const material = new THREE.MeshLambertMaterial({ color: nodeColorVal });
                 const nodeMesh = new THREE.Mesh(nodeGeometry, material);
                 
                 let x, y, z;
-                // Defines the primary push for directional categories
-                const mainAxisPush = SPREAD_DISTANCE * (0.45 + Math.random() * 0.55); // [0.45*D, D]
-                // Defines the spread for the other two axes, allowing more volume
-                const secondaryAxisSpreadRange = SPREAD_DISTANCE * 0.7; // Max spread of +/- 0.35*D
-                const tertiaryAxisSpreadRange = SPREAD_DISTANCE * 0.6;  // Max spread of +/- 0.3*D
 
-                switch (category) {
-                    case 'FINANCE': // North: Positive Y
-                        y = mainAxisPush;
-                        x = (Math.random() - 0.5) * secondaryAxisSpreadRange;
-                        z = (Math.random() - 0.5) * tertiaryAxisSpreadRange;
-                        break;
-                    case 'FEELINGS': // West: Negative X
-                        x = -mainAxisPush;
-                        y = (Math.random() - 0.5) * secondaryAxisSpreadRange;
-                        z = (Math.random() - 0.5) * tertiaryAxisSpreadRange;
-                        break;
-                    case 'WELFARE': // East: Positive X
-                        x = mainAxisPush;
-                        y = (Math.random() - 0.5) * secondaryAxisSpreadRange;
-                        z = (Math.random() - 0.5) * tertiaryAxisSpreadRange;
-                        break;
-                    case 'LEGAL': // South: Negative Y
-                        y = -mainAxisPush;
-                        x = (Math.random() - 0.5) * secondaryAxisSpreadRange;
-                        z = (Math.random() - 0.5) * tertiaryAxisSpreadRange;
-                        break;
-                    case 'CENTER':
-                        x = (Math.random() - 0.5) * SPREAD_DISTANCE * 0.1;
-                        y = (Math.random() - 0.5) * SPREAD_DISTANCE * 0.1;
-                        z = (Math.random() - 0.5) * SPREAD_DISTANCE * 0.1;
-                        break;
-                    case 'OTHER':
-                    default:
-                        const otherMaxRadius = SPREAD_DISTANCE * 0.45; 
-                        let ox, oy, oz, magSq;
-                        do { // Generate point in unit sphere via rejection sampling
-                            ox = (Math.random() - 0.5) * 2; 
-                            oy = (Math.random() - 0.5) * 2;
-                            oz = (Math.random() - 0.5) * 2;
-                            magSq = ox*ox + oy*oy + oz*oz;
-                        } while (magSq === 0 || magSq > 1); 
-                        
-                        const rFactor = 0.3 + Math.random() * 0.7; // Radius factor from 0.3 to 1.0
-                        const currentOtherRadius = otherMaxRadius * rFactor;
-                        const mag = Math.sqrt(magSq); // Magnitude of the point within the unit cube (but inside sphere)
-                        
-                        x = (ox / mag) * currentOtherRadius; // Normalize then scale
-                        y = (oy / mag) * currentOtherRadius;
-                        z = (oz / mag) * currentOtherRadius;
-                        break;
+                if (category === 'CENTER') {
+                    x = (Math.random() - 0.5) * SPREAD_DISTANCE * 0.05; // Very close to origin
+                    y = (Math.random() - 0.5) * SPREAD_DISTANCE * 0.05;
+                    z = (Math.random() - 0.5) * SPREAD_DISTANCE * 0.05;
+                } else if (category === 'OTHER') {
+                    const otherMaxRadius = SPREAD_DISTANCE * 0.55; // 'OTHER' nodes in an inner sphere
+                    let ox, oy, oz, magSq;
+                    do {
+                        ox = (Math.random() - 0.5) * 2; 
+                        oy = (Math.random() - 0.5) * 2;
+                        oz = (Math.random() - 0.5) * 2;
+                        magSq = ox*ox + oy*oy + oz*oz;
+                    } while (magSq === 0 || magSq > 1); 
+                    
+                    // Distribute more within the volume, not just shell
+                    const rFactor = 0.35 + Math.cbrt(Math.random()) * 0.65; 
+                    const currentOtherRadius = otherMaxRadius * rFactor;
+                    const mag = Math.sqrt(magSq);
+                    
+                    x = (ox / mag) * currentOtherRadius;
+                    y = (oy / mag) * currentOtherRadius;
+                    z = (oz / mag) * currentOtherRadius;
+                } else { 
+                    // For directional categories (FINANCE, FEELINGS, WELFARE, LEGAL)
+                    // 1. Determine the center of this category's cloud (offset from origin)
+                    //    Offset is between 0.6*D and 0.95*D
+                    const cloudCenterOffset = SPREAD_DISTANCE * (0.6 + Math.random() * 0.35); 
+                    
+                    // 2. Determine the radius of the cloud itself
+                    //    Cloud radius up to 0.4*D
+                    const cloudSphereMaxRadius = SPREAD_DISTANCE * 0.4; 
+
+                    // 3. Generate a random point within this local cloud (spherical distribution)
+                    let lox, loy, loz, lMagSq; // Local Offset X, Y, Z
+                    do {
+                        lox = (Math.random() - 0.5) * 2; 
+                        loy = (Math.random() - 0.5) * 2;
+                        loz = (Math.random() - 0.5) * 2;
+                        lMagSq = lox*lox + loy*loy + loz*loz;
+                    } while (lMagSq === 0 || lMagSq > 1);
+                    
+                    // Distribute within the volume of the local cloud
+                    const lRadiusFactor = 0.2 + Math.cbrt(Math.random()) * 0.8; 
+                    const currentLocalCloudRadius = cloudSphereMaxRadius * lRadiusFactor;
+                    const lMag = Math.sqrt(lMagSq);
+
+                    const localX = (lox / lMag) * currentLocalCloudRadius;
+                    const localY = (loy / lMag) * currentLocalCloudRadius;
+                    const localZ = (loz / lMag) * currentLocalCloudRadius;
+
+                    // 4. Start with the local cloud position and add the directional offset
+                    x = localX; y = localY; z = localZ;
+
+                    switch (category) {
+                        case 'FINANCE':  y += cloudCenterOffset; break;
+                        case 'FEELINGS': x -= cloudCenterOffset; break;
+                        case 'WELFARE':  x += cloudCenterOffset; break;
+                        case 'LEGAL':    y -= cloudCenterOffset; break;
+                    }
                 }
                 nodeMesh.position.set(x, y, z);
                 nodeMesh.userData = { id: nd.id, type: nd.type, originalData: nd, category: category }; 
@@ -383,7 +377,8 @@
                 nodeMesh.userData.label = label;
             });
 
-            graphData.edges.forEach(edgeData => { // Edge creation logic remains largely the same
+            // Edge creation and other init logic remains the same
+            graphData.edges.forEach(edgeData => {
                 const sourceNodeMesh = nodes.get(edgeData.source);
                 const targetNodeMesh = nodes.get(edgeData.target);
                 if (sourceNodeMesh && targetNodeMesh) {
@@ -420,15 +415,11 @@
                     }
                 }
             });
-            
             renderer.domElement.addEventListener('click', onNodeClick, false);
             labelRenderer.domElement.addEventListener('click', (event) => {
                 if (event.target === labelRenderer.domElement || event.target === renderer.domElement) {
                     const intersects = raycaster.intersectObjects(Array.from(nodes.values()));
-                    if (intersects.length === 0) { 
-                         hideEdgeDefinition();
-                         hideNodeInspector();
-                    }
+                    if (intersects.length === 0) { hideEdgeDefinition(); hideNodeInspector(); }
                 }
             }, false);
             window.addEventListener('resize', onWindowResize, false);
@@ -437,7 +428,7 @@
         function hideEdgeDefinition() { edgeDefinitionDisplay.style.display = 'none'; }
         function hideNodeInspector() { nodeInspectorDisplay.style.display = 'none'; }
 
-        function onNodeClick(event) { // Node click logic remains largely the same
+        function onNodeClick(event) { 
             event.preventDefault();
             const rect = renderer.domElement.getBoundingClientRect();
             mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
@@ -471,14 +462,14 @@
             }
         }
 
-        function onWindowResize() { // Window resize logic remains the same
+        function onWindowResize() { 
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
             labelRenderer.setSize(window.innerWidth, window.innerHeight);
         }
 
-        function animate() { // Animation loop remains largely the same
+        function animate() { 
             requestAnimationFrame(animate);
             controls.update();
             nodes.forEach((nodeMesh) => {

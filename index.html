@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Akbar's Enhanced 3D Knowledge Graph</title>
+    <title>Akbar's Centered 3D Knowledge Graph</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { margin: 0; overflow: hidden; font-family: 'Inter', sans-serif; background-color: #1a202c; }
@@ -31,14 +31,14 @@
             color: #2c3e50;
             pointer-events: none;
             white-space: nowrap;
-            transform: translate(-50%, -100%); /* Adjust transform for better positioning above node */
+            transform: translate(-50%, -100%); 
             text-align: center;
         }
         .edge-relation-label {
             background: rgba(60, 60, 60, 0.75);
             color: #E8E8E8;
             padding: 2px 5px;
-            font-size: 9px; /* Can also be made proportional or fixed */
+            font-size: 9px; 
             cursor: pointer;
             pointer-events: auto !important;
         }
@@ -49,14 +49,14 @@
 </head>
 <body>
     <div id="info">
-        <h1 class="font-bold text-lg mb-2">Akbar's Enhanced 3D Knowledge Graph</h1>
+        <h1 class="font-bold text-lg mb-2">Akbar's Centered 3D Knowledge Graph</h1>
         <p>Use your mouse to interact:</p>
         <ul class="list-disc list-inside ml-4 mb-2">
             <li><strong>Left-click & Drag:</strong> Rotate</li>
             <li><strong>Right-click & Drag:</strong> Pan</li>
             <li><strong>Scroll Wheel:</strong> Zoom</li>
         </ul>
-        <p class="text-sm">Nodes sized by connections. Click edge labels for details.</p>
+        <p class="text-sm">Nodes sized by connections. Edges are green (neutral/positive) or red (negative context). Click edge labels for details.</p>
         
         <div id="definition-display" class="mt-3 pt-3 border-t border-gray-600" style="display:none;">
             <h2 class="font-semibold text-md mb-1">Relationship Details:</h2>
@@ -114,7 +114,8 @@
                 { "id": "MBTI_ENFJ", "type": "Personality_Trait", "displayText": "ENFJ (51%/49%)" }
             ],
             "edges": [
-                // ... (Full edge list from previous version, with definitions and colors) ...
+                // ... (Full edge list from previous version, with definitions) ...
+                // Colors for these edges will now be determined by the new logic below
                 { "source": "Akbar", "target": "Legal_Entrepreneurship", "relation": "operates_in", "definition": "Akbar is actively involved in legal entrepreneurship, seeking innovative solutions in the legal field." },
                 { "source": "Akbar", "target": "Legal_Tech", "relation": "operates_in", "definition": "Akbar utilizes and promotes technology within the legal sector." },
                 { "source": "Akbar", "target": "Venture_Capital", "relation": "operates_in" },
@@ -148,22 +149,22 @@
                 { "source": "Akbar", "target": "Nation's_Best", "relation": "aspires_to_be" },
                 { "source": "Nation's_Best", "target": "World_Government", "relation": "represents_in" },
                 { "source": "Akbar", "target": "Pacifist_Philanthropist", "relation": "identifies_as" },
-                { "source": "Akbar", "target": "Crab_Mentality", "relation": "seeks_to_eradicate", "color": 0xDC143C, "definition": "Akbar actively works against the 'crab mentality,' where individuals try to pull down those who are succeeding." },
-                { "source": "Akbar", "target": "Inferiority_Complex", "relation": "seeks_to_eradicate", "color": 0xDC143C, "definition": "Akbar aims to help overcome and eradicate feelings of inferiority, promoting self-worth and confidence." },
-                { "source": "Akbar", "target": "Bureaucratic_Stagnation", "relation": "despises", "color": 0xDC143C, "definition": "Akbar has a strong aversion to bureaucratic stagnation, viewing it as a significant hindrance to progress and innovation." },
+                { "source": "Akbar", "target": "Crab_Mentality", "relation": "seeks_to_eradicate", "definition": "Akbar actively works against the 'crab mentality,' where individuals try to pull down those who are succeeding." },
+                { "source": "Akbar", "target": "Inferiority_Complex", "relation": "seeks_to_eradicate", "definition": "Akbar aims to help overcome and eradicate feelings of inferiority, promoting self-worth and confidence." },
+                { "source": "Akbar", "target": "Bureaucratic_Stagnation", "relation": "despises", "definition": "Akbar has a strong aversion to bureaucratic stagnation, viewing it as a significant hindrance to progress and innovation." },
                 { "source": "Akbar", "target": "Equal_Access", "relation": "advocates_for" },
                 { "source": "Equal_Access", "target": "Global_Citizenship", "relation": "enables" },
                 { "source": "Akbar", "target": "Global_Citizenship", "relation": "supports" },
-                { "source": "Akbar", "target": "Progressive_Citizenship_Foundation", "relation": "founded", "color": 0x32CD32, "definition": "Akbar founded the Progressive Citizenship Foundation to promote key societal values and goals." },
-                { "source": "Progressive_Citizenship_Foundation", "target": "Financial_Literacy", "relation": "teaches", "color": 0x32CD32 },
-                { "source": "Progressive_Citizenship_Foundation", "target": "Dividend_Staking", "relation": "promotes", "color": 0x32CD32 },
-                { "source": "Progressive_Citizenship_Foundation", "target": "Sustainable_Economy", "relation": "supports", "color": 0x32CD32 },
-                { "source": "Progressive_Citizenship_Foundation", "target": "Sustainable_Agriculture", "relation": "supports", "color": 0x32CD32 },
-                { "source": "Progressive_Citizenship_Foundation", "target": "Welfare_Priority", "relation": "prioritizes", "color": 0x32CD32 },
-                { "source": "Progressive_Citizenship_Foundation", "target": "No_Tax_Policy", "relation": "proposes", "color": 0x32CD32 },
-                { "source": "Progressive_Citizenship_Foundation", "target": "Financial_Independence", "relation": "empowers", "color": 0x32CD32 },
-                { "source": "Financial_Independence", "target": "Universal_Prosperity", "relation": "leads_to", "color": 0x32CD32 },
-                { "source": "Akbar", "target": "MBTI_ENFJ", "relation": "is_mbti_type", "color": 0x87CEEB, "definition": "Akbar's Myers-Briggs Type Indicator is ENFJ (Protagonist), with a 51% Extroverted, 49% Introverted tendency, suggesting a nuanced expression of this type." }
+                { "source": "Akbar", "target": "Progressive_Citizenship_Foundation", "relation": "founded", "definition": "Akbar founded the Progressive Citizenship Foundation to promote key societal values and goals." },
+                { "source": "Progressive_Citizenship_Foundation", "target": "Financial_Literacy", "relation": "teaches" },
+                { "source": "Progressive_Citizenship_Foundation", "target": "Dividend_Staking", "relation": "promotes" },
+                { "source": "Progressive_Citizenship_Foundation", "target": "Sustainable_Economy", "relation": "supports" },
+                { "source": "Progressive_Citizenship_Foundation", "target": "Sustainable_Agriculture", "relation": "supports" },
+                { "source": "Progressive_Citizenship_Foundation", "target": "Welfare_Priority", "relation": "prioritizes" },
+                { "source": "Progressive_Citizenship_Foundation", "target": "No_Tax_Policy", "relation": "proposes" },
+                { "source": "Progressive_Citizenship_Foundation", "target": "Financial_Independence", "relation": "empowers" },
+                { "source": "Financial_Independence", "target": "Universal_Prosperity", "relation": "leads_to"},
+                { "source": "Akbar", "target": "MBTI_ENFJ", "relation": "is_mbti_type", "definition": "Akbar's Myers-Briggs Type Indicator is ENFJ (Protagonist), with a 51% Extroverted, 49% Introverted tendency, suggesting a nuanced expression of this type." }
             ]
         };
 
@@ -171,7 +172,7 @@
             "Person": 0xFF6347, "Domain": 0x6A5ACD, "Financial_Concept": 0xFFD700,
             "Financial_Vehicle": 0x32CD32, "Strategy": 0x8A2BE2, "Lifestyle": 0xFF69B4,
             "Income_Stream": 0x00CED1, "Financial_Activity": 0xFFA500, "Ideology": 0x00BFFF,
-            "Value": 0x7CFC00, "Aspirational": 0xFF8C00, "Challenge": 0xDC143C,
+            "Value": 0x7CFC00, "Aspirational": 0xFF8C00, "Challenge": 0xDC143C, // Challenge nodes are red
             "Goal": 0x20B2AA, "default": 0xA9A9A9,
             "Foundation": 0x4682B4, "Finance_Value": 0xFFD700, "Policy": 0xFFA07A,
             "Personality_Trait": 0x87CEEB
@@ -186,8 +187,8 @@
         function init() {
             scene = new THREE.Scene();
             scene.background = new THREE.Color(0x1a202c);
-            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-            camera.position.z = 60; // Adjusted for potentially larger scaled nodes
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000); // Increased far plane
+            camera.position.set(0, 50, 130); // Adjusted camera start position for centered layout
 
             renderer = new THREE.WebGLRenderer({ antialias: true });
             renderer.setSize(window.innerWidth, window.innerHeight);
@@ -202,61 +203,62 @@
             controls = new THREE.OrbitControls(camera, labelRenderer.domElement);
             controls.enableDamping = true;
             controls.dampingFactor = 0.05;
-            controls.screenSpacePanning = false;
-            controls.minDistance = 10; // Adjusted
-            controls.maxDistance = 200; // Adjusted
+            controls.screenSpacePanning = true; // Allow screen space panning
+            controls.minDistance = 10; 
+            controls.maxDistance = 400; // Increased max zoom out distance
+            controls.target.set(0,0,0); // Ensure controls orbit around the center
 
-            const ambientLight = new THREE.AmbientLight(0xcccccc, 0.8); // Brighter ambient
+            const ambientLight = new THREE.AmbientLight(0xcccccc, 0.9);
             scene.add(ambientLight);
-            const directionalLight = new THREE.DirectionalLight(0xffffff, 1.0); // Brighter directional
-            directionalLight.position.set(1.5, 1.5, 1.5).normalize();
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 1.2);
+            directionalLight.position.set(2, 3, 4).normalize(); // Adjusted light direction
             scene.add(directionalLight);
 
-            // --- Calculate Node Degrees for Proportional Sizing ---
             const degrees = {};
             graphData.nodes.forEach(node => { degrees[node.id] = 0; });
             graphData.edges.forEach(edge => {
                 if (degrees[edge.source] !== undefined) degrees[edge.source]++;
                 if (degrees[edge.target] !== undefined) degrees[edge.target]++;
             });
-
-            const allDegrees = Object.values(degrees).filter(d => d >= 0); // Include nodes with 0 degree for min
+            const allDegrees = Object.values(degrees).filter(d => d >= 0);
             const minDegree = allDegrees.length > 0 ? Math.min(...allDegrees) : 0;
             const maxDegree = allDegrees.length > 0 ? Math.max(...allDegrees) : 0;
-            // --- End Degree Calculation ---
 
-            const baseSphereRadius = 1.5; // Original sphere radius
+            const baseSphereRadius = 1.5;
             const nodeGeometry = new THREE.SphereGeometry(baseSphereRadius, 32, 32);
 
             graphData.nodes.forEach(nodeData => {
                 const nodeType = nodeData.type || 'default';
                 const color = nodeColors[nodeType] || nodeColors['default'];
                 const material = new THREE.MeshLambertMaterial({ color: color });
-                const nodeMesh = new THREE.Mesh(nodeGeometry.clone(), material); // Clone geometry for independent scaling
+                const nodeMesh = new THREE.Mesh(nodeGeometry.clone(), material);
                 
-                nodeMesh.position.set(
-                    (Math.random() - 0.5) * 80, 
-                    (Math.random() - 0.5) * 80,
-                    (Math.random() - 0.5) * 80
-                );
+                // --- Centered Layout ---
+                if (nodeData.id === "Akbar") {
+                    nodeMesh.position.set(0, 0, 0);
+                } else {
+                    const R_outer = 90; 
+                    const R_inner = 30; 
+                    const R = R_inner + Math.random() * (R_outer - R_inner);
+                    const theta = Math.random() * Math.PI * 2; 
+                    const phi = Math.acos((2 * Math.random()) - 1); 
 
-                // --- Apply Proportional Node Scaling ---
+                    nodeMesh.position.x = R * Math.sin(phi) * Math.cos(theta);
+                    nodeMesh.position.y = R * Math.sin(phi) * Math.sin(theta); // Changed for more spherical spread
+                    nodeMesh.position.z = R * Math.cos(phi);
+                }
+                // --- End Centered Layout ---
+
                 const degree = degrees[nodeData.id] || 0;
                 const baseNodeScale = 1.0;
-                const minNodeSF = 0.6; // Scale Factor for min degree
-                const maxNodeSF = 2.2; // Scale Factor for max degree
+                const minNodeSF = 0.6; const maxNodeSF = 2.2;
                 let nodeScaleFactor = baseNodeScale;
-
                 if (maxDegree > minDegree) {
                     nodeScaleFactor = minNodeSF + ((degree - minDegree) / (maxDegree - minDegree)) * (maxNodeSF - minNodeSF);
-                } else if (degree > 0) { // All nodes have same degree > 0 or only one connected node type
-                    nodeScaleFactor = 1.2 * baseNodeScale;
-                } else { // Isolated node (degree 0)
-                     nodeScaleFactor = 0.5 * baseNodeScale;
-                }
-                nodeScaleFactor = Math.max(minNodeSF, Math.min(maxNodeSF, nodeScaleFactor)); // Clamp
+                } else if (degree > 0) { nodeScaleFactor = 1.2 * baseNodeScale; } 
+                else { nodeScaleFactor = 0.5 * baseNodeScale; }
+                nodeScaleFactor = Math.max(minNodeSF, Math.min(maxNodeSF, nodeScaleFactor));
                 nodeMesh.scale.set(nodeScaleFactor, nodeScaleFactor, nodeScaleFactor);
-                // --- End Proportional Node Scaling ---
 
                 scene.add(nodeMesh);
                 nodes.set(nodeData.id, nodeMesh);
@@ -265,69 +267,69 @@
                 labelDiv.className = 'node-label';
                 labelDiv.textContent = (nodeData.displayText || nodeData.id).replace(/_/g, ' ');
                 
-                // --- Apply Proportional Label Font Size ---
-                const minLabelFS = 7; // Font Size
-                const maxLabelFS = 16; // Font Size
-                let labelFontSize = 10; // Default
+                const minLabelFS = 7; const maxLabelFS = 16;
+                let labelFontSize = 10;
                  if (maxDegree > minDegree) {
                     labelFontSize = minLabelFS + ((degree - minDegree) / (maxDegree - minDegree)) * (maxLabelFS - minLabelFS);
-                } else if (degree > 0) {
-                     labelFontSize = 11;
-                } else {
-                    labelFontSize = 7;
-                }
+                } else if (degree > 0) { labelFontSize = 11; } 
+                else { labelFontSize = 7; }
                 labelDiv.style.fontSize = Math.max(minLabelFS, Math.min(maxLabelFS, labelFontSize)) + 'px';
-                // --- End Proportional Label Font Size ---
 
                 const label = new THREE.CSS2DObject(labelDiv);
                 label.position.copy(nodeMesh.position);
-                // Adjust label Y-offset based on scaled node radius
-                label.position.y += (baseSphereRadius * nodeScaleFactor) + 0.8; // Offset slightly above the scaled node
+                label.position.y += (baseSphereRadius * nodeScaleFactor) + 0.8;
                 scene.add(label);
                 nodeMesh.userData.label = label;
             });
 
             graphData.edges.forEach((edgeData, index) => {
                 const sourceNode = nodes.get(edgeData.source);
-                const targetNode = nodes.get(edgeData.target);
-                if (sourceNode && targetNode) {
+                const targetNodeMesh = nodes.get(edgeData.target); // Mesh of the target
+                if (sourceNode && targetNodeMesh) {
                     const sourcePos = sourceNode.position;
-                    const targetPos = targetNode.position;
-                    const edgeColor = edgeData.color || 0xAAAAAA;
+                    const targetPos = targetNodeMesh.position;
+
+                    // --- Edge Color Logic (Red/Green) ---
+                    let determinedEdgeColor = 0x32CD32; // Default Green
+                    const lowerCaseRelation = edgeData.relation.toLowerCase();
+                    const negativeKeywords = ["despis", "eradicate"]; // "despise", "despises", "eradicate"
+                    
+                    const targetNodeData = graphData.nodes.find(n => n.id === edgeData.target);
+
+                    if (negativeKeywords.some(keyword => lowerCaseRelation.includes(keyword)) ||
+                        (edgeData.source === "Akbar" && targetNodeData && targetNodeData.type === "Challenge")) {
+                        determinedEdgeColor = 0xDC143C; // Red
+                    }
+                    // --- End Edge Color Logic ---
+
                     const edgeMaterial = new THREE.LineBasicMaterial({ 
-                        color: edgeColor,
+                        color: determinedEdgeColor,
                         transparent: true,
-                        opacity: 0.65 // Slightly reduced opacity for curves
+                        opacity: 0.7 
                     });
 
-                    // --- Create Curved Edge ---
                     const distance = sourcePos.distanceTo(targetPos);
                     const midPoint = new THREE.Vector3().addVectors(sourcePos, targetPos).multiplyScalar(0.5);
                     
-                    const normal = new THREE.Vector3().subVectors(targetPos, sourcePos).normalize();
-                    let controlOffsetDirection;
-                    // Create a stable perpendicular vector for control point offset
-                    if (Math.abs(normal.z) < 0.99) { // If not largely aligned with Z axis
-                        controlOffsetDirection = new THREE.Vector3().crossVectors(normal, new THREE.Vector3(0,0,1)).normalize();
-                    } else { // largely aligned with Z, use X or Y axis for cross product
-                         controlOffsetDirection = new THREE.Vector3().crossVectors(normal, new THREE.Vector3(0,1,0)).normalize();
+                    const normalVec = new THREE.Vector3().subVectors(targetPos, sourcePos).normalize();
+                    let controlOffsetVec;
+                    if (Math.abs(normalVec.z) < 0.99) { 
+                        controlOffsetVec = new THREE.Vector3().crossVectors(normalVec, new THREE.Vector3(0,0,1)).normalize();
+                    } else { 
+                         controlOffsetVec = new THREE.Vector3().crossVectors(normalVec, new THREE.Vector3(0,1,0)).normalize();
                     }
+                    const curveBow = Math.min(distance * 0.2, 15);
+                    const bowDir = (index % 2 === 0) ? 1 : -1; 
+                    const controlPt = new THREE.Vector3().copy(midPoint).addScaledVector(controlOffsetVec, curveBow * bowDir);
 
-                    const curveBowFactor = Math.min(distance * 0.2, 12); // Adjust bow amount
-                    const bowDirection = (index % 2 === 0) ? 1 : -1; // Alternate bow for parallel edges
-                    
-                    const controlPoint = new THREE.Vector3().copy(midPoint)
-                                          .addScaledVector(controlOffsetDirection, curveBowFactor * bowDirection);
-
-                    const curve = new THREE.QuadraticBezierCurve3(sourcePos, controlPoint, targetPos);
-                    const curvePoints = curve.getPoints(20); // Number of segments
+                    const curve = new THREE.QuadraticBezierCurve3(sourcePos, controlPt, targetPos);
+                    const curvePoints = curve.getPoints(20); 
                     const curveGeometry = new THREE.BufferGeometry().setFromPoints(curvePoints);
                     const edge = new THREE.Line(curveGeometry, edgeMaterial);
                     scene.add(edge);
-                    // --- End Curved Edge ---
 
                     if (edgeData.relation) {
-                        const curveMidpoint = curve.getPoint(0.5); // Get point on curve for label
+                        const curveMidpoint = curve.getPoint(0.5); 
                         const relationLabelDiv = document.createElement('div');
                         relationLabelDiv.className = 'node-label edge-relation-label';
                         relationLabelDiv.textContent = edgeData.relation.replace(/_/g, ' ');
@@ -351,6 +353,7 @@
             });
 
             window.addEventListener('resize', onWindowResize, false);
+            controls.update(); // Initial update for controls target
         }
 
         function onWindowResize() {
@@ -364,17 +367,13 @@
             requestAnimationFrame(animate);
             controls.update();
 
-            // Update node label positions if nodes were moving (they are static in this setup after init)
             nodes.forEach((nodeMesh) => {
                 if (nodeMesh.userData.label) {
                     nodeMesh.userData.label.position.copy(nodeMesh.position);
-                    nodeMesh.userData.label.position.y += (1.5 * nodeMesh.scale.y) + 0.8; // baseSphereRadius is 1.5
+                    nodeMesh.userData.label.position.y += (1.5 * nodeMesh.scale.y) + 0.8; 
                 }
             });
             
-            // Edge labels are CSS2DObjects positioned on curves; if nodes don't move, curves don't change.
-            // If nodes were dynamic, edge curves and their labels would need full recalculation.
-
             renderer.render(scene, camera);
             labelRenderer.render(scene, camera);
         }

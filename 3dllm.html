@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Akbar's 3D Knowledge Graph</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { margin: 0; overflow: hidden; font-family: 'Inter', sans-serif; background-color: #1a202c; }
+        canvas { display: block; }
+        #info {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            z-index: 100;
+            font-size: 14px;
+            max-width: 300px;
+        }
+        .node-label {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            color: #333;
+            pointer-events: none;
+            white-space: nowrap;
+            transform: translate(-50%, -50%);
+        }
+    </style>
+</head>
+<body>
+    <div id="info" class="rounded-lg shadow-lg">
+        <h1 class="font-bold text-lg mb-2">Akbar's 3D Knowledge Graph</h1>
+        <p>Use your mouse to interact:</p>
+        <ul class="list-disc list-inside ml-4">
+            <li><strong>Left-click & Drag:</strong> Rotate the graph</li>
+            <li><strong>Right-click & Drag:</strong> Pan the graph</li>
+            <li><strong>Scroll Wheel:</strong> Zoom in/out</li>
+        </ul>
+        <p class="mt-2">Nodes are colored by type.</p>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/renderers/CSS2DRenderer.js"></script>
+
+    <script>
+        const graphData = {
+            "nodes": [
+                { "id": "Akbar", "type": "Person" },
+                { "id": "Legal_Entrepreneurship", "type": "Domain" },
+                { "id": "Legal_Tech", "type": "Domain" },
+                { "id": "Venture_Capital", "type": "Financial_Concept" },
+                { "id": "Legal_Tech_Innovation", "type": "Domain" },
+                { "id": "Human_Rights_Law", "type": "Domain" },
+                { "id": "Sovereign_Wealth_Funds", "type": "Financial_Vehicle" },
+                { "id": "High_Net_Worth_Client_Strategies", "type": "Strategy" },
+                { "id": "Dividend_Staking_Lifestyle", "type": "Lifestyle" },
+                { "id": "Dividends_Income", "type": "Income_Stream" },
+                { "id": "Crypto_Investing", "type": "Financial_Activity" },
+                { "id": "Staking_Rewards", "type": "Income_Stream" },
+                { "id": "Sovereign_Wealth_Strategies", "type": "Strategy" },
+                { "id": "Hedge_Funds", "type": "Financial_Vehicle" },
+                { "id": "Investment_Capital", "type": "Financial_Concept" },
+                { "id": "Global_Strategies", "type": "Strategy" },
+
+                // Added Ideological Bubble
+                { "id": "Legal_Reformation", "type": "Ideology" },
+                { "id": "Adaptability", "type": "Value" },
+                { "id": "Creativity", "type": "Value" },
+                { "id": "Proactiveness", "type": "Value" },
+                { "id": "Progressivism", "type": "Ideology" },
+                { "id": "Unbiased_Politics", "type": "Ideology" },
+                { "id": "Nation's_Best", "type": "Aspirational" },
+                { "id": "World_Government", "type": "Aspirational" },
+                { "id": "Pacifist_Philanthropist", "type": "Ideology" },
+                { "id": "Crab_Mentality", "type": "Challenge" },
+                { "id": "Inferiority_Complex", "type": "Challenge" },
+                { "id": "Equal_Access", "type": "Goal" },
+                { "id": "Global_Citizenship", "type": "Goal" }
+            ],
+            "edges": [
+                { "source": "Akbar", "target": "Legal_Entrepreneurship", "relation": "operates_in" },
+                { "source": "Akbar", "target": "Legal_Tech", "relation": "operates_in" },
+                { "source": "Akbar", "target": "Venture_Capital", "relation": "operates_in" },
+                { "source": "Akbar", "target": "Legal_Tech_Innovation", "relation": "operates_in" },
+                { "source": "Akbar", "target": "Human_Rights_Law", "relation": "has_expertise_in" },
+                { "source": "Akbar", "target": "Dividend_Staking_Lifestyle", "relation": "pursues" },
+                { "source": "Dividend_Staking_Lifestyle", "target": "Dividends_Income", "relation": "is_characterized_by" },
+                { "source": "Dividend_Staking_Lifestyle", "target": "Staking_Rewards", "relation": "is_characterized_by" },
+                { "source": "Akbar", "target": "Crypto_Investing", "relation": "involved_in" },
+                { "source": "Crypto_Investing", "target": "Dividends_Income", "relation": "generates" },
+                { "source": "Crypto_Investing", "target": "Staking_Rewards", "relation": "generates" },
+                { "source": "Akbar", "target": "Sovereign_Wealth_Funds", "relation": "utilizes" },
+                { "source": "Sovereign_Wealth_Funds", "target": "High_Net_Worth_Client_Strategies", "relation": "employs" },
+                { "source": "Sovereign_Wealth_Funds", "target": "Sovereign_Wealth_Strategies", "relation": "employs" },
+                { "source": "Akbar", "target": "High_Net_Worth_Client_Strategies", "relation": "provides_strategies_for" },
+                { "source": "Akbar", "target": "Sovereign_Wealth_Strategies", "relation": "provides_strategies_for" },
+                { "source": "Akbar", "target": "Hedge_Funds", "relation": "invests_through" },
+                { "source": "Akbar", "target": "Investment_Capital", "relation": "manages" },
+                { "source": "Investment_Capital", "target": "Hedge_Funds", "relation": "is_deployed_in" },
+                { "source": "Hedge_Funds", "target": "Global_Strategies", "relation": "utilizes" },
+                { "source": "Sovereign_Wealth_Funds", "target": "Hedge_Funds", "relation": "can_invest_in" },
+                { "source": "Venture_Capital", "target": "Investment_Capital", "relation": "is_a_form_of" },
+                { "source": "Legal_Tech_Innovation", "target": "Venture_Capital", "relation": "attracts" },
+                { "source": "Akbar", "target": "Global_Strategies", "relation": "applies" },
+
+                // New Ideology Edges
+                { "source": "Akbar", "target": "Legal_Reformation", "relation": "believes_in" },
+                { "source": "Akbar", "target": "Adaptability", "relation": "exhibits" },
+                { "source": "Akbar", "target": "Creativity", "relation": "exhibits" },
+                { "source": "Akbar", "target": "Proactiveness", "relation": "exhibits" },
+                { "source": "Akbar", "target": "Progressivism", "relation": "believes_in" },
+                { "source": "Akbar", "target": "Unbiased_Politics", "relation": "influenced_by" },
+                { "source": "Akbar", "target": "Nation's_Best", "relation": "aspires_to_be" },
+                { "source": "Nation's_Best", "target": "World_Government", "relation": "represents_in" },
+                { "source": "Akbar", "target": "Pacifist_Philanthropist", "relation": "identifies_as" },
+                { "source": "Akbar", "target": "Crab_Mentality", "relation": "seeks_to_eradicate" },
+                { "source": "Akbar", "target": "Inferiority_Complex", "relation": "seeks_to_eradicate" },
+                { "source": "Akbar", "target": "Equal_Access", "relation": "advocates_for" },
+                { "source": "Equal_Access", "target": "Global_Citizenship", "relation": "enables" },
+                { "source": "Akbar", "target": "Global_Citizenship", "relation": "supports" }
+            ]
+        };
+
+        const nodeColors = {
+            "Person": 0xFF6347,
+            "Domain": 0x6A5ACD,
+            "Financial_Concept": 0xFFD700,
+            "Financial_Vehicle": 0x32CD32,
+            "Strategy": 0x8A2BE2,
+            "Lifestyle": 0xFF69B4,
+            "Income_Stream": 0x00CED1,
+            "Financial_Activity": 0xFFA500,
+            "Ideology": 0x00BFFF,
+            "Value": 0x7CFC00,
+            "Aspirational": 0xFF8C00,
+            "Challenge": 0xDC143C,
+            "Goal": 0x20B2AA,
+            "default": 0xA9A9A9
+        };
+
+        let scene, camera, renderer, labelRenderer, controls;
+        const nodes = new Map();
+
+        function init() {
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x1a202c);
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.z = 50;
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            document.body.appendChild(renderer.domElement);
+
+            labelRenderer = new THREE.CSS2DRenderer();
+            labelRenderer.setSize(window.innerWidth, window.innerHeight);
+            labelRenderer.domElement.style.position = 'absolute';
+            labelRenderer.domElement.style.top = '0px';
+            document.body.appendChild(labelRenderer.domElement);
+
+            controls = new THREE.OrbitControls(camera, labelRenderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.05;
+            controls.screenSpacePanning = false;
+            controls.minDistance = 10;
+            controls.maxDistance = 100;
+
+            const ambientLight = new THREE.AmbientLight(0xcccccc, 0.6);
+            scene.add(ambientLight);
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            directionalLight.position.set(1, 1, 1).normalize();
+            scene.add(directionalLight);
+
+            const nodeGeometry = new THREE.SphereGeometry(1.5, 32, 32);
+            graphData.nodes.forEach(nodeData => {
+                const nodeType = nodeData.type || 'default';
+                const color = nodeColors[nodeType] || nodeColors['default'];
+                const material = new THREE.MeshLambertMaterial({ color: color });
+                const nodeMesh = new THREE.Mesh(nodeGeometry, material);
+                nodeMesh.position.set(
+                    (Math.random() - 0.5) * 40,
+                    (Math.random() - 0.5) * 40,
+                    (Math.random() - 0.5) * 40
+                );
+                scene.add(nodeMesh);
+                nodes.set(nodeData.id, nodeMesh);
+
+                const labelDiv = document.createElement('div');
+                labelDiv.className = 'node-label';
+                labelDiv.textContent = nodeData.id;
+                const label = new THREE.CSS2DObject(labelDiv);
+                label.position.copy(nodeMesh.position);
+                scene.add(label);
+            });
+
+            graphData.edges.forEach(edgeData => {
+                const sourceNode = nodes.get(edgeData.source);
+                const targetNode = nodes.get(edgeData.target);
+                if (sourceNode && targetNode) {
+                    const points = [sourceNode.position, targetNode.position];
+                    const edgeGeometry = new THREE.BufferGeometry().setFromPoints(points);
+                    const edgeMaterial = new THREE.LineBasicMaterial({ color: 0x888888 });
+                    const edge = new THREE.Line(edgeGeometry, edgeMaterial);
+                    scene.add(edge);
+                }
+            });
+
+            window.addEventListener('resize', onWindowResize, false);
+        }
+
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            labelRenderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            controls.update();
+            renderer.render(scene, camera);
+            labelRenderer.render(scene, camera);
+        }
+
+        window.onload = function() {
+            init();
+            animate();
+        };
+    </script>
+</body>
+</html>

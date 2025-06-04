@@ -18,7 +18,7 @@
             border-radius: 8px;
             z-index: 100;
             font-size: 14px;
-            max-width: 320px;
+            max-width: 350px; /* Slightly wider for potentially longer lists */
             max-height: 95vh;
             overflow-y: auto;
         }
@@ -27,48 +27,47 @@
             background: rgba(255, 255, 255, 0.85);
             padding: 3px 6px;
             border-radius: 4px;
-            font-size: 10px; /* Original size, good for density */
+            font-size: 10px;
             color: #2c3e50;
             pointer-events: none;
             white-space: nowrap;
             transform: translate(-50%, -50%);
             text-align: center;
-            text-shadow: 0px 0px 3px rgba(0,0,0,0.1); /* Subtle shadow for node labels */
+            text-shadow: 0px 0px 3px rgba(0,0,0,0.1);
         }
         .edge-relation-label {
             background: rgba(60, 60, 60, 0.75);
             color: #E8E8E8;
             padding: 2px 5px;
             border-radius: 3px;
-            font-size: 11px; /* Increased from 9px for better readability */
+            font-size: 11px; 
             cursor: pointer;
             pointer-events: auto !important;
-            text-shadow: 0px 0px 4px rgba(0,0,0,0.85); /* Shadow for better contrast */
+            text-shadow: 0px 0px 4px rgba(0,0,0,0.85); 
         }
         #definition-display h2 {
             color: #90cdf4;
         }
-        /* Styling for new Node Inspector Panel */
         #node-inspector-display {
-             border-top: 1px solid #4A5568; /* md:border-gray-600 */
-             margin-top: 0.75rem; /* mt-3 */
-             padding-top: 0.75rem; /* pt-3 */
+             border-top: 1px solid #4A5568; 
+             margin-top: 0.75rem; 
+             padding-top: 0.75rem; 
         }
         #node-inspector-display h2 {
-            font-weight: 600; /* semibold */
-            font-size: 1rem; /* md */
-            margin-bottom: 0.25rem; /* mb-1 */
-            color: #90cdf4; /* Light blue for heading */
+            font-weight: 600; 
+            font-size: 1rem; 
+            margin-bottom: 0.25rem; 
+            color: #90cdf4; 
         }
         #node-inspector-display p, #node-inspector-display ul {
-            font-size: 0.875rem; /* sm */
+            font-size: 0.875rem; 
         }
         #node-inspector-display ul {
             list-style-type: disc;
-            padding-left: 1.5rem; /* ml-6 for Tailwind */
+            padding-left: 1.5rem; 
         }
          #node-inspector-display strong {
-            color: #a0aec0; /* md:text-gray-400 */
+            color: #a0aec0; 
         }
     </style>
 </head>
@@ -81,13 +80,13 @@
             <li><strong>Right-click & Drag:</strong> Pan</li>
             <li><strong>Scroll Wheel:</strong> Zoom</li>
         </ul>
-        <p class="text-sm">Nodes are colored by type. Click node spheres or edge labels for details. Edge colors vary by relation type or specific assignment.</p>
+        <p class="text-sm">Nodes are colored by type (Finance nodes are blue) and positioned directionally. Click elements for details. Edge colors vary.</p>
         
         <div id="node-inspector-display" style="display:none;">
             <h2 id="node-inspector-title">Node Details:</h2>
             <p><strong>ID:</strong> <span id="node-id-text"></span></p>
             <p><strong>Type:</strong> <span id="node-type-text"></span></p>
-            <div id="node-connections-details" style="display:none;">
+            <p><strong>Category:</strong> <span id="node-category-text"></span></p> <div id="node-connections-details" style="display:none;">
                 <p><strong>Direct Connections:</strong></p>
                 <ul id="node-connections-list"></ul>
             </div>
@@ -104,7 +103,7 @@
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/renderers/CSS2DRenderer.js"></script>
 
     <script>
-        const graphData = {
+        const graphData = { // KEEPS YOUR ORIGINAL graphData
             "nodes": [
                 { "id": "Akbar", "type": "Person" },
                 { "id": "Legal_Entrepreneurship", "type": "Domain" },
@@ -147,7 +146,7 @@
                 { "id": "Bureaucratic_Stagnation", "type": "Challenge" },
                 { "id": "MBTI_ENFJ", "type": "Personality_Trait", "displayText": "ENFJ (51%/49%)" }
             ],
-            "edges": [
+            "edges": [ // KEEPS YOUR ORIGINAL graphData.edges
                 { "source": "Akbar", "target": "Legal_Entrepreneurship", "relation": "operates_in", "definition": "Akbar is actively involved in legal entrepreneurship, seeking innovative solutions in the legal field." },
                 { "source": "Akbar", "target": "Legal_Tech", "relation": "operates_in", "definition": "Akbar utilizes and promotes technology within the legal sector." },
                 { "source": "Akbar", "target": "Venture_Capital", "relation": "operates_in" },
@@ -201,6 +200,7 @@
             ]
         };
 
+
         const nodeColors = {
             "Person": 0xFF6347, "Domain": 0x6A5ACD, "Financial_Concept": 0xFFD700,
             "Financial_Vehicle": 0x32CD32, "Strategy": 0x8A2BE2, "Lifestyle": 0xFF69B4,
@@ -212,32 +212,69 @@
         };
 
         let scene, camera, renderer, labelRenderer, controls, raycaster, mouse;
-        const nodes = new Map(); // Stores node mesh by ID
-        const nodeDataMap = new Map(); // Stores node data by ID
+        const nodes = new Map(); 
+        const nodeDataMap = new Map(); 
 
-        // DOM Elements for info panels
         const nodeInspectorDisplay = document.getElementById('node-inspector-display');
         const nodeIdText = document.getElementById('node-id-text');
         const nodeTypeText = document.getElementById('node-type-text');
+        const nodeCategoryText = document.getElementById('node-category-text'); // For category display
         const nodeConnectionsDetails = document.getElementById('node-connections-details');
         const nodeConnectionsList = document.getElementById('node-connections-list');
         
         const edgeDefinitionDisplay = document.getElementById('definition-display');
         const edgeDefinitionText = document.getElementById('definition-text');
 
-        // Function to generate a color from a string (e.g., relation type)
+        const SPREAD_DISTANCE = 75; // Increased from 60 (was 80 originally, then 60, now 75)
+
+        // Function to categorize nodes for positioning and specific coloring
+        function getNodeCategory(node) {
+            const id = node.id;
+            const type = node.type;
+
+            // FINANCE: North (+Y), Blue color
+            const financeTypes = ["Financial_Concept", "Financial_Vehicle", "Income_Stream", "Financial_Activity", "Finance_Value"];
+            const financeIds = ["Dividend_Staking_Lifestyle"]; // Explicitly add IDs if type isn't sufficient
+            if (financeTypes.includes(type) || financeIds.includes(id)) return 'FINANCE';
+
+            // FEELINGS/PSYCHOLOGY: West (-X)
+            // Note: "Value" type is broad, so specific IDs are listed for values that fit "Feelings"
+            // "Challenge" type also needs care, "Bureaucratic_Stagnation" is excluded here.
+            const feelingsIds = ["Adaptability", "Creativity", "Proactiveness", "Crab_Mentality", "Inferiority_Complex", "MBTI_ENFJ"];
+            if (feelingsIds.includes(id) || type === "Personality_Trait" || (type === "Challenge" && !["Bureaucratic_Stagnation"].includes(id))) {
+                return 'FEELINGS';
+            }
+            
+            // HUMAN WELFARE/SOCIETAL: East (+X)
+            const welfareTypes = ["Goal", "Foundation", "Policy", "Aspirational"];
+            const welfareIdeologies = ["Progressivism", "Pacifist_Philanthropist"]; // Specific ideologies for this category
+            const welfareValueIds = ["Financial_Literacy"]; // Specific values for this category
+            // Explicit IDs can be added here too if types/general ideologies are not enough
+            if (welfareTypes.includes(type) || welfareIdeologies.includes(id) || welfareValueIds.includes(id)) return 'WELFARE';
+
+            // LEGAL: South (-Y)
+            const legalDomainIds = ["Legal_Entrepreneurship", "Legal_Tech", "Legal_Tech_Innovation", "Human_Rights_Law"];
+            const legalIdeologyIds = ["Legal_Reformation"];
+             // Check if type is Domain and ID is in the list, or if ID is a specific legal ideology
+            if ((type === "Domain" && legalDomainIds.includes(id)) || legalIdeologyIds.includes(id)) return 'LEGAL';
+
+            if (id === "Akbar") return 'CENTER';
+
+            // Default category for nodes not fitting above, will be spread more centrally
+            return 'OTHER';
+        }
+
+
         function relationToColor(relationString) {
             if (!relationString) relationString = "default";
             let hash = 0;
             for (let i = 0; i < relationString.length; i++) {
                 hash = relationString.charCodeAt(i) + ((hash << 5) - hash);
-                hash = hash & hash; // Keep it a 32bit int
+                hash = hash & hash; 
             }
-            // Generate a color ensuring some brightness and saturation
-            const h = Math.abs(hash) % 360; // Hue (0-359)
-            const s = 60 + (Math.abs(hash >> 8) % 40); // Saturation (60-99%)
-            const l = 50 + (Math.abs(hash >> 16) % 25); // Lightness (50-74%) to avoid very dark or very light
-            
+            const h = Math.abs(hash) % 360; 
+            const s = 60 + (Math.abs(hash >> 8) % 40); 
+            const l = 50 + (Math.abs(hash >> 16) % 25); 
             return new THREE.Color(`hsl(${h}, ${s}%, ${l}%)`).getHex();
         }
 
@@ -246,7 +283,7 @@
             scene = new THREE.Scene();
             scene.background = new THREE.Color(0x1a202c);
             camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-            camera.position.z = 60; 
+            camera.position.z = SPREAD_DISTANCE * 1.5; // Adjust camera based on spread
 
             renderer = new THREE.WebGLRenderer({ antialias: true });
             renderer.setSize(window.innerWidth, window.innerHeight);
@@ -263,7 +300,7 @@
             controls.dampingFactor = 0.05;
             controls.screenSpacePanning = false;
             controls.minDistance = 5;
-            controls.maxDistance = 200; 
+            controls.maxDistance = SPREAD_DISTANCE * 4; 
 
             raycaster = new THREE.Raycaster();
             mouse = new THREE.Vector2();
@@ -277,16 +314,57 @@
             const nodeGeometry = new THREE.SphereGeometry(1.8, 32, 32); 
             graphData.nodes.forEach(nd => {
                 nodeDataMap.set(nd.id, nd); 
-                const nodeType = nd.type || 'default';
-                const color = nodeColors[nodeType] || nodeColors['default'];
-                const material = new THREE.MeshLambertMaterial({ color: color });
+                const category = getNodeCategory(nd);
+                nd.category = category; // Store category in node data for inspector
+
+                let nodeColorVal = nodeColors[nd.type] || nodeColors['default'];
+                if (category === 'FINANCE') {
+                    nodeColorVal = 0x1E90FF; // DodgerBlue for Finance nodes
+                }
+                const material = new THREE.MeshLambertMaterial({ color: nodeColorVal });
                 const nodeMesh = new THREE.Mesh(nodeGeometry, material);
-                nodeMesh.position.set(
-                    (Math.random() - 0.5) * 60, // Reduced spread from 80
-                    (Math.random() - 0.5) * 60,
-                    (Math.random() - 0.5) * 60
-                );
-                nodeMesh.userData = { id: nd.id, type: nd.type, originalData: nd }; 
+                
+                // Positioning based on category
+                let x, y, z;
+                const minorAxisSpread = SPREAD_DISTANCE * 0.35 * (Math.random() - 0.5); // Spread for non-primary axes
+                const primaryAxisBase = SPREAD_DISTANCE * 0.65; // Base distance on primary axis
+                const primaryAxisRandomOffset = SPREAD_DISTANCE * 0.3 * Math.random(); // Randomness along primary axis
+
+                switch (category) {
+                    case 'FINANCE': // North: Positive Y
+                        x = minorAxisSpread;
+                        y = primaryAxisBase + primaryAxisRandomOffset;
+                        z = minorAxisSpread;
+                        break;
+                    case 'FEELINGS': // West: Negative X
+                        x = -(primaryAxisBase + primaryAxisRandomOffset);
+                        y = minorAxisSpread; 
+                        z = minorAxisSpread;
+                        break;
+                    case 'WELFARE': // East: Positive X
+                        x = primaryAxisBase + primaryAxisRandomOffset;
+                        y = minorAxisSpread; 
+                        z = minorAxisSpread;
+                        break;
+                    case 'LEGAL': // South: Negative Y
+                        x = minorAxisSpread;
+                        y = -(primaryAxisBase + primaryAxisRandomOffset);
+                        z = minorAxisSpread;
+                        break;
+                    case 'CENTER':
+                        x = (Math.random() - 0.5) * SPREAD_DISTANCE * 0.1; // Slight jitter around center
+                        y = (Math.random() - 0.5) * SPREAD_DISTANCE * 0.1;
+                        z = (Math.random() - 0.5) * SPREAD_DISTANCE * 0.1;
+                        break;
+                    case 'OTHER':
+                    default: // Central but spread out
+                        x = (Math.random() - 0.5) * SPREAD_DISTANCE * 0.4;
+                        y = (Math.random() - 0.5) * SPREAD_DISTANCE * 0.4;
+                        z = (Math.random() - 0.5) * SPREAD_DISTANCE * 0.4;
+                        break;
+                }
+                nodeMesh.position.set(x, y, z);
+                nodeMesh.userData = { id: nd.id, type: nd.type, originalData: nd, category: category }; 
                 scene.add(nodeMesh);
                 nodes.set(nd.id, nodeMesh);
 
@@ -309,11 +387,11 @@
                     
                     let edgeColorToUse;
                     if (edgeData.color !== undefined) {
-                        edgeColorToUse = edgeData.color; // Use pre-defined color
+                        edgeColorToUse = edgeData.color; 
                     } else if (edgeData.relation) {
-                        edgeColorToUse = relationToColor(edgeData.relation); // Generate color from relation type
+                        edgeColorToUse = relationToColor(edgeData.relation); 
                     } else {
-                        edgeColorToUse = 0xAAAAAA; // Fallback grey
+                        edgeColorToUse = 0xAAAAAA; 
                     }
 
                     const edgeMaterial = new THREE.LineBasicMaterial({ 
@@ -361,8 +439,6 @@
                     }
                 }
             }, false);
-
-
             window.addEventListener('resize', onWindowResize, false);
         }
         
@@ -375,24 +451,23 @@
 
         function onNodeClick(event) {
             event.preventDefault();
-        
             const rect = renderer.domElement.getBoundingClientRect();
             mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
             mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
-        
             raycaster.setFromCamera(mouse, camera);
-        
             const intersects = raycaster.intersectObjects(Array.from(nodes.values())); 
         
             if (intersects.length > 0) {
                 const clickedNodeMesh = intersects[0].object;
                 const nodeData = clickedNodeMesh.userData.originalData;
+                const nodeCategory = clickedNodeMesh.userData.category; // Get category
                 
                 hideEdgeDefinition(); 
 
                 nodeIdText.textContent = (nodeData.displayText || nodeData.id).replace(/_/g, ' ');
                 nodeTypeText.textContent = nodeData.type.replace(/_/g, ' ');
-                
+                nodeCategoryText.textContent = nodeCategory || 'N/A'; // Display category
+
                 nodeConnectionsList.innerHTML = ''; 
                 let hasConnections = false;
                 graphData.edges.forEach(edge => {
@@ -424,14 +499,9 @@
                 } else {
                     nodeConnectionsDetails.style.display = 'none';
                 }
-
                 nodeInspectorDisplay.style.display = 'block';
-
-            } else {
-                // This is handled by the labelRenderer.domElement click listener
             }
         }
-
 
         function onWindowResize() {
             camera.aspect = window.innerWidth / window.innerHeight;
@@ -443,14 +513,12 @@
         function animate() {
             requestAnimationFrame(animate);
             controls.update();
-
             nodes.forEach((nodeMesh) => {
                 if (nodeMesh.userData.label) {
                     nodeMesh.userData.label.position.copy(nodeMesh.position);
                     nodeMesh.userData.label.position.y += 3.0; 
                 }
             });
-            
              scene.children.forEach(child => {
                 if (child.type === 'Line' && child.userData.label && child.userData.originalData) {
                     const edgeData = child.userData.originalData;
@@ -459,14 +527,11 @@
                     if (sourceNodeMesh && targetNodeMesh) {
                         child.geometry.setFromPoints([sourceNodeMesh.position, targetNodeMesh.position]);
                         child.geometry.attributes.position.needsUpdate = true; 
-
                         const midpoint = new THREE.Vector3().addVectors(sourceNodeMesh.position, targetNodeMesh.position).multiplyScalar(0.5);
                         child.userData.label.position.copy(midpoint);
                     }
                 }
             });
-
-
             renderer.render(scene, camera);
             labelRenderer.render(scene, camera);
         }

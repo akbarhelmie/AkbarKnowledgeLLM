@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Akbar's Combined 3D Knowledge Graph</title>
+    <title>Akbar's Advanced 3D Knowledge Graph</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { margin: 0; overflow: hidden; font-family: 'Inter', sans-serif; background-color: #1a202c; }
@@ -12,55 +12,99 @@
             position: absolute;
             top: 10px;
             left: 10px;
-            background: rgba(0, 0, 0, 0.75); /* Slightly more opaque */
+            background: rgba(26, 32, 44, 0.85); /* Tailwind gray-900 with opacity */
             color: white;
-            padding: 10px;
+            padding: 12px;
             border-radius: 8px;
             z-index: 100;
-            font-size: 14px;
-            max-width: 320px; /* Slightly wider */
-            max-height: 95vh; /* Max height */
-            overflow-y: auto; /* Scroll if content overflows */
+            font-size: 13px; /* Slightly smaller base font */
+            max-width: 340px; 
+            max-height: calc(100vh - 20px); /* Max height with padding */
+            overflow-y: auto;
+            border: 1px solid #4A5568; /* Tailwind gray-600 */
         }
-        .node-label { /* Used for both node IDs and edge relations */
+        .info-section {
+            margin-top: 0.75rem; /* mt-3 */
+            padding-top: 0.75rem; /* pt-3 */
+            border-top: 1px solid #4A5568; /* Tailwind gray-600 */
+        }
+        .info-section h2, #filter-section h2 {
+            font-weight: 600; /* semibold */
+            font-size: 0.9rem; /* Smaller heading */
+            margin-bottom: 0.5rem; /* mb-2 */
+            color: #63B3ED; /* Tailwind blue-400 */
+        }
+        .node-label {
             position: absolute;
-            background: rgba(255, 255, 255, 0.85);
-            padding: 3px 6px;
-            border-radius: 4px;
-            font-size: 10px;
-            color: #2c3e50;
-            pointer-events: none; /* Labels themselves don't capture mouse events for graph navigation */
+            background: rgba(237, 242, 247, 0.9); /* Tailwind gray-200 with opacity */
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-size: 9px;
+            color: #1A202C; /* Tailwind gray-900 */
+            pointer-events: none;
             white-space: nowrap;
             transform: translate(-50%, -50%);
             text-align: center;
+            border: 1px solid #A0AEC0; /* Tailwind gray-500 */
         }
-        .edge-relation-label { /* Specific class for edge labels if different styling is needed */
-            background: rgba(60, 60, 60, 0.75);
-            color: #E8E8E8;
-            padding: 2px 5px;
-            font-size: 9px;
-            cursor: pointer; /* Indicate it's clickable */
-            pointer-events: auto !important; /* Allow clicks on edge labels */
+        .edge-relation-label {
+            background: rgba(45, 55, 72, 0.85); /* Tailwind gray-700 with opacity */
+            color: #E2E8F0; /* Tailwind gray-300 */
+            padding: 2px 4px;
+            font-size: 8px;
+            cursor: pointer;
+            pointer-events: auto !important;
+            border: 1px solid #718096; /* Tailwind gray-500 */
         }
-        #definition-display h2 {
-            color: #90cdf4; /* Light blue for heading */
+        #filter-section label {
+            display: block;
+            margin-bottom: 4px;
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+        #filter-section input[type="checkbox"] {
+            margin-right: 6px;
+            accent-color: #63B3ED; /* Tailwind blue-400 */
+        }
+        #node-inspector-display p, #node-inspector-display ul, #definition-text {
+            font-size: 0.8rem; 
+        }
+        #node-inspector-display ul {
+            list-style-type: disc;
+            padding-left: 1.25rem; /* Roughly ml-5 */
+        }
+         #node-inspector-display strong {
+            color: #A0AEC0; /* Tailwind gray-400 */
         }
     </style>
 </head>
 <body>
     <div id="info">
-        <h1 class="font-bold text-lg mb-2">Akbar's Combined 3D Knowledge Graph</h1>
-        <p>Use your mouse to interact:</p>
-        <ul class="list-disc list-inside ml-4 mb-2">
-            <li><strong>Left-click & Drag:</strong> Rotate</li>
-            <li><strong>Right-click & Drag:</strong> Pan</li>
-            <li><strong>Scroll Wheel:</strong> Zoom</li>
-        </ul>
-        <p class="text-sm">Nodes are colored by type. Click edge labels for details.</p>
+        <h1 class="font-bold text-md mb-2">Akbar's Advanced Knowledge Graph</h1>
+        <div class="text-xs mb-3">
+            <p><strong>Interact:</strong> L-Click+Drag (Rotate), R-Click+Drag (Pan), Scroll (Zoom).</p>
+            <p>Click nodes or edge labels for details. Node size indicates connectivity.</p>
+        </div>
         
-        <div id="definition-display" class="mt-3 pt-3 border-t border-gray-600" style="display:none;">
-            <h2 class="font-semibold text-md mb-1">Relationship Details:</h2>
-            <p id="definition-text" class="text-sm"></p>
+        <div id="filter-section">
+            <h2>Filter by Node Type:</h2>
+            <div id="type-filters" class="grid grid-cols-2 gap-x-2"></div>
+        </div>
+
+        <div id="node-inspector-display" class="info-section" style="display:none;">
+            <h2 id="node-inspector-title">Node Details:</h2>
+            <p><strong>ID:</strong> <span id="node-id-text"></span></p>
+            <p><strong>Type:</strong> <span id="node-type-text"></span></p>
+            <p><strong>Connections:</strong> <span id="node-degree-text"></span></p>
+            <div id="node-connections-details" style="display:none;">
+                <p class="mt-1"><strong>Direct Relations:</strong></p>
+                <ul id="node-connections-list" class="max-h-32 overflow-y-auto"></ul>
+            </div>
+        </div>
+
+        <div id="definition-display" class="info-section" style="display:none;">
+            <h2 id="edge-definition-title">Relationship Details:</h2>
+            <p id="definition-text"></p>
         </div>
     </div>
 
@@ -70,13 +114,11 @@
 
     <script>
         const graphData = {
-            "nodes": [
-                // Original Nodes
+            "nodes": [ /* PASTE FULL NODES ARRAY FROM PREVIOUS VERSION HERE */
                 { "id": "Akbar", "type": "Person" },
                 { "id": "Legal_Entrepreneurship", "type": "Domain" },
                 { "id": "Legal_Tech", "type": "Domain" },
                 { "id": "Venture_Capital", "type": "Financial_Concept" },
-                // ... (keeping other original nodes from previous version)
                 { "id": "Legal_Tech_Innovation", "type": "Domain" },
                 { "id": "Human_Rights_Law", "type": "Domain" },
                 { "id": "Sovereign_Wealth_Funds", "type": "Financial_Vehicle" },
@@ -102,8 +144,6 @@
                 { "id": "Inferiority_Complex", "type": "Challenge" },
                 { "id": "Equal_Access", "type": "Goal" },
                 { "id": "Global_Citizenship", "type": "Goal" },
-                
-                // Additional Nodes
                 { "id": "Progressive_Citizenship_Foundation", "type": "Foundation" },
                 { "id": "Financial_Literacy", "type": "Value" },
                 { "id": "Dividend_Staking", "type": "Finance_Value" },
@@ -114,15 +154,11 @@
                 { "id": "Financial_Independence", "type": "Finance_Value" },
                 { "id": "Universal_Prosperity", "type": "Goal" },
                 { "id": "Bureaucratic_Stagnation", "type": "Challenge" },
-
-                // New MBTI Node
                 { "id": "MBTI_ENFJ", "type": "Personality_Trait", "displayText": "ENFJ (51%/49%)" }
             ],
-            "edges": [
-                // Original Edges (add definitions and colors where appropriate)
+            "edges": [ /* PASTE FULL EDGES ARRAY FROM PREVIOUS VERSION HERE */
                 { "source": "Akbar", "target": "Legal_Entrepreneurship", "relation": "operates_in", "definition": "Akbar is actively involved in legal entrepreneurship, seeking innovative solutions in the legal field." },
                 { "source": "Akbar", "target": "Legal_Tech", "relation": "operates_in", "definition": "Akbar utilizes and promotes technology within the legal sector." },
-                // ... (keeping other original edges)
                 { "source": "Akbar", "target": "Venture_Capital", "relation": "operates_in" },
                 { "source": "Akbar", "target": "Legal_Tech_Innovation", "relation": "operates_in" },
                 { "source": "Akbar", "target": "Human_Rights_Law", "relation": "has_expertise_in", "definition": "Akbar possesses specialized knowledge and experience in Human Rights Law." },
@@ -154,17 +190,12 @@
                 { "source": "Akbar", "target": "Nation's_Best", "relation": "aspires_to_be" },
                 { "source": "Nation's_Best", "target": "World_Government", "relation": "represents_in" },
                 { "source": "Akbar", "target": "Pacifist_Philanthropist", "relation": "identifies_as" },
-                
-                // Updated Challenge Edges for Akbar
                 { "source": "Akbar", "target": "Crab_Mentality", "relation": "seeks_to_eradicate", "color": 0xDC143C, "definition": "Akbar actively works against the 'crab mentality,' where individuals try to pull down those who are succeeding." },
                 { "source": "Akbar", "target": "Inferiority_Complex", "relation": "seeks_to_eradicate", "color": 0xDC143C, "definition": "Akbar aims to help overcome and eradicate feelings of inferiority, promoting self-worth and confidence." },
                 { "source": "Akbar", "target": "Bureaucratic_Stagnation", "relation": "despises", "color": 0xDC143C, "definition": "Akbar has a strong aversion to bureaucratic stagnation, viewing it as a significant hindrance to progress and innovation." },
-
                 { "source": "Akbar", "target": "Equal_Access", "relation": "advocates_for" },
                 { "source": "Equal_Access", "target": "Global_Citizenship", "relation": "enables" },
                 { "source": "Akbar", "target": "Global_Citizenship", "relation": "supports" },
-
-                // Additional Edges
                 { "source": "Akbar", "target": "Progressive_Citizenship_Foundation", "relation": "founded", "color": 0x32CD32, "definition": "Akbar founded the Progressive Citizenship Foundation to promote key societal values and goals." },
                 { "source": "Progressive_Citizenship_Foundation", "target": "Financial_Literacy", "relation": "teaches", "color": 0x32CD32 },
                 { "source": "Progressive_Citizenship_Foundation", "target": "Dividend_Staking", "relation": "promotes", "color": 0x32CD32 },
@@ -174,35 +205,101 @@
                 { "source": "Progressive_Citizenship_Foundation", "target": "No_Tax_Policy", "relation": "proposes", "color": 0x32CD32 },
                 { "source": "Progressive_Citizenship_Foundation", "target": "Financial_Independence", "relation": "empowers", "color": 0x32CD32 },
                 { "source": "Financial_Independence", "target": "Universal_Prosperity", "relation": "leads_to", "color": 0x32CD32 },
-
-                // New MBTI Edge
-                { "source": "Akbar", "target": "MBTI_ENFJ", "relation": "is_mbti_type", "color": 0x87CEEB, "definition": "Akbar's Myers-Briggs Type Indicator is ENFJ (Protagonist), with a 51% Extroverted, 49% Introverted tendency, suggesting a nuanced expression of this type." }
+                { "source": "Akbar", "target": "MBTI_ENFJ", "relation": "is_mbti_type", "color": 0x87CEEB, "definition": "Akbar's Myers-Briggs Type Indicator is ENFJ (Protagonist), with a 51% Extroverted, 49% Introverted tendency, suggesting a nuanced expression of this type." },
+                { "source": "Human_Rights_Law", "target": "Global_Citizenship", "relation": "underpins", "color": 0x8FBC8F, "definition": "Human Rights Law provides a foundational framework that supports and is essential for the concept and practice of Global Citizenship." }
             ]
         };
 
-        const nodeColors = {
-            // Original Colors
+        const nodeColors = { /* PASTE FULL nodeColors OBJECT FROM PREVIOUS VERSION HERE */
             "Person": 0xFF6347, "Domain": 0x6A5ACD, "Financial_Concept": 0xFFD700,
             "Financial_Vehicle": 0x32CD32, "Strategy": 0x8A2BE2, "Lifestyle": 0xFF69B4,
             "Income_Stream": 0x00CED1, "Financial_Activity": 0xFFA500, "Ideology": 0x00BFFF,
             "Value": 0x7CFC00, "Aspirational": 0xFF8C00, "Challenge": 0xDC143C,
             "Goal": 0x20B2AA, "default": 0xA9A9A9,
-            // New Type Colors
             "Foundation": 0x4682B4, "Finance_Value": 0xFFD700, "Policy": 0xFFA07A,
-            "Personality_Trait": 0x87CEEB // SkyBlue for MBTI
+            "Personality_Trait": 0x87CEEB
         };
 
-        let scene, camera, renderer, labelRenderer, controls;
-        const nodes = new Map();
+        let scene, camera, renderer, labelRenderer, controls, raycaster, mouse;
+        const nodeMeshes = new Map(); // Stores node mesh by ID
+        const edgeLines = []; // Stores all edge lines and their labels
+        const nodeDataMap = new Map(); // Stores node data by ID, including degree
+        const nodeDegrees = {}; // Stores node degrees { nodeId: degreeCount }
+
+        // Filter state
+        const typeFilterState = {};
+
+        // DOM Elements
+        const typeFiltersContainer = document.getElementById('type-filters');
+        const nodeInspectorDisplay = document.getElementById('node-inspector-display');
+        const nodeIdText = document.getElementById('node-id-text');
+        const nodeTypeText = document.getElementById('node-type-text');
+        const nodeDegreeText = document.getElementById('node-degree-text');
+        const nodeConnectionsDetails = document.getElementById('node-connections-details');
+        const nodeConnectionsList = document.getElementById('node-connections-list');
+        const edgeDefinitionDisplay = document.getElementById('definition-display');
+        const edgeDefinitionText = document.getElementById('definition-text');
+
+        function calculateNodeDegrees() {
+            graphData.nodes.forEach(n => nodeDegrees[n.id] = 0);
+            graphData.edges.forEach(e => {
+                if (nodeDegrees[e.source] !== undefined) nodeDegrees[e.source]++;
+                if (nodeDegrees[e.target] !== undefined) nodeDegrees[e.target]++;
+            });
+        }
         
-        const definitionDisplay = document.getElementById('definition-display');
-        const definitionText = document.getElementById('definition-text');
+        function initFilters() {
+            const uniqueTypes = [...new Set(graphData.nodes.map(n => n.type || 'default'))];
+            uniqueTypes.sort().forEach(type => {
+                typeFilterState[type] = true; // Initially all visible
+                const label = document.createElement('label');
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.checked = true;
+                checkbox.dataset.type = type;
+                checkbox.addEventListener('change', applyFilters);
+                label.appendChild(checkbox);
+                label.appendChild(document.createTextNode(type.replace(/_/g, ' ')));
+                typeFiltersContainer.appendChild(label);
+            });
+        }
+
+        function applyFilters() {
+            // Update filter state from checkboxes
+            typeFiltersContainer.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+                typeFilterState[cb.dataset.type] = cb.checked;
+            });
+
+            // Update node visibility
+            nodeMeshes.forEach((nodeMesh, id) => {
+                const nodeData = nodeDataMap.get(id);
+                const isVisible = typeFilterState[nodeData.type || 'default'];
+                nodeMesh.visible = isVisible;
+                if (nodeMesh.userData.label) nodeMesh.userData.label.visible = isVisible;
+            });
+
+            // Update edge visibility
+            edgeLines.forEach(edgeObj => {
+                const sourceNode = nodeDataMap.get(edgeObj.sourceId);
+                const targetNode = nodeDataMap.get(edgeObj.targetId);
+                const sourceVisible = typeFilterState[sourceNode.type || 'default'];
+                const targetVisible = typeFilterState[targetNode.type || 'default'];
+                const edgeIsVisible = sourceVisible && targetVisible;
+                
+                edgeObj.line.visible = edgeIsVisible;
+                if (edgeObj.label) edgeObj.label.visible = edgeIsVisible;
+            });
+        }
+
 
         function init() {
+            calculateNodeDegrees();
+            initFilters();
+
             scene = new THREE.Scene();
-            scene.background = new THREE.Color(0x1a202c);
-            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-            camera.position.z = 50;
+            scene.background = new THREE.Color(0x1A202C); // Tailwind gray-900
+            camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 1500); // Increased far plane
+            camera.position.z = 70; // Start a bit further out
 
             renderer = new THREE.WebGLRenderer({ antialias: true });
             renderer.setSize(window.innerWidth, window.innerHeight);
@@ -217,127 +314,55 @@
             controls = new THREE.OrbitControls(camera, labelRenderer.domElement);
             controls.enableDamping = true;
             controls.dampingFactor = 0.05;
-            controls.screenSpacePanning = false;
-            controls.minDistance = 5;
-            controls.maxDistance = 150;
+            controls.minDistance = 10; // Allow closer zoom
+            controls.maxDistance = 300; // Allow further zoom out
 
-            const ambientLight = new THREE.AmbientLight(0xcccccc, 0.7);
+            raycaster = new THREE.Raycaster();
+            mouse = new THREE.Vector2();
+
+            const ambientLight = new THREE.AmbientLight(0xE2E8F0, 0.9); // Tailwind gray-300
             scene.add(ambientLight);
-            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.9);
-            directionalLight.position.set(1, 1, 1).normalize();
+            const directionalLight = new THREE.DirectionalLight(0xFFFFFF, 1.2); // Brighter
+            directionalLight.position.set(2, 2, 2).normalize();
             scene.add(directionalLight);
 
-            const nodeGeometry = new THREE.SphereGeometry(1.5, 32, 32);
-            graphData.nodes.forEach(nodeData => {
-                const nodeType = nodeData.type || 'default';
+            const baseNodeRadius = 1.0;
+            const minNodeScale = 0.8;
+            const maxNodeScale = 2.5;
+            const degrees = Object.values(nodeDegrees);
+            const minDegree = Math.min(...degrees, 0); // Ensure minDegree is not Infinity if no nodes/edges
+            const maxDegree = Math.max(...degrees, 1); // Ensure maxDegree is at least 1
+
+            graphData.nodes.forEach(nd => {
+                nodeDataMap.set(nd.id, nd);
+                const nodeType = nd.type || 'default';
                 const color = nodeColors[nodeType] || nodeColors['default'];
                 const material = new THREE.MeshLambertMaterial({ color: color });
+                
+                const degree = nodeDegrees[nd.id] || 0;
+                let scale = minNodeScale;
+                if (maxDegree > minDegree) { // Avoid division by zero if all nodes have same degree
+                    scale = minNodeScale + ((degree - minDegree) / (maxDegree - minDegree)) * (maxNodeScale - minNodeScale);
+                } else if (maxDegree > 0) { // If all nodes have same degree > 0
+                     scale = (minNodeScale + maxNodeScale) / 2;
+                }
+                scale = Math.max(minNodeScale, Math.min(scale, maxNodeScale)); // Clamp scale
+
+
+                const nodeGeometry = new THREE.SphereGeometry(baseNodeRadius, 32, 32);
                 const nodeMesh = new THREE.Mesh(nodeGeometry, material);
+                nodeMesh.scale.set(scale, scale, scale);
+
                 nodeMesh.position.set(
-                    (Math.random() - 0.5) * 70, // Increased spread slightly more
-                    (Math.random() - 0.5) * 70,
-                    (Math.random() - 0.5) * 70
+                    (Math.random() - 0.5) * 100, // Wider initial spread
+                    (Math.random() - 0.5) * 100,
+                    (Math.random() - 0.5) * 100
                 );
+                nodeMesh.userData = { id: nd.id, type: nd.type, originalData: nd, degree: degree, baseScale: scale };
                 scene.add(nodeMesh);
-                nodes.set(nodeData.id, nodeMesh);
+                nodeMeshes.set(nd.id, nodeMesh);
 
                 const labelDiv = document.createElement('div');
                 labelDiv.className = 'node-label';
-                labelDiv.textContent = (nodeData.displayText || nodeData.id).replace(/_/g, ' ');
-                const label = new THREE.CSS2DObject(labelDiv);
-                label.position.copy(nodeMesh.position);
-                label.position.y += 2.5; 
-                scene.add(label);
-                nodeMesh.userData.label = label;
-            });
-
-            graphData.edges.forEach(edgeData => {
-                const sourceNode = nodes.get(edgeData.source);
-                const targetNode = nodes.get(edgeData.target);
-                if (sourceNode && targetNode) {
-                    const points = [sourceNode.position, targetNode.position];
-                    const edgeGeometry = new THREE.BufferGeometry().setFromPoints(points);
-                    
-                    const edgeColor = edgeData.color || 0xAAAAAA; // Use defined color or default
-
-                    const edgeMaterial = new THREE.LineBasicMaterial({ 
-                        color: edgeColor,
-                        transparent: true,
-                        opacity: 0.75 // Slightly more opaque edges
-                    });
-                    const edge = new THREE.Line(edgeGeometry, edgeMaterial);
-                    scene.add(edge);
-
-                    if (edgeData.relation) {
-                        const midpoint = new THREE.Vector3().addVectors(sourceNode.position, targetNode.position).multiplyScalar(0.5);
-                        const relationLabelDiv = document.createElement('div');
-                        relationLabelDiv.className = 'node-label edge-relation-label'; // Added specific class
-                        relationLabelDiv.textContent = edgeData.relation.replace(/_/g, ' ');
-                        
-                        relationLabelDiv.addEventListener('click', () => {
-                            if (edgeData.definition) {
-                                definitionText.innerHTML = edgeData.definition.replace(/\n/g, '<br>'); // Support newlines in definition
-                                definitionDisplay.style.display = 'block';
-                            } else {
-                                definitionText.textContent = 'No specific details available for this relationship.';
-                                definitionDisplay.style.display = 'block';
-                            }
-                        });
-
-                        const relationLabel = new THREE.CSS2DObject(relationLabelDiv);
-                        relationLabel.position.copy(midpoint);
-                        scene.add(relationLabel);
-                        edge.userData.label = relationLabel; 
-                    }
-                }
-            });
-
-            window.addEventListener('resize', onWindowResize, false);
-        }
-
-        function onWindowResize() {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            labelRenderer.setSize(window.innerWidth, window.innerHeight);
-        }
-
-        function animate() {
-            requestAnimationFrame(animate);
-            controls.update();
-
-            nodes.forEach((nodeMesh) => {
-                if (nodeMesh.userData.label) {
-                    nodeMesh.userData.label.position.copy(nodeMesh.position);
-                    nodeMesh.userData.label.position.y += 2.5;
-                }
-            });
-            
-            scene.children.forEach(child => {
-                if (child.type === 'Line' && child.userData.label) {
-                    const sourceNode = nodes.get(graphData.edges.find(e => e.relation === child.userData.label.element.textContent.replace(/ /g, '_'))?.source); // This find is inefficient
-                    const targetNode = nodes.get(graphData.edges.find(e => e.relation === child.userData.label.element.textContent.replace(/ /g, '_'))?.target); // This find is inefficient
-                    
-                    // A better way would be to store source/target IDs on the edge or its label userData
-                    // For simplicity here, we'll assume edge labels don't move dramatically relative to nodes post-init for static graphs
-                    // For dynamic graphs where nodes move, edge label positions need robust recalculation based on their line's new endpoints.
-                    // The current setup creates labels at midpoint at init. If nodes move, lines update, labels need to follow.
-                    // The simplest way to ensure edge labels follow is to re-calculate midpoint based on their associated nodes
-                    // This requires linking edge labels back to their edgeData or node pairs.
-                }
-            });
-
-
-            renderer.render(scene, camera);
-            labelRenderer.render(scene, camera);
-        }
-
-        window.onload = function() {
-            init();
-            animate();
-            // Small fix for OrbitControls with CSS2DRenderer: ensure controls.domElement is the labelRenderer.domElement
-            // This is correctly set in init: controls = new THREE.OrbitControls(camera, labelRenderer.domElement);
-        };
-    </script>
-</body>
-</html>
+                labelDiv.textContent = (nd.displayText || nd.id).replace(/_/g, ' ');
+                const label = new

@@ -41,7 +41,7 @@
             <li><strong>R-Click & Drag:</strong> Pan (pauses auto-rotation while held)</li>
             <li><strong>Scroll Wheel:</strong> Zoom</li>
         </ul>
-        <p class="text-sm">Nodes have orbiting rings & heartbeat. Edges are translucent DNA.</p>
+        <p class="text-sm">Nodes have orbiting rings & heartbeat. Edges are translucent DNA. Graph auto-rotates.</p>
         
         <div id="node-inspector-display" style="display:none;">
             <h2 id="node-inspector-title">Node Details:</h2>
@@ -92,15 +92,15 @@
         let graphGroup; 
         const nodes = new Map(); 
         const nodeDataMap = new Map(); 
-        const edges = []; 
+        const edges = []; // Will store edge wrapper objects (originalData, dna strands, label)
 
         let isHighlightActive = false;
         const HIGHLIGHT_NODE_COLOR = 0xFFD700; const HIGHLIGHT_EDGE_COLOR = 0xFFA500; 
-        const FAINT_OPACITY = 0.07; 
-        const NORMAL_NODE_BASE_OPACITY = 0.60; // Non-Akbar nodes more translucent
+        const FAINT_OPACITY = 0.08; 
+        const NORMAL_NODE_BASE_OPACITY = 0.60; 
         const AKBAR_NODE_OPACITY = 0.75; 
-        const NORMAL_EDGE_OPACITY = 0.25; // DNA Edges (translucent "static electricity")
-        const NODE_RING_OPACITY = 0.30; 
+        const NORMAL_EDGE_OPACITY = 0.25; 
+        const NODE_RING_OPACITY = 0.20; // Made rings more subtle
         const HIGHLIGHT_OPACITY = 0.95;
         
         let autoRotationSpeed = 0.0003 * 3; 
@@ -108,14 +108,17 @@
         let briefInteractionPauseUntil = 0;
         const ROTATION_PAUSE_DURATION = 3000; 
         
-        const DNA_NORMAL_RADIUS = 0.18; const DNA_HIGHLIGHT_RADIUS = 0.38;
-        const DNA_NUM_SEGMENTS = 16; const DNA_NUM_TURNS = 2;
+        const DNA_NORMAL_RADIUS = 0.15; // Thinner DNA
+        const DNA_HIGHLIGHT_RADIUS = 0.35;
+        const DNA_NUM_SEGMENTS = 12; // Further reduced segments for DNA
+        const DNA_NUM_TURNS = 2;
 
-        const NODE_ORBIT_RING_INNER_RADIUS_BASE = 0.6; // Inner radius for RingGeometry
-        const NODE_ORBIT_RING_OUTER_RADIUS_STEP = 0.4; // How much wider each subsequent ring is
-        const NODE_ORBIT_RING_THETA_SEGMENTS = 24;   // Segments for RingGeometry
+        const NODE_ORBIT_RING_INNER_RADIUS_START = 0.4; // How close the first Saturn ring band starts from node edge
+        const NODE_ORBIT_RING_BAND_WIDTH = 0.3;   // Width of each Saturn ring band
+        const NODE_ORBIT_RING_BAND_GAP = 0.15;    // Gap between Saturn ring bands
+        const NODE_ORBIT_RING_THETA_SEGMENTS = 24;
 
-        const NODE_HEARTBEAT_MIN_SCALE = 0.98; // Subtle heartbeat
+        const NODE_HEARTBEAT_MIN_SCALE = 0.98;
         const NODE_HEARTBEAT_MAX_SCALE = 1.02;
         const NODE_HEARTBEAT_SPEED = 0.75; 
         const AKBAR_HEARTBEAT_SPEED_MULTIPLIER = 1.7;
@@ -131,36 +134,21 @@
 
         const SPREAD_DISTANCE = 85; 
 
-        function getNodeCategory(node) { /* ... same as previous (ensure it's the correct one) ... */ }
-        function relationToColor(relationString) { /* ... same as previous ... */ }
-        function clearHighlights() { /* ... will be updated ... */ }
-        function applyEdgeHighlight(clickedEdgeData) { /* ... will be updated ... */ }
-        function updateAllDNAStrands() { /* ... ensure needsUpdate = true ... */ }
-        function updateNodeOrbitingRings() { /* ... new logic for Saturn rings ... */ }
-        function updateNodeHeartbeats(deltaTime) { /* ... new/verified logic ... */ }
-        function onCanvasClick(event) { /* ... use graphDataFull.edges ... */ }
+        function getNodeCategory(node) { /* ... same ... */ }
+        function relationToColor(relationString) { /* ... same ... */ }
+        function clearHighlights() { /* ... updated ... */ }
+        function applyEdgeHighlight(clickedEdgeData) { /* ... updated ... */ }
+        function updateAllDNAStrands() { /* ... verified ... */ }
+        function updateNodeOrbitingRings() { /* ... updated for Saturn rings ... */ }
+        function updateNodeHeartbeats(deltaTime) { /* ... verified ... */ }
+        function onCanvasClick(event) { /* ... same ... */ }
         function hideEdgeDefinition() { /* ... same ... */ }
         function hideNodeInspector() { /* ... same ... */ }
         function onWindowResize() { /* ... same ... */ }
         
         // --- Full function definitions below ---
         function getNodeCategory(node) { 
-            const id = node.id; const type = node.type;
-            if (type === "Responsibility" || type === "FocusArea" || type === "Method") return 'OTHER';
-            const financeTypes = ["Financial_Concept", "Financial_Vehicle", "Income_Stream", "Financial_Activity", "Finance_Value"];
-            const financeIds = ["Dividend_Staking_Lifestyle"]; 
-            if (financeTypes.includes(type) || financeIds.includes(id)) return 'FINANCE';
-            const feelingsIds = ["Adaptability", "Creativity", "Proactiveness", "Crab_Mentality", "Inferiority_Complex", "MBTI_ENFJ"];
-            if (feelingsIds.includes(id) || type === "Personality_Trait" || (type === "Challenge" && !["Bureaucratic_Stagnation"].includes(id))) return 'FEELINGS';
-            const welfareTypes = ["Goal", "Foundation", "Policy", "Aspirational"];
-            const welfareIdeologies = ["Progressivism", "Pacifist_Philanthropist"];
-            const welfareValueIds = ["Financial_Literacy"]; 
-            if (welfareTypes.includes(type) || welfareIdeologies.includes(id) || welfareValueIds.includes(id)) return 'WELFARE';
-            const legalDomainIds = ["Legal_Entrepreneurship", "Legal_Tech", "Legal_Tech_Innovation", "Human_Rights_Law"];
-            const legalIdeologyIds = ["Legal_Reformation"];
-            if ((type === "Domain" && legalDomainIds.includes(id)) || legalIdeologyIds.includes(id)) return 'LEGAL';
-            if (id === "Akbar") return 'CENTER';
-            return 'OTHER';
+            const id = node.id; const type = node.type; if (type === "Responsibility" || type === "FocusArea" || type === "Method") return 'OTHER'; const financeTypes = ["Financial_Concept", "Financial_Vehicle", "Income_Stream", "Financial_Activity", "Finance_Value"]; const financeIds = ["Dividend_Staking_Lifestyle"]; if (financeTypes.includes(type) || financeIds.includes(id)) return 'FINANCE'; const feelingsIds = ["Adaptability", "Creativity", "Proactiveness", "Crab_Mentality", "Inferiority_Complex", "MBTI_ENFJ"]; if (feelingsIds.includes(id) || type === "Personality_Trait" || (type === "Challenge" && !["Bureaucratic_Stagnation"].includes(id))) return 'FEELINGS'; const welfareTypes = ["Goal", "Foundation", "Policy", "Aspirational"]; const welfareIdeologies = ["Progressivism", "Pacifist_Philanthropist"]; const welfareValueIds = ["Financial_Literacy"]; if (welfareTypes.includes(type) || welfareIdeologies.includes(id) || welfareValueIds.includes(id)) return 'WELFARE'; const legalDomainIds = ["Legal_Entrepreneurship", "Legal_Tech", "Legal_Tech_Innovation", "Human_Rights_Law"]; const legalIdeologyIds = ["Legal_Reformation"]; if ((type === "Domain" && legalDomainIds.includes(id)) || legalIdeologyIds.includes(id)) return 'LEGAL'; if (id === "Akbar") return 'CENTER'; return 'OTHER';
         }
         function relationToColor(relationString) { 
             if (!relationString) relationString = "default"; let hash = 0; for (let i = 0; i < relationString.length; i++) { hash = relationString.charCodeAt(i) + ((hash << 5) - hash); hash = hash & hash; } const h = Math.abs(hash) % 360; const s = 70 + (Math.abs(hash >> 8) % 30); const l = 55 + (Math.abs(hash >> 16) % 20); return new THREE.Color(`hsl(${h}, ${s}%, ${l}%)`).getHex();
@@ -192,10 +180,10 @@
             directionalLight.position.set(SPREAD_DISTANCE, SPREAD_DISTANCE, SPREAD_DISTANCE); graphGroup.add(directionalLight);
             console.log("INIT: Basic scene setup complete.");
 
-            const nodeGeometry = new THREE.SphereGeometry(1.8, 24, 18);
+            const nodeBaseGeometry = new THREE.SphereGeometry(1.8, 24, 18);
             
             if (!graphDataFull || !graphDataFull.nodes || !Array.isArray(graphDataFull.nodes)) { 
-                console.error("INIT ERROR: graphDataFull.nodes is not a valid array!"); 
+                console.error("INIT ERROR: graphDataFull.nodes is not a valid array! Graph will be empty."); 
                 const errDiv = document.createElement('div'); errDiv.style.cssText = 'position:fixed;top:0;left:0;width:100%;padding:20px;background-color:red;color:white;z-index:2000;font-family:monospace;'; errDiv.innerText = 'CRITICAL ERROR: graphDataFull.nodes is missing or invalid. Cannot initialize.'; document.body.appendChild(errDiv);
                 return; 
             } 
@@ -210,7 +198,7 @@
                 
                 let material;
                 if (nd.id === "Akbar") {
-                    nodeColorVal = 0x5F9EA0; nd.originalColor = nodeColorVal; // Cadet Blue
+                    nodeColorVal = 0x5F9EA0; nd.originalColor = nodeColorVal;
                     material = new THREE.MeshStandardMaterial({
                         color: nodeColorVal, emissive: nodeColorVal, emissiveIntensity: 0.35, metalness: 0.1, roughness: 0.7,
                         transparent: true, opacity: materialOpacity 
@@ -220,35 +208,44 @@
                     material = new THREE.MeshLambertMaterial({ color: nodeColorVal, transparent: true, opacity: materialOpacity });
                 }
                 
-                const nodeMesh = new THREE.Mesh(nodeGeometry, material);
-                let x, y, z; 
+                const nodeMesh = new THREE.Mesh(nodeBaseGeometry, material);
                 // Node positioning logic (same as previous)
-                if (category === 'CENTER') { x = (Math.random() - 0.5) * SPREAD_DISTANCE * 0.005; y = (Math.random() - 0.5) * SPREAD_DISTANCE * 0.005; z = (Math.random() - 0.5) * SPREAD_DISTANCE * 0.005;} else if (category === 'OTHER') { const otherMaxRadius = SPREAD_DISTANCE * 0.65; let ox, oy, oz, magSq; do { ox = (Math.random() - 0.5) * 2; oy = (Math.random() - 0.5) * 2; oz = (Math.random() - 0.5) * 2; magSq = ox*ox + oy*oy + oz*oz; } while (magSq === 0 || magSq > 1); const rFactor = 0.5 + Math.cbrt(Math.random()) * 0.5; const currentOtherRadius = otherMaxRadius * rFactor; const mag = Math.sqrt(magSq); x = (ox / mag) * currentOtherRadius; y = (oy / mag) * currentOtherRadius; z = (oz / mag) * currentOtherRadius; } else { const shellTargetRadius = SPREAD_DISTANCE * (0.95 + Math.random() * 0.25); const cloudCenterOffset = SPREAD_DISTANCE * (0.7 + Math.random() * 0.3); const cloudSphereMaxRadius = SPREAD_DISTANCE * 0.40; let lox, loy, loz, lMagSq; do { lox = (Math.random() - 0.5) * 2; loy = (Math.random() - 0.5) * 2; loz = (Math.random() - 0.5) * 2; lMagSq = lox*lox + loy*loy + loz*loz; } while (lMagSq === 0 || lMagSq > 1); const lRadiusFactor = 0.3 + Math.cbrt(Math.random()) * 0.7;  const currentLocalCloudRadius = cloudSphereMaxRadius * lRadiusFactor; const lMag = Math.sqrt(lMagSq); const localX = (lox / lMag) * currentLocalCloudRadius; const localY = (loy / lMag) * currentLocalCloudRadius; const localZ = (loz / lMag) * currentLocalCloudRadius; x = localX; y = localY; z = localZ; switch (category) { case 'FINANCE':  y += cloudCenterOffset; break; case 'FEELINGS': x -= cloudCenterOffset; break; case 'WELFARE':  x += cloudCenterOffset; break; case 'LEGAL':    y -= cloudCenterOffset; break; } let currentDist = Math.sqrt(x*x + y*y + z*z); if (currentDist === 0) currentDist = 1; x = (x / currentDist) * shellTargetRadius; y = (y / currentDist) * shellTargetRadius; z = (z / currentDist) * shellTargetRadius;}
+                let x, y, z; if (category === 'CENTER') { x = (Math.random() - 0.5) * SPREAD_DISTANCE * 0.005; y = (Math.random() - 0.5) * SPREAD_DISTANCE * 0.005; z = (Math.random() - 0.5) * SPREAD_DISTANCE * 0.005;} else if (category === 'OTHER') { const otherMaxRadius = SPREAD_DISTANCE * 0.65; let ox, oy, oz, magSq; do { ox = (Math.random() - 0.5) * 2; oy = (Math.random() - 0.5) * 2; oz = (Math.random() - 0.5) * 2; magSq = ox*ox + oy*oy + oz*oz; } while (magSq === 0 || magSq > 1); const rFactor = 0.5 + Math.cbrt(Math.random()) * 0.5; const currentOtherRadius = otherMaxRadius * rFactor; const mag = Math.sqrt(magSq); x = (ox / mag) * currentOtherRadius; y = (oy / mag) * currentOtherRadius; z = (oz / mag) * currentOtherRadius; } else { const shellTargetRadius = SPREAD_DISTANCE * (0.95 + Math.random() * 0.25); const cloudCenterOffset = SPREAD_DISTANCE * (0.7 + Math.random() * 0.3); const cloudSphereMaxRadius = SPREAD_DISTANCE * 0.40; let lox, loy, loz, lMagSq; do { lox = (Math.random() - 0.5) * 2; loy = (Math.random() - 0.5) * 2; loz = (Math.random() - 0.5) * 2; lMagSq = lox*lox + loy*loy + loz*loz; } while (lMagSq === 0 || lMagSq > 1); const lRadiusFactor = 0.3 + Math.cbrt(Math.random()) * 0.7;  const currentLocalCloudRadius = cloudSphereMaxRadius * lRadiusFactor; const lMag = Math.sqrt(lMagSq); const localX = (lox / lMag) * currentLocalCloudRadius; const localY = (loy / lMag) * currentLocalCloudRadius; const localZ = (loz / lMag) * currentLocalCloudRadius; x = localX; y = localY; z = localZ; switch (category) { case 'FINANCE':  y += cloudCenterOffset; break; case 'FEELINGS': x -= cloudCenterOffset; break; case 'WELFARE':  x += cloudCenterOffset; break; case 'LEGAL':    y -= cloudCenterOffset; break; } let currentDist = Math.sqrt(x*x + y*y + z*z); if (currentDist === 0) currentDist = 1; x = (x / currentDist) * shellTargetRadius; y = (y / currentDist) * shellTargetRadius; z = (z / currentDist) * shellTargetRadius;}
+
 
                 nodeMesh.position.set(x, y, z);
-                nodeMesh.userData = { id: nd.id, type: nd.type, originalData: nd, category: category, orbitingRings: [], heartbeatPhase: Math.random() * Math.PI * 2, baseScale: new THREE.Vector3(1,1,1) }; // Store baseScale Vector3
+                nodeMesh.userData = { 
+                    id: nd.id, type: nd.type, originalData: nd, category: category, 
+                    orbitingRings: [], 
+                    heartbeatPhase: Math.random() * Math.PI * 2,
+                    baseScaleVec: new THREE.Vector3(1,1,1) // For heartbeat
+                }; 
                 graphGroup.add(nodeMesh); nodes.set(nd.id, nodeMesh);
 
                 // Create Saturn-like Orbiting Rings for Node
-                const numRelations = (graphDataFull.edges || []).filter(e => e.source === nd.id || e.target === nd.id).length;
+                const nodeSphereRadius = nodeMesh.geometry.parameters.radius;
+                const numConnections = (graphDataFull.edges || []).filter(e => e.source === nd.id || e.target === nd.id).length;
                 let numOrbitingRings = 0;
                 if (nd.id === "Akbar") { numOrbitingRings = 5; } 
-                else { numOrbitingRings = Math.max(1, Math.min(4, 1 + Math.floor(numRelations / 2))); }
+                else { numOrbitingRings = Math.max(1, Math.min(4, 1 + Math.floor(numConnections / 2))); }
 
                 for (let i = 0; i < numOrbitingRings; i++) {
-                    const innerR = nodeMesh.geometry.parameters.radius + 0.3 + i * (NODE_ORBIT_RING_HOOP_RADIUS_BASE * 0.4);
-                    const outerR = innerR + NODE_ORBIT_RING_HOOP_RADIUS_BASE * (0.25 + i * 0.1); // Rings get wider
+                    const ringInner = nodeSphereRadius + NODE_ORBIT_RING_INNER_RADIUS_START + i * (NODE_ORBIT_RING_BAND_WIDTH + NODE_ORBIT_RING_BAND_GAP);
+                    const ringOuter = ringInner + NODE_ORBIT_RING_BAND_WIDTH;
                     
                     const ringGeo = new THREE.RingGeometry(innerR, outerR, NODE_ORBIT_RING_THETA_SEGMENTS, 1); 
-                    const ringMat = new THREE.MeshBasicMaterial({ color: 0xADD8E6, transparent: true, opacity: NODE_RING_OPACITY - (i*0.03), side: THREE.DoubleSide });
-                    const ring = new THREE.Mesh(ringGeo, ringMat);
-                    
-                    ring.rotation.x = Math.PI / 2; // Orient to be flat in node's local XZ plane
-                    nodeMesh.add(ring); 
+                    const ringMat = new THREE.MeshBasicMaterial({ 
+                        color: 0xADD8E6, // Light Blue
+                        transparent: true, 
+                        opacity: NODE_RING_OPACITY - (i*0.04), // Rings further out slightly more transparent
+                        side: THREE.DoubleSide 
+                    });
+                    const ringMesh = new THREE.Mesh(ringGeo, ringMat);
+                    ringMesh.rotation.x = Math.PI / 2; // Orient to be flat in node's local XZ plane
+                    nodeMesh.add(ringMesh); 
                     nodeMesh.userData.orbitingRings.push({ 
-                        mesh: ring, 
-                        // distance and angle are not strictly needed if rings just spin with parent node's Y-axis
-                        speed: (0.01 + Math.random() * 0.012) * (i % 2 === 0 ? 1 : -1.05) // clockwise/counter-clockwise for visual interest
+                        mesh: ringMesh, 
+                        speed: (0.008 + Math.random() * 0.008) // All clockwise
                     });
                 }
                 
@@ -260,7 +257,53 @@
 
             if (!graphDataFull || !graphDataFull.edges || !Array.isArray(graphDataFull.edges)) { console.error("INIT ERROR: graphDataFull.edges is not valid for edge processing!"); return; }
             
-            graphDataFull.edges.forEach(edgeData => { /* ... (DNA edge creation - same as previous) ... */ });
+            graphDataFull.edges.forEach(edgeData => {
+                const sourceNodeMesh = nodes.get(edgeData.source); const targetNodeMesh = nodes.get(edgeData.target);
+                if (sourceNodeMesh && targetNodeMesh) {
+                    let edgeColorToUse;
+                    if (edgeData.color !== undefined) { edgeColorToUse = edgeData.color; } 
+                    else if (edgeData.relation) { edgeColorToUse = relationToColor(edgeData.relation); } 
+                    else { edgeColorToUse = 0xAAAAAA; }
+                    edgeData.originalColor = edgeColorToUse; 
+
+                    const p1 = sourceNodeMesh.position.clone(); const p2 = targetNodeMesh.position.clone();
+                    const points1 = []; const points2 = [];
+                    for (let i = 0; i <= DNA_NUM_SEGMENTS; i++) { points1.push(new THREE.Vector3()); points2.push(new THREE.Vector3()); }
+                    const dnaGeometry1 = new THREE.BufferGeometry().setFromPoints(points1);
+                    const dnaGeometry2 = new THREE.BufferGeometry().setFromPoints(points2);
+                    const strandColor1 = new THREE.Color(edgeColorToUse).offsetHSL(0, 0.1, 0.05).getHex();
+                    const strandColor2 = new THREE.Color(edgeColorToUse).offsetHSL(0, -0.05, -0.05).getHex();
+                    const dnaMaterial1 = new THREE.LineBasicMaterial({ color: strandColor1, transparent: true, opacity: NORMAL_EDGE_OPACITY });
+                    const dnaMaterial2 = new THREE.LineBasicMaterial({ color: strandColor2, transparent: true, opacity: NORMAL_EDGE_OPACITY });
+                    const strand1 = new THREE.Line(dnaGeometry1, dnaMaterial1); const strand2 = new THREE.Line(dnaGeometry2, dnaMaterial2);
+                    graphGroup.add(strand1); graphGroup.add(strand2);
+
+                    const edgeWrapper = { 
+                        id: `${edgeData.source}_${edgeData.target}_${edgeData.relation}`,
+                        originalData: edgeData,
+                        dna: { strand1, strand2, phase: Math.random() * Math.PI * 2, currentRadius: DNA_NORMAL_RADIUS, normalRadius: DNA_NORMAL_RADIUS, highlightRadius: DNA_HIGHLIGHT_RADIUS, numTurns: DNA_NUM_TURNS, numSegments: DNA_NUM_SEGMENTS, originalColor1: strandColor1, originalColor2: strandColor2 },
+                        label: null 
+                    };
+                    edges.push(edgeWrapper); 
+                    
+                    if (edgeData.relation) {
+                        const midpoint = new THREE.Vector3().addVectors(p1, p2).multiplyScalar(0.5);
+                        const relationLabelDiv = document.createElement('div');
+                        relationLabelDiv.className = 'node-label edge-relation-label';
+                        relationLabelDiv.textContent = edgeData.relation.replace(/_/g, ' ');
+                        relationLabelDiv.addEventListener('click', (event) => {
+                            event.stopPropagation(); clearHighlights(); applyEdgeHighlight(edgeData);
+                            briefInteractionPauseUntil = Date.now() + ROTATION_PAUSE_DURATION;
+                            hideNodeInspector(); 
+                            if (edgeData.definition) { edgeDefinitionText.innerHTML = edgeData.definition.replace(/\n/g, '<br>'); edgeDefinitionDisplay.style.display = 'block'; } 
+                            else { edgeDefinitionText.textContent = 'No specific details for this relationship.'; edgeDefinitionDisplay.style.display = 'block'; }
+                        });
+                        const relationLabel = new THREE.CSS2DObject(relationLabelDiv);
+                        relationLabel.position.copy(midpoint); graphGroup.add(relationLabel); 
+                        edgeWrapper.label = relationLabel;
+                    }
+                } else { console.warn("INIT: Could not find source/target node for edge: ", edgeData); }
+            });
             console.log("INIT: Edges (DNA strands) created: " + edges.length);
 
             renderer.domElement.addEventListener('click', onCanvasClick, false); 
@@ -269,15 +312,6 @@
             console.log("INIT: Finished successfully.");
         }
         
-        function clearHighlights() { /* ... includes node opacity and ring opacity reset ... */ }
-        function applyEdgeHighlight(clickedEdgeData) { /* ... includes node opacity and ring opacity changes ... */ }
-        function updateAllDNAStrands() { /* ... ensure needsUpdate = true ... */ }
-        function updateNodeOrbitingRings() { /* ... updated for Saturn rings that spin with node ... */ }
-        function updateNodeHeartbeats(deltaTime) { /* ... updated ... */ }
-        function onCanvasClick(event) { /* ... uses graphDataFull.edges ... */ }
-        // ... (rest of the functions: hideEdgeDefinition, hideNodeInspector, onWindowResize, animate, window.onload)
-
-        // --- Full function definitions from previous working state + new changes ---
         function clearHighlights() { 
             if (!isHighlightActive) return; isHighlightActive = false;
             nodes.forEach(nodeMesh => {
@@ -335,13 +369,22 @@
                 dna.strand1.material.needsUpdate = true; dna.strand2.material.needsUpdate = true;
             });
         }
+        
         function updateAllDNAStrands() {
+            if (!edges || edges.length === 0) return;
             edges.forEach(edgeWrapper => {
-                const dna = edgeWrapper.dna; const sourceNode = nodes.get(edgeWrapper.originalData.source); const targetNode = nodes.get(edgeWrapper.originalData.target);
-                if (!sourceNode || !targetNode) { if(dna.strand1) dna.strand1.visible = false; if(dna.strand2) dna.strand2.visible = false; return; }
+                if (!edgeWrapper || !edgeWrapper.dna || !edgeWrapper.originalData) { console.warn("updateAllDNAStrands: Invalid edgeWrapper", edgeWrapper); return; }
+                const dna = edgeWrapper.dna; 
+                const sourceNode = nodes.get(edgeWrapper.originalData.source); 
+                const targetNode = nodes.get(edgeWrapper.originalData.target);
+                if (!sourceNode || !targetNode) { 
+                    if(dna.strand1) dna.strand1.visible = false; if(dna.strand2) dna.strand2.visible = false; 
+                    return; 
+                }
                 const p1 = sourceNode.position; const p2 = targetNode.position; dna.phase += 0.035; 
                 const points1 = []; const points2 = []; const direction = new THREE.Vector3().subVectors(p2, p1); const edgeLength = direction.length();
-                if (edgeLength < 0.01) { dna.strand1.visible = false; dna.strand2.visible = false; return; } else { dna.strand1.visible = true; dna.strand2.visible = true; }
+                if (edgeLength < 0.01) { dna.strand1.visible = false; dna.strand2.visible = false; return; } 
+                else { dna.strand1.visible = true; dna.strand2.visible = true; }
                 direction.normalize(); let up = new THREE.Vector3(0, 1, 0); if (Math.abs(direction.y) > 0.99) { up.set(1, 0, 0); } 
                 const ortho1 = new THREE.Vector3().crossVectors(direction, up).normalize(); const ortho2 = new THREE.Vector3().crossVectors(direction, ortho1).normalize();
                 for (let i = 0; i <= dna.numSegments; i++) {
@@ -358,7 +401,7 @@
             nodes.forEach(nodeMesh => {
                 if (nodeMesh.userData.orbitingRings && nodeMesh.userData.orbitingRings.length > 0) {
                     nodeMesh.userData.orbitingRings.forEach(ringData => {
-                        ringData.mesh.rotation.y += ringData.speed; // Spin the flat ring around its local Y (which is node's Y)
+                        ringData.mesh.rotation.y += ringData.speed; // Spin the flat ring around its local Y (which is node's Y axis because ring.rotation.x = PI/2)
                     });
                 }
             });
@@ -366,15 +409,15 @@
         function updateNodeHeartbeats(deltaTime) {
             nodes.forEach(nodeMesh => {
                 const userData = nodeMesh.userData;
-                if (!userData || typeof userData.heartbeatPhase === 'undefined' || !userData.baseScale) return; 
+                if (!userData || typeof userData.heartbeatPhase === 'undefined' || !userData.baseScaleVec) return; 
 
-                const speed = (userData.id === "Akbar") ? NODE_HEARTBEAT_SPEED * AKBAR_HEARTBEAT_SPEED_MULTIPLIER : NODE_HEARTBEAT_SPEED;
+                const speed = (userData.originalData.id === "Akbar") ? NODE_HEARTBEAT_SPEED * AKBAR_HEARTBEAT_SPEED_MULTIPLIER : NODE_HEARTBEAT_SPEED;
                 userData.heartbeatPhase += speed * deltaTime;
                 if (userData.heartbeatPhase > Math.PI * 2) userData.heartbeatPhase -= Math.PI * 2;
                 
                 const scaleRange = NODE_HEARTBEAT_MAX_SCALE - NODE_HEARTBEAT_MIN_SCALE;
                 const scaleFactor = NODE_HEARTBEAT_MIN_SCALE + (Math.sin(userData.heartbeatPhase) * 0.5 + 0.5) * scaleRange;
-                nodeMesh.scale.set(userData.baseScale.x * scaleFactor, userData.baseScale.y * scaleFactor, userData.baseScale.z * scaleFactor);
+                nodeMesh.scale.set(userData.baseScaleVec.x * scaleFactor, userData.baseScaleVec.y * scaleFactor, userData.baseScaleVec.z * scaleFactor);
             });
         }
         function onCanvasClick(event) { 
@@ -392,8 +435,8 @@
         let lastFrameTime = 0;
         function animate(currentTime) { 
             requestAnimationFrame(animate); 
-            if (!lastFrameTime && currentTime) { lastFrameTime = currentTime; } 
-            const deltaTime = (currentTime - lastFrameTime) * 0.001 || 0.0166; // Default to ~60 FPS if first frame delta is 0
+            if (!lastFrameTime && currentTime > 0) { lastFrameTime = currentTime; } // Initialize on first valid currentTime
+            const deltaTime = (currentTime - lastFrameTime) * 0.001 || 0.0166; 
             lastFrameTime = currentTime;
 
             let canAutoRotate = true;

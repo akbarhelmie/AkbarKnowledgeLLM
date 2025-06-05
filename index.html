@@ -10,7 +10,7 @@
         canvas { display: block; }
         #info {
             position: absolute; top: 10px; left: 10px; background: rgba(0, 0, 0, 0.8);
-            color: white; padding: 10px; padding-top: 30px; 
+            color: white; padding: 10px; padding-top: 30px; /* More space for close button */
             border-radius: 8px; z-index: 100; font-size: 14px;
             max-width: 360px; max-height: 95vh; overflow-y: auto;
         }
@@ -21,7 +21,7 @@
         }
         #close-info-btn:hover { color: #fff; }
         .node-label {
-            position: absolute; background: rgba(255, 255, 255, 0.60); /* More transparent */
+            position: absolute; background: rgba(255, 255, 255, 0.6); /* Increased transparency */
             padding: 2px 5px; border-radius: 3px; font-size: 9px; color: #10141b; 
             pointer-events: none; white-space: nowrap; transform: translate(-50%, -50%); 
             text-align: center; text-shadow: 0px 0px 1px rgba(255,255,255,0.6);
@@ -101,7 +101,7 @@
         let graphGroup; 
         const nodes = new Map(); 
         const nodeDataMap = new Map(); 
-        const edges = []; // Stores edge wrapper objects { originalData, dna {strand1, strand2, ...}, label }
+        const edges = []; 
 
         let isHighlightActive = false;
         const HIGHLIGHT_NODE_COLOR = 0xFFD700; const HIGHLIGHT_EDGE_COLOR = 0xFFA500; 
@@ -140,7 +140,7 @@
         const NODE_BLINK_INTERVAL = 200; 
         const NODE_BLINK_MAX_BLINKS = 3;
 
-        // DOM Elements
+        // DOM Elements (will be fetched in init)
         let nodeInspectorDisplay, nodeIdText, nodeTypeText, nodeCategoryText, 
             nodeConnectionsDetails, nodeConnectionsList, 
             edgeDefinitionDisplay, edgeDefinitionText, closeInfoBtn, infoPanel;
@@ -148,6 +148,14 @@
         const SPREAD_DISTANCE = 85; 
 
         // --- Helper Functions (Defined BEFORE init) ---
+        function onWindowResize() { 
+            if (camera && renderer && labelRenderer) {
+                camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); 
+                renderer.setSize(window.innerWidth, window.innerHeight); labelRenderer.setSize(window.innerWidth, window.innerHeight); 
+            }
+        }
+        function hideEdgeDefinition() { if(edgeDefinitionDisplay) edgeDefinitionDisplay.style.display = 'none'; }
+        function hideNodeInspector() { if(nodeInspectorDisplay) nodeInspectorDisplay.style.display = 'none'; }
         function getNodeCategory(node) { 
             const id = node.id; const type = node.type;
             if (type === "Responsibility" || type === "FocusArea" || type === "Method") return 'OTHER';
@@ -168,14 +176,6 @@
         }
         function relationToColor(relationString) { 
             if (!relationString) relationString = "default"; let hash = 0; for (let i = 0; i < relationString.length; i++) { hash = relationString.charCodeAt(i) + ((hash << 5) - hash); hash = hash & hash; } const h = Math.abs(hash) % 360; const s = 70 + (Math.abs(hash >> 8) % 30); const l = 55 + (Math.abs(hash >> 16) % 20); return new THREE.Color(`hsl(${h}, ${s}%, ${l}%)`).getHex();
-        }
-        function hideEdgeDefinition() { if(edgeDefinitionDisplay) edgeDefinitionDisplay.style.display = 'none'; }
-        function hideNodeInspector() { if(nodeInspectorDisplay) nodeInspectorDisplay.style.display = 'none'; }
-        function onWindowResize() { 
-            if (camera && renderer && labelRenderer) {
-                camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); 
-                renderer.setSize(window.innerWidth, window.innerHeight); labelRenderer.setSize(window.innerWidth, window.innerHeight); 
-            }
         }
 
         function init() {
@@ -256,8 +256,8 @@
                     }
                     
                     const nodeMesh = new THREE.Mesh(nodeGeometry, material);
-                    let x, y, z; 
-                    if (category === 'CENTER') { x = (Math.random() - 0.5) * SPREAD_DISTANCE * 0.005; y = (Math.random() - 0.5) * SPREAD_DISTANCE * 0.005; z = (Math.random() - 0.5) * SPREAD_DISTANCE * 0.005;} else if (category === 'OTHER') { const otherMaxRadius = SPREAD_DISTANCE * 0.65; let ox, oy, oz, magSq; do { ox = (Math.random() - 0.5) * 2; oy = (Math.random() - 0.5) * 2; oz = (Math.random() - 0.5) * 2; magSq = ox*ox + oy*oy + oz*oz; } while (magSq === 0 || magSq > 1); const rFactor = 0.5 + Math.cbrt(Math.random()) * 0.5; const currentOtherRadius = otherMaxRadius * rFactor; const mag = Math.sqrt(magSq); x = (ox / mag) * currentOtherRadius; y = (oy / mag) * currentOtherRadius; z = (oz / mag) * currentOtherRadius; } else { const shellTargetRadius = SPREAD_DISTANCE * (0.95 + Math.random() * 0.25); const cloudCenterOffset = SPREAD_DISTANCE * (0.7 + Math.random() * 0.3); const cloudSphereMaxRadius = SPREAD_DISTANCE * 0.40; let lox, loy, loz, lMagSq; do { lox = (Math.random() - 0.5) * 2; loy = (Math.random() - 0.5) * 2; loz = (Math.random() - 0.5) * 2; lMagSq = lox*lox + loy*loy + loz*loz; } while (lMagSq === 0 || lMagSq > 1); const lRadiusFactor = 0.3 + Math.cbrt(Math.random()) * 0.7;  const currentLocalCloudRadius = cloudSphereMaxRadius * lRadiusFactor; const lMag = Math.sqrt(lMagSq); const localX = (lox / lMag) * currentLocalCloudRadius; const localY = (loy / lMag) * currentLocalCloudRadius; const localZ = (loz / lMag) * currentLocalCloudRadius; x = localX; y = localY; z = localZ; switch (category) { case 'FINANCE':  y += cloudCenterOffset; break; case 'FEELINGS': x -= cloudCenterOffset; break; case 'WELFARE':  x += cloudCenterOffset; break; case 'LEGAL':    y -= cloudCenterOffset; break; } let currentDist = Math.sqrt(x*x + y*y + z*z); if (currentDist === 0) currentDist = 1; x = (x / currentDist) * shellTargetRadius; y = (y / currentDist) * shellTargetRadius; z = (z / currentDist) * shellTargetRadius;}
+                    // Node positioning logic (same as previous)
+                    let x, y, z; if (category === 'CENTER') { x = (Math.random() - 0.5) * SPREAD_DISTANCE * 0.005; y = (Math.random() - 0.5) * SPREAD_DISTANCE * 0.005; z = (Math.random() - 0.5) * SPREAD_DISTANCE * 0.005;} else if (category === 'OTHER') { const otherMaxRadius = SPREAD_DISTANCE * 0.65; let ox, oy, oz, magSq; do { ox = (Math.random() - 0.5) * 2; oy = (Math.random() - 0.5) * 2; oz = (Math.random() - 0.5) * 2; magSq = ox*ox + oy*oy + oz*oz; } while (magSq === 0 || magSq > 1); const rFactor = 0.5 + Math.cbrt(Math.random()) * 0.5; const currentOtherRadius = otherMaxRadius * rFactor; const mag = Math.sqrt(magSq); x = (ox / mag) * currentOtherRadius; y = (oy / mag) * currentOtherRadius; z = (oz / mag) * currentOtherRadius; } else { const shellTargetRadius = SPREAD_DISTANCE * (0.95 + Math.random() * 0.25); const cloudCenterOffset = SPREAD_DISTANCE * (0.7 + Math.random() * 0.3); const cloudSphereMaxRadius = SPREAD_DISTANCE * 0.40; let lox, loy, loz, lMagSq; do { lox = (Math.random() - 0.5) * 2; loy = (Math.random() - 0.5) * 2; loz = (Math.random() - 0.5) * 2; lMagSq = lox*lox + loy*loy + loz*loz; } while (lMagSq === 0 || lMagSq > 1); const lRadiusFactor = 0.3 + Math.cbrt(Math.random()) * 0.7;  const currentLocalCloudRadius = cloudSphereMaxRadius * lRadiusFactor; const lMag = Math.sqrt(lMagSq); const localX = (lox / lMag) * currentLocalCloudRadius; const localY = (loy / lMag) * currentLocalCloudRadius; const localZ = (loz / lMag) * currentLocalCloudRadius; x = localX; y = localY; z = localZ; switch (category) { case 'FINANCE':  y += cloudCenterOffset; break; case 'FEELINGS': x -= cloudCenterOffset; break; case 'WELFARE':  x += cloudCenterOffset; break; case 'LEGAL':    y -= cloudCenterOffset; break; } let currentDist = Math.sqrt(x*x + y*y + z*z); if (currentDist === 0) currentDist = 1; x = (x / currentDist) * shellTargetRadius; y = (y / currentDist) * shellTargetRadius; z = (z / currentDist) * shellTargetRadius;}
 
                     nodeMesh.position.set(x, y, z);
                     nodeMesh.userData = { 
@@ -351,7 +351,7 @@
                             relationLabel.position.copy(midpoint); graphGroup.add(relationLabel); 
                             edgeWrapper.label = relationLabel;
                         }
-                    } else { console.warn("INIT: Could not find source/target node for edge: ", edgeData.source, edgeData.target); }
+                    } else { console.warn("INIT: Could not find source/target node for edge: ", edgeData.source, " or ", edgeData.target); }
                 });
                 console.log("INIT: Edges (DNA strands) created: " + edges.length);
 
@@ -378,13 +378,13 @@
                 let opacity = nodeData.id === "Akbar" ? AKBAR_NODE_OPACITY : NORMAL_NODE_BASE_OPACITY;
 
                 if (nodeData.id === "Akbar") { 
-                    originalColor = 0x5F9EA0; // Akbar's Cadet Blue
+                    originalColor = 0x5F9EA0; 
                     if (nodeMesh.material.emissive) nodeMesh.material.emissive.setHex(originalColor); 
                     nodeMesh.material.emissiveIntensity = 0.35; 
                 } else { 
                     if (nodeData.category === 'FINANCE') originalColor = 0x1E90FF; 
                     if (nodeMesh.material.emissive) nodeMesh.material.emissive.setHex(0x000000); 
-                     nodeMesh.material.emissiveIntensity = 0;
+                    nodeMesh.material.emissiveIntensity = 0;
                 }
                 nodeMesh.material.color.setHex(originalColor); 
                 nodeMesh.material.opacity = opacity; 
@@ -409,7 +409,7 @@
                 }
                 edgeWrapper.dna.isPulsing = false; 
             });
-             activeBlinks.clear(); // Also clear any active blinks
+             activeBlinks.clear(); 
         }
 
         function applyEdgeHighlight(clickedEdgeData) { 
@@ -431,7 +431,7 @@
                     } else { 
                         nodeMesh.material.color.setHex(HIGHLIGHT_NODE_COLOR); 
                         if(nodeMesh.material.emissive) nodeMesh.material.emissive.setHex(HIGHLIGHT_NODE_COLOR); 
-                        else if (nodeMesh.material.emissive !== undefined) nodeMesh.material.emissive = new THREE.Color(HIGHLIGHT_NODE_COLOR); // Should not happen with Lambert
+                        else if (nodeMesh.material.emissive !== undefined) nodeMesh.material.emissive = new THREE.Color(HIGHLIGHT_NODE_COLOR); 
                         nodeMesh.material.emissiveIntensity = nodeMesh.material.emissive ? 0.5 : 0;
                     }
                      (userData.orbitingRings || []).forEach(r => { r.mesh.material.opacity = NODE_RING_OPACITY + 0.25; r.mesh.material.needsUpdate = true;});
@@ -458,7 +458,7 @@
                 const isClickedEdge = edge.source === sourceId && edge.target === targetId && edge.relation === clickedEdgeData.relation;
                 const isRelatedToHighlightedNodes = edge.source === sourceId || edge.target === sourceId || edge.source === targetId || edge.target === targetId;
                 
-                dna.isPulsing = false; // Stop regular pulsing when highlighted
+                dna.isPulsing = false; 
 
                 if (isClickedEdge) { 
                     dna.currentRadius = dna.highlightRadius; 
@@ -481,7 +481,7 @@
         function updateAllDNAStrands(currentTime) {
             if (!edges || edges.length === 0) return;
             edges.forEach(edgeWrapper => {
-                if (!edgeWrapper || !edgeWrapper.dna || !edgeWrapper.originalData || !edgeWrapper.dna.strand1 || !edgeWrapper.dna.strand2) { return; }
+                if (!edgeWrapper || !edgeWrapper.dna || !edgeWrapper.originalData || !edgeWrapper.dna.strand1 || !edgeWrapper.dna.strand2) {return; }
                 const dna = edgeWrapper.dna; 
                 const sourceNode = nodes.get(edgeWrapper.originalData.source); 
                 const targetNode = nodes.get(edgeWrapper.originalData.target);
@@ -537,9 +537,6 @@
             nodes.forEach(nodeMesh => {
                 if (nodeMesh.userData.orbitingRings && nodeMesh.userData.orbitingRings.length > 0) {
                     nodeMesh.userData.orbitingRings.forEach(ringData => {
-                        // Ring is a child of nodeMesh, and its mesh.rotation.x = Math.PI / 2
-                        // To spin it around the node's Y axis (making it look like Saturn's rings from above/below)
-                        // we rotate the ring's own Y-axis in its local space.
                         ringData.mesh.rotation.y += ringData.speed; 
                     });
                 }
@@ -563,6 +560,7 @@
         let activeBlinks = new Map(); 
         function triggerNodeBlinks(clickedNodeId) {
             activeBlinks.clear(); 
+
             (graphDataFull.edges || []).forEach(edge => {
                 let connectedNodeId = null;
                 if (edge.source === clickedNodeId) connectedNodeId = edge.target;
@@ -589,6 +587,7 @@
 
         function updateActiveNodeBlinks(currentTime) {
             if (activeBlinks.size === 0) return;
+
             activeBlinks.forEach((blinkData, nodeId) => {
                 const nodeMesh = nodes.get(nodeId);
                 if (!nodeMesh || !nodeMesh.material) { activeBlinks.delete(nodeId); return; }
@@ -597,7 +596,7 @@
                     if(blinkData.hasEmissive && nodeMesh.material.emissive) {
                         nodeMesh.material.emissive.setHex(blinkData.originalEmissiveHex);
                         nodeMesh.material.emissiveIntensity = blinkData.originalEmissiveIntensity;
-                    } else if (!blinkData.hasEmissive && nodeMesh.material.emissive) { // Ensure no emissive if it didn't have one
+                    } else if (!blinkData.hasEmissive && nodeMesh.material.emissive) { 
                         nodeMesh.material.emissive.setHex(0x000000);
                         nodeMesh.material.emissiveIntensity = 0;
                     }
@@ -608,7 +607,7 @@
 
                 if (currentTime > blinkData.blinkCycleTime) {
                     blinkData.isLit = !blinkData.isLit;
-                    if (blinkData.hasEmissive && nodeMesh.material.emissive) {
+                    if (nodeMesh.material.emissive) { // Check if material has emissive property
                         if (blinkData.isLit) {
                             nodeMesh.material.emissive.setHex(0xffffff); 
                             nodeMesh.material.emissiveIntensity = 0.9; 
@@ -616,12 +615,6 @@
                             nodeMesh.material.emissive.setHex(blinkData.originalEmissiveHex);
                             nodeMesh.material.emissiveIntensity = blinkData.originalEmissiveIntensity;
                         }
-                    } else if (!blinkData.hasEmissive && nodeMesh.material.emissive && blinkData.isLit) { // Add temp emissive for Lambert
-                         nodeMesh.material.emissive.setHex(0x888888); // Dim white glow for Lambert
-                         nodeMesh.material.emissiveIntensity = 0.6;
-                    } else if (!blinkData.hasEmissive && nodeMesh.material.emissive && !blinkData.isLit) {
-                         nodeMesh.material.emissive.setHex(0x000000); 
-                         nodeMesh.material.emissiveIntensity = 0;
                     }
                     nodeMesh.material.needsUpdate = true;
                     blinkData.blinkCycleTime = currentTime + NODE_BLINK_INTERVAL;

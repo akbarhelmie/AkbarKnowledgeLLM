@@ -85,6 +85,13 @@
             "Responsibility": 0xDA70D6, "FocusArea": 0x48D1CC, "Method": 0xFA8072
         };
 
+        // ... rest of the JavaScript code from the previous response ...
+        // (Including init, animate, getNodeCategory, relationToColor, clearHighlights, 
+        // applyEdgeHighlight, updateAllDNAStrands, onCanvasClick, etc.)
+        // The CRITICAL CHANGE is ensuring the updateAllDNAStrands function has:
+        // dna.strand1.geometry.attributes.position.needsUpdate = true;
+        // dna.strand2.geometry.attributes.position.needsUpdate = true;
+
         let scene, camera, renderer, labelRenderer, controls, raycaster, mouse;
         let graphGroup; 
         const nodes = new Map(); 
@@ -94,7 +101,7 @@
         let isHighlightActive = false;
         const HIGHLIGHT_NODE_COLOR = 0xFFD700; const HIGHLIGHT_EDGE_COLOR = 0xFFA500; 
         const FAINT_OPACITY = 0.1; const NORMAL_NODE_OPACITY = 1.0;
-        const NORMAL_EDGE_OPACITY = 0.7; const HIGHLIGHT_OPACITY = 0.95; // slightly less than 1 for a bit of blend
+        const NORMAL_EDGE_OPACITY = 0.7; const HIGHLIGHT_OPACITY = 0.95;
         
         let autoRotationSpeed = 0.0003 * 3; 
         let isGraphDragging = false; 
@@ -295,7 +302,7 @@
                     dna.strand1.material.color.setHex(HIGHLIGHT_EDGE_COLOR); dna.strand1.material.opacity = HIGHLIGHT_OPACITY;
                     dna.strand2.material.color.setHex(HIGHLIGHT_EDGE_COLOR); dna.strand2.material.opacity = HIGHLIGHT_OPACITY;
                 } else if (isRelatedToHighlightedNodes) { 
-                    dna.currentRadius = dna.normalRadius; // Keep other related DNA normal size
+                    dna.currentRadius = dna.normalRadius; 
                     dna.strand1.material.color.setHex(new THREE.Color(dna.originalColor1).lerp(new THREE.Color(HIGHLIGHT_EDGE_COLOR), 0.6).getHex()); 
                     dna.strand1.material.opacity = HIGHLIGHT_OPACITY * 0.7; 
                     dna.strand2.material.color.setHex(new THREE.Color(dna.originalColor2).lerp(new THREE.Color(HIGHLIGHT_EDGE_COLOR), 0.6).getHex()); 
@@ -315,13 +322,10 @@
                 const sourceNode = nodes.get(edgeWrapper.originalData.source);
                 const targetNode = nodes.get(edgeWrapper.originalData.target);
 
-                if (!sourceNode || !targetNode) return; // Nodes might not be ready/found
+                if (!sourceNode || !targetNode) return; 
 
-                // Update p1 and p2 based on current node positions within graphGroup
-                dna.p1.copy(sourceNode.position);
-                dna.p2.copy(targetNode.position);
-
-                dna.phase += 0.035; // Adjust for desired animation speed
+                dna.p1.copy(sourceNode.position); dna.p2.copy(targetNode.position);
+                dna.phase += 0.035; 
 
                 const points1 = []; const points2 = [];
                 const direction = new THREE.Vector3().subVectors(dna.p2, dna.p1);
@@ -364,10 +368,9 @@
             if (intersects.length > 0) { 
                 clearHighlights(); hideEdgeDefinition();
                 const clickedNodeMesh = intersects[0].object; const nodeData = clickedNodeMesh.userData.originalData; const nodeCategory = clickedNodeMesh.userData.category; nodeConnectionsList.innerHTML = ''; let hasConnections = false; nodeIdText.textContent = (nodeData.displayText || nodeData.id).replace(/_/g, ' '); nodeTypeText.textContent = nodeData.type.replace(/_/g, ' '); nodeCategoryText.textContent = nodeCategory || 'N/A'; graphData.edges.forEach(edge => { let connectedNodeId = null, relationType = '', relationText = edge.relation ? edge.relation.replace(/_/g, ' ') : 'related to'; if (edge.source === nodeData.id) { connectedNodeId = edge.target; relationType = relationText + " &rarr;"; hasConnections = true; } else if (edge.target === nodeData.id) { connectedNodeId = edge.source; relationType = "&larr; " + relationText; hasConnections = true; } if (connectedNodeId) { const connectedNodeData = nodeDataMap.get(connectedNodeId); const connectedNodeDisplay = (connectedNodeData.displayText || connectedNodeData.id).replace(/_/g, ' '); const listItem = document.createElement('li'); listItem.innerHTML = `${relationType} ${connectedNodeDisplay} (<em>${connectedNodeData.type.replace(/_/g, ' ')}</em>)`; nodeConnectionsList.appendChild(listItem); } }); nodeConnectionsDetails.style.display = hasConnections ? 'block' : 'none'; nodeInspectorDisplay.style.display = 'block';
-                briefInteractionPauseUntil = Date.now() + ROTATION_PAUSE_DURATION; // Pause for 3s after node click
+                briefInteractionPauseUntil = Date.now() + ROTATION_PAUSE_DURATION;
             } else { 
                 clearHighlights(); hideEdgeDefinition(); hideNodeInspector(); 
-                // No explicit pause needed here if not interacting with elements; drag handles its own pause.
             }
         }
         function hideEdgeDefinition() { edgeDefinitionDisplay.style.display = 'none'; }

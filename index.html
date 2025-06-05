@@ -104,8 +104,9 @@
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/renderers/CSS2DRenderer.js"></script>
 
     <script>
-        const graphData = { // YOUR ORIGINAL graphData REMAINS UNCHANGED
+        const graphData = {
             "nodes": [
+                // Existing Nodes from previous state
                 { "id": "Akbar", "type": "Person" },
                 { "id": "Legal_Entrepreneurship", "type": "Domain" },
                 { "id": "Legal_Tech", "type": "Domain" },
@@ -145,9 +146,22 @@
                 { "id": "Financial_Independence", "type": "Finance_Value" },
                 { "id": "Universal_Prosperity", "type": "Goal" },
                 { "id": "Bureaucratic_Stagnation", "type": "Challenge" },
-                { "id": "MBTI_ENFJ", "type": "Personality_Trait", "displayText": "ENFJ (51%/49%)" }
+                { "id": "MBTI_ENFJ", "type": "Personality_Trait", "displayText": "ENFJ (51%/49%)" },
+
+                // New Nodes for Leadership Role
+                { "id": "Drives_Strategy", "type": "Responsibility" },
+                { "id": "Drives_Growth", "type": "Responsibility" },
+                { "id": "Drives_Innovation", "type": "Responsibility" },
+                { "id": "Global_Expansion_Focus", "type": "FocusArea" },
+                { "id": "Client_Acquisition_Method", "type": "Method" },
+                { "id": "UHNW_Client_Retention_Method", "type": "Method" },
+                { "id": "Investment_Strategy_Determination", "type": "Responsibility" },
+                { "id": "Profitability_Focus", "type": "FocusArea" },
+                { "id": "Strategic_Initiatives_Oversight", "type": "Responsibility" },
+                { "id": "Strategic_Target_Objectives_Setting", "type": "Responsibility" }
             ],
-            "edges": [ // YOUR ORIGINAL graphData.edges REMAINS UNCHANGED
+            "edges": [
+                // Existing Edges from previous state
                 { "source": "Akbar", "target": "Legal_Entrepreneurship", "relation": "operates_in", "definition": "Akbar is actively involved in legal entrepreneurship, seeking innovative solutions in the legal field." },
                 { "source": "Akbar", "target": "Legal_Tech", "relation": "operates_in", "definition": "Akbar utilizes and promotes technology within the legal sector." },
                 { "source": "Akbar", "target": "Venture_Capital", "relation": "operates_in" },
@@ -197,7 +211,21 @@
                 { "source": "Progressive_Citizenship_Foundation", "target": "Financial_Independence", "relation": "empowers", "color": 0x32CD32 },
                 { "source": "Financial_Independence", "target": "Universal_Prosperity", "relation": "leads_to", "color": 0x32CD32 },
                 { "source": "Akbar", "target": "MBTI_ENFJ", "relation": "is_mbti_type", "color": 0x87CEEB, "definition": "Akbar's Myers-Briggs Type Indicator is ENFJ (Protagonist), with a 51% Extroverted, 49% Introverted tendency, suggesting a nuanced expression of this type." },
-                { "source": "Human_Rights_Law", "target": "Global_Citizenship", "relation": "underpins", "color": 0x8FBC8F, "definition": "Human Rights Law provides a foundational framework that supports and is essential for the concept and practice of Global Citizenship." }
+                { "source": "Human_Rights_Law", "target": "Global_Citizenship", "relation": "underpins", "color": 0x8FBC8F, "definition": "Human Rights Law provides a foundational framework that supports and is essential for the concept and practice of Global Citizenship." },
+
+                // New Edges for Leadership Role
+                { "source": "Akbar", "target": "Drives_Strategy", "relation": "drives", "definition": "Akbar is responsible for driving the overall strategy." },
+                { "source": "Akbar", "target": "Drives_Growth", "relation": "drives", "definition": "Akbar actively works to drive growth initiatives." },
+                { "source": "Akbar", "target": "Drives_Innovation", "relation": "drives", "definition": "Akbar champions and drives innovation across endeavors." },
+                { "source": "Akbar", "target": "Global_Expansion_Focus", "relation": "focuses_on", "definition": "Akbar's key focus is on global expansion." },
+                { "source": "Akbar", "target": "Client_Acquisition_Method", "relation": "manages_method", "definition": "Akbar oversees client acquisition strategies as part of global expansion." },
+                { "source": "Akbar", "target": "UHNW_Client_Retention_Method", "relation": "manages_method", "definition": "Akbar oversees strategies for retaining Ultra High Net Worth clients, crucial for sustained growth." },
+                { "source": "Global_Expansion_Focus", "target": "Client_Acquisition_Method", "relation": "involves", "definition": "Global expansion involves active client acquisition." },
+                { "source": "Global_Expansion_Focus", "target": "UHNW_Client_Retention_Method", "relation": "involves", "definition": "Global expansion relies on strong UHNW client retention." },
+                { "source": "Akbar", "target": "Investment_Strategy_Determination", "relation": "determines", "definition": "Akbar is responsible for determining the investment strategy for portfolios." },
+                { "source": "Akbar", "target": "Profitability_Focus", "relation": "focuses_on", "definition": "Akbar maintains a strong focus on ensuring profitability." },
+                { "source": "Akbar", "target": "Strategic_Initiatives_Oversight", "relation": "oversees", "definition": "Akbar oversees the execution of strategic initiatives." },
+                { "source": "Akbar", "target": "Strategic_Target_Objectives_Setting", "relation": "sets", "definition": "Akbar is responsible for setting strategic target objectives." }
             ]
         };
 
@@ -208,7 +236,11 @@
             "Value": 0x7CFC00, "Aspirational": 0xFF8C00, "Challenge": 0xDC143C,
             "Goal": 0x20B2AA, "default": 0xA9A9A9,
             "Foundation": 0x4682B4, "Finance_Value": 0xFFD700, "Policy": 0xFFA07A,
-            "Personality_Trait": 0x87CEEB
+            "Personality_Trait": 0x87CEEB,
+            // New Colors for new types
+            "Responsibility": 0xDA70D6, // Orchid
+            "FocusArea": 0x48D1CC,    // MediumTurquoise
+            "Method": 0xFA8072         // Salmon
         };
 
         let scene, camera, renderer, labelRenderer, controls, raycaster, mouse;
@@ -227,26 +259,39 @@
 
         const SPREAD_DISTANCE = 75; 
 
-        function getNodeCategory(node) { // Category definitions remain the same
+        function getNodeCategory(node) {
             const id = node.id;
             const type = node.type;
+
+            // New types for leadership roles will fall into 'OTHER' by default,
+            // placing them in the inner sphere around Akbar (CENTER).
+            if (type === "Responsibility" || type === "FocusArea" || type === "Method") {
+                return 'OTHER';
+            }
+
             const financeTypes = ["Financial_Concept", "Financial_Vehicle", "Income_Stream", "Financial_Activity", "Finance_Value"];
             const financeIds = ["Dividend_Staking_Lifestyle"]; 
             if (financeTypes.includes(type) || financeIds.includes(id)) return 'FINANCE';
+
             const feelingsIds = ["Adaptability", "Creativity", "Proactiveness", "Crab_Mentality", "Inferiority_Complex", "MBTI_ENFJ"];
-            if (feelingsIds.includes(id) || type === "Personality_Trait" || (type === "Challenge" && !["Bureaucratic_Stagnation"].includes(id))) return 'FEELINGS';
+            if (feelingsIds.includes(id) || type === "Personality_Trait" || (type === "Challenge" && !["Bureaucratic_Stagnation"].includes(id))) {
+                return 'FEELINGS';
+            }
+            
             const welfareTypes = ["Goal", "Foundation", "Policy", "Aspirational"];
             const welfareIdeologies = ["Progressivism", "Pacifist_Philanthropist"];
             const welfareValueIds = ["Financial_Literacy"]; 
             if (welfareTypes.includes(type) || welfareIdeologies.includes(id) || welfareValueIds.includes(id)) return 'WELFARE';
+
             const legalDomainIds = ["Legal_Entrepreneurship", "Legal_Tech", "Legal_Tech_Innovation", "Human_Rights_Law"];
             const legalIdeologyIds = ["Legal_Reformation"];
             if ((type === "Domain" && legalDomainIds.includes(id)) || legalIdeologyIds.includes(id)) return 'LEGAL';
+
             if (id === "Akbar") return 'CENTER';
-            return 'OTHER';
+            return 'OTHER'; // Default for any unclassified nodes including new leadership ones.
         }
 
-        function relationToColor(relationString) { // Edge coloring remains the same
+        function relationToColor(relationString) { 
             if (!relationString) relationString = "default";
             let hash = 0;
             for (let i = 0; i < relationString.length; i++) { hash = relationString.charCodeAt(i) + ((hash << 5) - hash); hash = hash & hash; }
@@ -260,7 +305,6 @@
             scene = new THREE.Scene();
             scene.background = new THREE.Color(0x1a202c);
             camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-            // Adjusted camera Z to better view the spherical layout
             camera.position.z = SPREAD_DISTANCE * 2.2; 
 
             renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -277,8 +321,8 @@
             controls.enableDamping = true;
             controls.dampingFactor = 0.05;
             controls.screenSpacePanning = false;
-            controls.minDistance = 15; // Adjusted minDistance
-            controls.maxDistance = SPREAD_DISTANCE * 6; // Adjusted maxDistance
+            controls.minDistance = 15; 
+            controls.maxDistance = SPREAD_DISTANCE * 6; 
 
             raycaster = new THREE.Raycaster();
             mouse = new THREE.Vector2();
@@ -296,18 +340,18 @@
                 nd.category = category; 
 
                 let nodeColorVal = nodeColors[nd.type] || nodeColors['default'];
-                if (category === 'FINANCE') { nodeColorVal = 0x1E90FF; }
+                if (category === 'FINANCE') { nodeColorVal = 0x1E90FF; } // DodgerBlue for Finance
                 const material = new THREE.MeshLambertMaterial({ color: nodeColorVal });
                 const nodeMesh = new THREE.Mesh(nodeGeometry, material);
                 
                 let x, y, z;
 
                 if (category === 'CENTER') {
-                    x = (Math.random() - 0.5) * SPREAD_DISTANCE * 0.05; // Very close to origin
+                    x = (Math.random() - 0.5) * SPREAD_DISTANCE * 0.05; 
                     y = (Math.random() - 0.5) * SPREAD_DISTANCE * 0.05;
                     z = (Math.random() - 0.5) * SPREAD_DISTANCE * 0.05;
                 } else if (category === 'OTHER') {
-                    const otherMaxRadius = SPREAD_DISTANCE * 0.55; // 'OTHER' nodes in an inner sphere
+                    const otherMaxRadius = SPREAD_DISTANCE * 0.65; // Increased radius for 'OTHER' to accommodate new leadership nodes
                     let ox, oy, oz, magSq;
                     do {
                         ox = (Math.random() - 0.5) * 2; 
@@ -316,8 +360,7 @@
                         magSq = ox*ox + oy*oy + oz*oz;
                     } while (magSq === 0 || magSq > 1); 
                     
-                    // Distribute more within the volume, not just shell
-                    const rFactor = 0.35 + Math.cbrt(Math.random()) * 0.65; 
+                    const rFactor = 0.45 + Math.cbrt(Math.random()) * 0.55; // Adjusted for good volume fill
                     const currentOtherRadius = otherMaxRadius * rFactor;
                     const mag = Math.sqrt(magSq);
                     
@@ -325,17 +368,9 @@
                     y = (oy / mag) * currentOtherRadius;
                     z = (oz / mag) * currentOtherRadius;
                 } else { 
-                    // For directional categories (FINANCE, FEELINGS, WELFARE, LEGAL)
-                    // 1. Determine the center of this category's cloud (offset from origin)
-                    //    Offset is between 0.6*D and 0.95*D
-                    const cloudCenterOffset = SPREAD_DISTANCE * (0.6 + Math.random() * 0.35); 
-                    
-                    // 2. Determine the radius of the cloud itself
-                    //    Cloud radius up to 0.4*D
+                    const cloudCenterOffset = SPREAD_DISTANCE * (0.65 + Math.random() * 0.35); // [0.65*D to D]
                     const cloudSphereMaxRadius = SPREAD_DISTANCE * 0.4; 
-
-                    // 3. Generate a random point within this local cloud (spherical distribution)
-                    let lox, loy, loz, lMagSq; // Local Offset X, Y, Z
+                    let lox, loy, loz, lMagSq; 
                     do {
                         lox = (Math.random() - 0.5) * 2; 
                         loy = (Math.random() - 0.5) * 2;
@@ -343,8 +378,7 @@
                         lMagSq = lox*lox + loy*loy + loz*loz;
                     } while (lMagSq === 0 || lMagSq > 1);
                     
-                    // Distribute within the volume of the local cloud
-                    const lRadiusFactor = 0.2 + Math.cbrt(Math.random()) * 0.8; 
+                    const lRadiusFactor = 0.25 + Math.cbrt(Math.random()) * 0.75; 
                     const currentLocalCloudRadius = cloudSphereMaxRadius * lRadiusFactor;
                     const lMag = Math.sqrt(lMagSq);
 
@@ -352,7 +386,6 @@
                     const localY = (loy / lMag) * currentLocalCloudRadius;
                     const localZ = (loz / lMag) * currentLocalCloudRadius;
 
-                    // 4. Start with the local cloud position and add the directional offset
                     x = localX; y = localY; z = localZ;
 
                     switch (category) {
@@ -377,7 +410,6 @@
                 nodeMesh.userData.label = label;
             });
 
-            // Edge creation and other init logic remains the same
             graphData.edges.forEach(edgeData => {
                 const sourceNodeMesh = nodes.get(edgeData.source);
                 const targetNodeMesh = nodes.get(edgeData.target);

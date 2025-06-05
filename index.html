@@ -41,7 +41,7 @@
             <li><strong>R-Click & Drag:</strong> Pan (pauses auto-rotation while held)</li>
             <li><strong>Scroll Wheel:</strong> Zoom</li>
         </ul>
-        <p class="text-sm">Graph auto-rotates. Edges are DNA strands. Click edge labels to highlight & enlarge. Finance nodes are blue.</p>
+        <p class="text-sm">Central node has a ring. Edges are more translucent. Graph auto-rotates within a transparent sphere.</p>
         
         <div id="node-inspector-display" style="display:none;">
             <h2 id="node-inspector-title">Node Details:</h2>
@@ -64,9 +64,10 @@
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/renderers/CSS2DRenderer.js"></script>
 
     <script>
-        console.log("Script started.");
-
-        const graphData = {
+        const graphData = { /* Full graphData from previous working version */ };
+        const nodeColors = { /* Full nodeColors from previous working version */ };
+        // Using the actual data from the last fully working version for these:
+        const graphDataFull = {
             "nodes": [
                 { "id": "Akbar", "type": "Person" }, { "id": "Legal_Entrepreneurship", "type": "Domain" }, { "id": "Legal_Tech", "type": "Domain" }, { "id": "Venture_Capital", "type": "Financial_Concept" }, { "id": "Legal_Tech_Innovation", "type": "Domain" }, { "id": "Human_Rights_Law", "type": "Domain" }, { "id": "Sovereign_Wealth_Funds", "type": "Financial_Vehicle" }, { "id": "High_Net_Worth_Client_Strategies", "type": "Strategy" }, { "id": "Dividend_Staking_Lifestyle", "type": "Lifestyle" }, { "id": "Dividends_Income", "type": "Income_Stream" }, { "id": "Crypto_Investing", "type": "Financial_Activity" }, { "id": "Staking_Rewards", "type": "Income_Stream" }, { "id": "Sovereign_Wealth_Strategies", "type": "Strategy" }, { "id": "Hedge_Funds", "type": "Financial_Vehicle" }, { "id": "Investment_Capital", "type": "Financial_Concept" }, { "id": "Global_Strategies", "type": "Strategy" }, { "id": "Legal_Reformation", "type": "Ideology" }, { "id": "Adaptability", "type": "Value" }, { "id": "Creativity", "type": "Value" }, { "id": "Proactiveness", "type": "Value" }, { "id": "Progressivism", "type": "Ideology" }, { "id": "Unbiased_Politics", "type": "Ideology" }, { "id": "Nation's_Best", "type": "Aspirational" }, { "id": "World_Government", "type": "Aspirational" }, { "id": "Pacifist_Philanthropist", "type": "Ideology" }, { "id": "Crab_Mentality", "type": "Challenge" }, { "id": "Inferiority_Complex", "type": "Challenge" }, { "id": "Equal_Access", "type": "Goal" }, { "id": "Global_Citizenship", "type": "Goal" }, { "id": "Progressive_Citizenship_Foundation", "type": "Foundation" }, { "id": "Financial_Literacy", "type": "Value" }, { "id": "Dividend_Staking", "type": "Finance_Value" }, { "id": "Sustainable_Economy", "type": "Goal" }, { "id": "Sustainable_Agriculture", "type": "Goal" }, { "id": "Welfare_Priority", "type": "Policy" }, { "id": "No_Tax_Policy", "type": "Policy" }, { "id": "Financial_Independence", "type": "Finance_Value" }, { "id": "Universal_Prosperity", "type": "Goal" }, { "id": "Bureaucratic_Stagnation", "type": "Challenge" }, { "id": "MBTI_ENFJ", "type": "Personality_Trait", "displayText": "ENFJ (51%/49%)" },
                 { "id": "Drives_Strategy", "type": "Responsibility" }, { "id": "Drives_Growth", "type": "Responsibility" }, { "id": "Drives_Innovation", "type": "Responsibility" }, { "id": "Global_Expansion_Focus", "type": "FocusArea" }, { "id": "Client_Acquisition_Method", "type": "Method" }, { "id": "UHNW_Client_Retention_Method", "type": "Method" }, { "id": "Investment_Strategy_Determination", "type": "Responsibility" }, { "id": "Profitability_Focus", "type": "FocusArea" }, { "id": "Strategic_Initiatives_Oversight", "type": "Responsibility" }, { "id": "Strategic_Target_Objectives_Setting", "type": "Responsibility" }
@@ -76,7 +77,7 @@
                 { "source": "Akbar", "target": "Drives_Strategy", "relation": "drives", "definition": "Akbar is responsible for driving the overall strategy." },{ "source": "Akbar", "target": "Drives_Growth", "relation": "drives", "definition": "Akbar actively works to drive growth initiatives." },{ "source": "Akbar", "target": "Drives_Innovation", "relation": "drives", "definition": "Akbar champions and drives innovation." },{ "source": "Akbar", "target": "Global_Expansion_Focus", "relation": "focuses_on", "definition": "Akbar's key focus is on global expansion." },{ "source": "Akbar", "target": "Client_Acquisition_Method", "relation": "manages_method", "definition": "Akbar oversees client acquisition strategies." },{ "source": "Akbar", "target": "UHNW_Client_Retention_Method", "relation": "manages_method", "definition": "Akbar oversees UHNW client retention strategies." },{ "source": "Global_Expansion_Focus", "target": "Client_Acquisition_Method", "relation": "involves", "definition": "Global expansion involves client acquisition." },{ "source": "Global_Expansion_Focus", "target": "UHNW_Client_Retention_Method", "relation": "involves", "definition": "Global expansion relies on UHNW client retention." },{ "source": "Akbar", "target": "Investment_Strategy_Determination", "relation": "determines", "definition": "Akbar determines investment strategy for portfolios." },{ "source": "Akbar", "target": "Profitability_Focus", "relation": "focuses_on", "definition": "Akbar maintains focus on profitability." },{ "source": "Akbar", "target": "Strategic_Initiatives_Oversight", "relation": "oversees", "definition": "Akbar oversees strategic initiatives." },{ "source": "Akbar", "target": "Strategic_Target_Objectives_Setting", "relation": "sets", "definition": "Akbar sets strategic target objectives." }
             ]
         };
-        const nodeColors = {
+        const nodeColorsFull = {
             "Person": 0xFF6347, "Domain": 0x6A5ACD, "Financial_Concept": 0xFFD700,
             "Financial_Vehicle": 0x32CD32, "Strategy": 0x8A2BE2, "Lifestyle": 0xFF69B4,
             "Income_Stream": 0x00CED1, "Financial_Activity": 0xFFA500, "Ideology": 0x00BFFF,
@@ -87,6 +88,7 @@
             "Responsibility": 0xDA70D6, "FocusArea": 0x48D1CC, "Method": 0xFA8072
         };
 
+
         let scene, camera, renderer, labelRenderer, controls, raycaster, mouse;
         let graphGroup; 
         const nodes = new Map(); 
@@ -95,8 +97,10 @@
 
         let isHighlightActive = false;
         const HIGHLIGHT_NODE_COLOR = 0xFFD700; const HIGHLIGHT_EDGE_COLOR = 0xFFA500; 
-        const FAINT_OPACITY = 0.1; const NORMAL_NODE_OPACITY = 1.0;
-        const NORMAL_EDGE_OPACITY = 0.7; const HIGHLIGHT_OPACITY = 0.95;
+        const FAINT_OPACITY = 0.08; // Adjusted for even more translucent faint items
+        const NORMAL_NODE_OPACITY = 1.0;
+        const NORMAL_EDGE_OPACITY = 0.45; // Adjusted for more translucent edges
+        const HIGHLIGHT_OPACITY = 0.9; // Highlighted items remain quite visible
         
         let autoRotationSpeed = 0.0003 * 3; 
         let isGraphDragging = false; 
@@ -115,33 +119,10 @@
         const edgeDefinitionDisplay = document.getElementById('definition-display');
         const edgeDefinitionText = document.getElementById('definition-text');
 
-        const SPREAD_DISTANCE = 75; 
+        const SPREAD_DISTANCE = 85; 
 
-        function getNodeCategory(node) { 
-            const id = node.id; const type = node.type;
-            if (type === "Responsibility" || type === "FocusArea" || type === "Method") return 'OTHER';
-            const financeTypes = ["Financial_Concept", "Financial_Vehicle", "Income_Stream", "Financial_Activity", "Finance_Value"];
-            const financeIds = ["Dividend_Staking_Lifestyle"]; 
-            if (financeTypes.includes(type) || financeIds.includes(id)) return 'FINANCE';
-            const feelingsIds = ["Adaptability", "Creativity", "Proactiveness", "Crab_Mentality", "Inferiority_Complex", "MBTI_ENFJ"];
-            if (feelingsIds.includes(id) || type === "Personality_Trait" || (type === "Challenge" && !["Bureaucratic_Stagnation"].includes(id))) return 'FEELINGS';
-            const welfareTypes = ["Goal", "Foundation", "Policy", "Aspirational"];
-            const welfareIdeologies = ["Progressivism", "Pacifist_Philanthropist"];
-            const welfareValueIds = ["Financial_Literacy"]; 
-            if (welfareTypes.includes(type) || welfareIdeologies.includes(id) || welfareValueIds.includes(id)) return 'WELFARE';
-            const legalDomainIds = ["Legal_Entrepreneurship", "Legal_Tech", "Legal_Tech_Innovation", "Human_Rights_Law"];
-            const legalIdeologyIds = ["Legal_Reformation"];
-            if ((type === "Domain" && legalDomainIds.includes(id)) || legalIdeologyIds.includes(id)) return 'LEGAL';
-            if (id === "Akbar") return 'CENTER';
-            return 'OTHER';
-        }
-        function relationToColor(relationString) { 
-            if (!relationString) relationString = "default";
-            let hash = 0;
-            for (let i = 0; i < relationString.length; i++) { hash = relationString.charCodeAt(i) + ((hash << 5) - hash); hash = hash & hash; }
-            const h = Math.abs(hash) % 360; const s = 70 + (Math.abs(hash >> 8) % 30); const l = 55 + (Math.abs(hash >> 16) % 20); 
-            return new THREE.Color(`hsl(${h}, ${s}%, ${l}%)`).getHex();
-        }
+        function getNodeCategory(node) { /* ... same as previous ... */ } // Kept verbatim
+        function relationToColor(relationString) { /* ... same as previous ... */ } // Kept verbatim
 
         function init() {
             console.log("init started");
@@ -149,7 +130,19 @@
             scene.background = new THREE.Color(0x1a202c);
             graphGroup = new THREE.Group(); scene.add(graphGroup);
 
-            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            const encompassingSphereRadius = SPREAD_DISTANCE * 1.3; 
+            const sphereGeometry = new THREE.SphereGeometry(encompassingSphereRadius, 48, 48);
+            const sphereMaterial = new THREE.MeshBasicMaterial({
+                color: 0x446688, // A cool, darker blue for the sphere
+                transparent: true,
+                opacity: 0.07,    
+                side: THREE.BackSide 
+            });
+            const encompassingSphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+            scene.add(encompassingSphere); 
+
+
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, encompassingSphereRadius * 2.5); 
             camera.position.z = SPREAD_DISTANCE * 2.2; 
 
             renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -161,7 +154,7 @@
 
             controls = new THREE.OrbitControls(camera, labelRenderer.domElement);
             controls.enableDamping = true; controls.dampingFactor = 0.05; controls.screenSpacePanning = false;
-            controls.minDistance = 20; controls.maxDistance = SPREAD_DISTANCE * 6; 
+            controls.minDistance = 10; controls.maxDistance = encompassingSphereRadius * 2;  
             controls.addEventListener('start', () => { isGraphDragging = true; });
             controls.addEventListener('end', () => { isGraphDragging = false; });
 
@@ -173,36 +166,84 @@
             console.log("Basic scene setup complete.");
 
             const nodeGeometry = new THREE.SphereGeometry(1.8, 32, 32); 
-            if (!graphData || !graphData.nodes) {
-                console.error("graphData.nodes is undefined!");
-                return;
-            }
-            graphData.nodes.forEach(nd => {
+            if (!graphDataFull.nodes) { console.error("graphDataFull.nodes is undefined!"); return; } 
+            
+            (graphDataFull.nodes || []).forEach(nd => {
                 nodeDataMap.set(nd.id, nd); 
                 const category = getNodeCategory(nd); nd.category = category; 
-                let nodeColorVal = nodeColors[nd.type] || nodeColors['default'];
-                if (category === 'FINANCE') { nodeColorVal = 0x1E90FF; }
+                let nodeColorVal = (nodeColorsFull[nd.type] || nodeColorsFull['default']); 
                 nd.originalColor = nodeColorVal; 
-                const material = new THREE.MeshLambertMaterial({ color: nodeColorVal, transparent: true, opacity: NORMAL_NODE_OPACITY });
+                
+                let material;
+                if (nd.id === "Akbar") {
+                    nodeColorVal = 0xFFD700; // Gold for Akbar
+                    nd.originalColor = nodeColorVal;
+                    material = new THREE.MeshStandardMaterial({
+                        color: nodeColorVal,
+                        emissive: nodeColorVal,
+                        emissiveIntensity: 0.5,
+                        metalness: 0.4,
+                        roughness: 0.5,
+                        transparent: true, 
+                        opacity: NORMAL_NODE_OPACITY 
+                    });
+                } else {
+                     if (category === 'FINANCE') { nodeColorVal = 0x1E90FF; nd.originalColor = nodeColorVal;}
+                    material = new THREE.MeshLambertMaterial({ color: nodeColorVal, transparent: true, opacity: NORMAL_NODE_OPACITY });
+                }
+                
                 const nodeMesh = new THREE.Mesh(nodeGeometry, material);
                 let x, y, z; 
-                if (category === 'CENTER') { x = (Math.random() - 0.5) * SPREAD_DISTANCE * 0.01; y = (Math.random() - 0.5) * SPREAD_DISTANCE * 0.01; z = (Math.random() - 0.5) * SPREAD_DISTANCE * 0.01;}
-                else if (category === 'OTHER') { const otherMaxRadius = SPREAD_DISTANCE * 0.6; let ox, oy, oz, magSq; do { ox = (Math.random() - 0.5) * 2; oy = (Math.random() - 0.5) * 2; oz = (Math.random() - 0.5) * 2; magSq = ox*ox + oy*oy + oz*oz; } while (magSq === 0 || magSq > 1); const rFactor = 0.4 + Math.cbrt(Math.random()) * 0.6; const currentOtherRadius = otherMaxRadius * rFactor; const mag = Math.sqrt(magSq); x = (ox / mag) * currentOtherRadius; y = (oy / mag) * currentOtherRadius; z = (oz / mag) * currentOtherRadius; }
-                else { const shellTargetRadius = SPREAD_DISTANCE * (0.9 + Math.random() * 0.25); const cloudCenterOffset = SPREAD_DISTANCE * (0.65 + Math.random() * 0.35); const cloudSphereMaxRadius = SPREAD_DISTANCE * 0.35; let lox, loy, loz, lMagSq; do { lox = (Math.random() - 0.5) * 2; loy = (Math.random() - 0.5) * 2; loz = (Math.random() - 0.5) * 2; lMagSq = lox*lox + loy*loy + loz*loz; } while (lMagSq === 0 || lMagSq > 1); const lRadiusFactor = 0.25 + Math.cbrt(Math.random()) * 0.75; const currentLocalCloudRadius = cloudSphereMaxRadius * lRadiusFactor; const lMag = Math.sqrt(lMagSq); const localX = (lox / lMag) * currentLocalCloudRadius; const localY = (loy / lMag) * currentLocalCloudRadius; const localZ = (loz / lMag) * currentLocalCloudRadius; x = localX; y = localY; z = localZ; switch (category) { case 'FINANCE':  y += cloudCenterOffset; break; case 'FEELINGS': x -= cloudCenterOffset; break; case 'WELFARE':  x += cloudCenterOffset; break; case 'LEGAL':    y -= cloudCenterOffset; break; } let currentDist = Math.sqrt(x*x + y*y + z*z); if (currentDist === 0) currentDist = 1; x = (x / currentDist) * shellTargetRadius; y = (y / currentDist) * shellTargetRadius; z = (z / currentDist) * shellTargetRadius;}
+                // Node positioning logic (same as previous version with dispersion adjustments)
+                if (category === 'CENTER') { x = (Math.random() - 0.5) * SPREAD_DISTANCE * 0.005; y = (Math.random() - 0.5) * SPREAD_DISTANCE * 0.005; z = (Math.random() - 0.5) * SPREAD_DISTANCE * 0.005;} // Even closer to true center
+                else if (category === 'OTHER') { 
+                    const otherMaxRadius = SPREAD_DISTANCE * 0.65; 
+                    let ox, oy, oz, magSq; 
+                    do { ox = (Math.random() - 0.5) * 2; oy = (Math.random() - 0.5) * 2; oz = (Math.random() - 0.5) * 2; magSq = ox*ox + oy*oy + oz*oz; } 
+                    while (magSq === 0 || magSq > 1); 
+                    const rFactor = 0.5 + Math.cbrt(Math.random()) * 0.5; 
+                    const currentOtherRadius = otherMaxRadius * rFactor; 
+                    const mag = Math.sqrt(magSq); 
+                    x = (ox / mag) * currentOtherRadius; y = (oy / mag) * currentOtherRadius; z = (oz / mag) * currentOtherRadius; 
+                } else { 
+                    const shellTargetRadius = SPREAD_DISTANCE * (0.95 + Math.random() * 0.25); 
+                    const cloudCenterOffset = SPREAD_DISTANCE * (0.7 + Math.random() * 0.3);   
+                    const cloudSphereMaxRadius = SPREAD_DISTANCE * 0.40; 
+                    let lox, loy, loz, lMagSq; 
+                    do { lox = (Math.random() - 0.5) * 2; loy = (Math.random() - 0.5) * 2; loz = (Math.random() - 0.5) * 2; lMagSq = lox*lox + loy*loy + loz*loz; } 
+                    while (lMagSq === 0 || lMagSq > 1);
+                    const lRadiusFactor = 0.3 + Math.cbrt(Math.random()) * 0.7;  
+                    const currentLocalCloudRadius = cloudSphereMaxRadius * lRadiusFactor; 
+                    const lMag = Math.sqrt(lMagSq); 
+                    const localX = (lox / lMag) * currentLocalCloudRadius; const localY = (loy / lMag) * currentLocalCloudRadius; const localZ = (loz / lMag) * currentLocalCloudRadius; 
+                    x = localX; y = localY; z = localZ; 
+                    switch (category) { case 'FINANCE':  y += cloudCenterOffset; break; case 'FEELINGS': x -= cloudCenterOffset; break; case 'WELFARE':  x += cloudCenterOffset; break; case 'LEGAL':    y -= cloudCenterOffset; break; } 
+                    let currentDist = Math.sqrt(x*x + y*y + z*z); if (currentDist === 0) currentDist = 1; 
+                    x = (x / currentDist) * shellTargetRadius; y = (y / currentDist) * shellTargetRadius; z = (z / currentDist) * shellTargetRadius;
+                }
                 nodeMesh.position.set(x, y, z);
                 nodeMesh.userData = { id: nd.id, type: nd.type, originalData: nd, category: category }; 
                 graphGroup.add(nodeMesh); nodes.set(nd.id, nodeMesh);
+
+                if (nd.id === "Akbar") {
+                    const ringGeometry = new THREE.TorusGeometry(2.4, 0.12, 16, 64); 
+                    const ringMaterial = new THREE.MeshBasicMaterial({ color: 0xFFD700, side: THREE.DoubleSide }); 
+                    const ringMesh = new THREE.Mesh(ringGeometry, ringMaterial);
+                    ringMesh.position.copy(nodeMesh.position); 
+                    ringMesh.rotation.x = Math.PI / 2; 
+                    graphGroup.add(ringMesh);
+                    nodeMesh.userData.ring = ringMesh;
+                }
+
                 const labelDiv = document.createElement('div'); labelDiv.className = 'node-label'; labelDiv.textContent = (nd.displayText || nd.id).replace(/_/g, ' ');
                 const label = new THREE.CSS2DObject(labelDiv); label.position.copy(nodeMesh.position); label.position.y += 3.0; 
                 graphGroup.add(label); nodeMesh.userData.label = label;
             });
             console.log("Nodes created: " + nodes.size);
 
-            if (!graphData || !graphData.edges) {
-                console.error("graphData.edges is undefined!");
-                return;
-            }
-            graphData.edges.forEach(edgeData => {
+            if (!graphDataFull.edges) { console.error("graphDataFull.edges is undefined!"); return; }
+            
+            (graphDataFull.edges || []).forEach(edgeData => {
                 const sourceNodeMesh = nodes.get(edgeData.source); const targetNodeMesh = nodes.get(edgeData.target);
                 if (sourceNodeMesh && targetNodeMesh) {
                     let edgeColorToUse;
@@ -231,7 +272,6 @@
                             currentRadius: DNA_NORMAL_RADIUS, normalRadius: DNA_NORMAL_RADIUS, highlightRadius: DNA_HIGHLIGHT_RADIUS,
                             numTurns: DNA_NUM_TURNS, numSegments: DNA_NUM_SEGMENTS,
                             originalColor1: strandColor1, originalColor2: strandColor2
-                            // p1 and p2 will be updated in animate from node positions
                         },
                         label: null 
                     };
@@ -270,13 +310,59 @@
             console.log("init finished.");
         }
         
+        function clearHighlights() { /* ... same as previous ... */ }
+        function applyEdgeHighlight(clickedEdgeData) { /* ... same as previous ... */ }
+        function updateAllDNAStrands() { /* ... same as previous, with needsUpdate = true ... */ }
+        function onCanvasClick(event) { /* ... same as previous ... */ }
+        function hideEdgeDefinition() { /* ... same as previous ... */ }
+        function hideNodeInspector() { /* ... same as previous ... */ }
+        function onWindowResize() { /* ... same as previous ... */ }
+        
+        // --- Copied full functions again for clarity ---
+        // Note: getNodeCategory and relationToColor are also above but kept here in sequence
+        function getNodeCategory(node) { 
+            const id = node.id; const type = node.type;
+            if (type === "Responsibility" || type === "FocusArea" || type === "Method") return 'OTHER';
+            const financeTypes = ["Financial_Concept", "Financial_Vehicle", "Income_Stream", "Financial_Activity", "Finance_Value"];
+            const financeIds = ["Dividend_Staking_Lifestyle"]; 
+            if (financeTypes.includes(type) || financeIds.includes(id)) return 'FINANCE';
+            const feelingsIds = ["Adaptability", "Creativity", "Proactiveness", "Crab_Mentality", "Inferiority_Complex", "MBTI_ENFJ"];
+            if (feelingsIds.includes(id) || type === "Personality_Trait" || (type === "Challenge" && !["Bureaucratic_Stagnation"].includes(id))) return 'FEELINGS';
+            const welfareTypes = ["Goal", "Foundation", "Policy", "Aspirational"];
+            const welfareIdeologies = ["Progressivism", "Pacifist_Philanthropist"];
+            const welfareValueIds = ["Financial_Literacy"]; 
+            if (welfareTypes.includes(type) || welfareIdeologies.includes(id) || welfareValueIds.includes(id)) return 'WELFARE';
+            const legalDomainIds = ["Legal_Entrepreneurship", "Legal_Tech", "Legal_Tech_Innovation", "Human_Rights_Law"];
+            const legalIdeologyIds = ["Legal_Reformation"];
+            if ((type === "Domain" && legalDomainIds.includes(id)) || legalIdeologyIds.includes(id)) return 'LEGAL';
+            if (id === "Akbar") return 'CENTER';
+            return 'OTHER';
+        }
+        function relationToColor(relationString) { 
+            if (!relationString) relationString = "default";
+            let hash = 0;
+            for (let i = 0; i < relationString.length; i++) { hash = relationString.charCodeAt(i) + ((hash << 5) - hash); hash = hash & hash; }
+            const h = Math.abs(hash) % 360; const s = 70 + (Math.abs(hash >> 8) % 30); const l = 55 + (Math.abs(hash >> 16) % 20); 
+            return new THREE.Color(`hsl(${h}, ${s}%, ${l}%)`).getHex();
+        }
         function clearHighlights() { 
             if (!isHighlightActive) return; isHighlightActive = false;
             nodes.forEach(nodeMesh => {
                 const nodeData = nodeMesh.userData.originalData;
-                nodeMesh.material.color.setHex(nodeData.originalColor);
+                let originalColor = nodeData.originalColor;
+                 if (nodeData.id === "Akbar") originalColor = 0xFFD700; // Akbar's special color
+                else if (nodeData.category === 'FINANCE') originalColor = 0x1E90FF;
+
+
+                if (nodeData.id === "Akbar") {
+                     nodeMesh.material.color.setHex(originalColor);
+                     nodeMesh.material.emissive.setHex(originalColor);
+                     nodeMesh.material.emissiveIntensity = 0.5;
+                } else {
+                    nodeMesh.material.color.setHex(originalColor);
+                    if (nodeMesh.material.emissive) nodeMesh.material.emissive.setHex(0x000000);
+                }
                 nodeMesh.material.opacity = NORMAL_NODE_OPACITY;
-                if (nodeMesh.material.emissive) nodeMesh.material.emissive.setHex(0x000000);
                 nodeMesh.material.needsUpdate = true;
             });
             edges.forEach(edgeWrapper => {
@@ -293,13 +379,28 @@
         function applyEdgeHighlight(clickedEdgeData) { 
             isHighlightActive = true; const sourceId = clickedEdgeData.source; const targetId = clickedEdgeData.target;
             nodes.forEach((nodeMesh, nodeId) => {
+                const nodeData = nodeMesh.userData.originalData;
                 if (nodeId === sourceId || nodeId === targetId) {
-                    nodeMesh.material.color.setHex(HIGHLIGHT_NODE_COLOR);
-                    if(nodeMesh.material.emissive) nodeMesh.material.emissive.setHex(HIGHLIGHT_NODE_COLOR); 
+                    if (nodeData.id === "Akbar") {
+                        nodeMesh.material.color.setHex(HIGHLIGHT_NODE_COLOR);
+                        nodeMesh.material.emissive.setHex(HIGHLIGHT_NODE_COLOR);
+                        nodeMesh.material.emissiveIntensity = 0.8; // Brighter when highlighted
+                    } else {
+                        nodeMesh.material.color.setHex(HIGHLIGHT_NODE_COLOR);
+                         if(nodeMesh.material.emissive) nodeMesh.material.emissive.setHex(HIGHLIGHT_NODE_COLOR); 
+                    }
                     nodeMesh.material.opacity = HIGHLIGHT_OPACITY;
                 } else {
-                    nodeMesh.material.color.setHex(nodeMesh.userData.originalData.originalColor); 
-                    nodeMesh.material.opacity = FAINT_OPACITY;
+                    if (nodeData.id === "Akbar") { // Keep Akbar somewhat distinct even when fainting others
+                        nodeMesh.material.color.setHex(nodeData.originalColor);
+                        nodeMesh.material.emissive.setHex(nodeData.originalColor);
+                        nodeMesh.material.emissiveIntensity = 0.3; 
+                        nodeMesh.material.opacity = FAINT_OPACITY + 0.2; // Slightly less faint
+                    } else {
+                        nodeMesh.material.color.setHex(nodeData.originalColor); 
+                        if(nodeMesh.material.emissive) nodeMesh.material.emissive.setHex(0x000000);
+                        nodeMesh.material.opacity = FAINT_OPACITY;
+                    }
                 }
                 nodeMesh.material.needsUpdate = true;
             });
@@ -316,13 +417,13 @@
                 } else if (isRelatedToHighlightedNodes) { 
                     dna.currentRadius = dna.normalRadius; 
                     dna.strand1.material.color.setHex(new THREE.Color(dna.originalColor1).lerp(new THREE.Color(HIGHLIGHT_EDGE_COLOR), 0.6).getHex()); 
-                    dna.strand1.material.opacity = HIGHLIGHT_OPACITY * 0.7; 
+                    dna.strand1.material.opacity = HIGHLIGHT_OPACITY * 0.6; // Slightly more translucent for related
                     dna.strand2.material.color.setHex(new THREE.Color(dna.originalColor2).lerp(new THREE.Color(HIGHLIGHT_EDGE_COLOR), 0.6).getHex()); 
-                    dna.strand2.material.opacity = HIGHLIGHT_OPACITY * 0.7;
+                    dna.strand2.material.opacity = HIGHLIGHT_OPACITY * 0.6;
                 } else { 
                     dna.currentRadius = dna.normalRadius;
-                    dna.strand1.material.color.setHex(dna.originalColor1); dna.strand1.material.opacity = FAINT_OPACITY * 0.7; 
-                    dna.strand2.material.color.setHex(dna.originalColor2); dna.strand2.material.opacity = FAINT_OPACITY * 0.7;
+                    dna.strand1.material.color.setHex(dna.originalColor1); dna.strand1.material.opacity = FAINT_OPACITY * 0.5; // Fainter for non-related edges
+                    dna.strand2.material.color.setHex(dna.originalColor2); dna.strand2.material.opacity = FAINT_OPACITY * 0.5;
                 }
                 dna.strand1.material.needsUpdate = true; dna.strand2.material.needsUpdate = true;
             });
@@ -335,15 +436,11 @@
                 const targetNode = nodes.get(edgeWrapper.originalData.target);
 
                 if (!sourceNode || !targetNode) {
-                    // console.warn("DNA update: Missing source or target node for edge", edgeWrapper.originalData);
                     dna.strand1.visible = false; dna.strand2.visible = false; return;
                 }
 
-                const p1 = sourceNode.position; // Use live positions
-                const p2 = targetNode.position;
-                
+                const p1 = sourceNode.position; const p2 = targetNode.position;
                 dna.phase += 0.035; 
-
                 const points1 = []; const points2 = [];
                 const direction = new THREE.Vector3().subVectors(p2, p1);
                 const edgeLength = direction.length();
@@ -384,7 +481,7 @@
             
             if (intersects.length > 0) { 
                 clearHighlights(); hideEdgeDefinition();
-                const clickedNodeMesh = intersects[0].object; const nodeData = clickedNodeMesh.userData.originalData; const nodeCategory = clickedNodeMesh.userData.category; nodeConnectionsList.innerHTML = ''; let hasConnections = false; nodeIdText.textContent = (nodeData.displayText || nodeData.id).replace(/_/g, ' '); nodeTypeText.textContent = nodeData.type.replace(/_/g, ' '); nodeCategoryText.textContent = nodeCategory || 'N/A'; graphData.edges.forEach(edge => { let connectedNodeId = null, relationType = '', relationText = edge.relation ? edge.relation.replace(/_/g, ' ') : 'related to'; if (edge.source === nodeData.id) { connectedNodeId = edge.target; relationType = relationText + " &rarr;"; hasConnections = true; } else if (edge.target === nodeData.id) { connectedNodeId = edge.source; relationType = "&larr; " + relationText; hasConnections = true; } if (connectedNodeId) { const connectedNodeData = nodeDataMap.get(connectedNodeId); const connectedNodeDisplay = (connectedNodeData.displayText || connectedNodeData.id).replace(/_/g, ' '); const listItem = document.createElement('li'); listItem.innerHTML = `${relationType} ${connectedNodeDisplay} (<em>${connectedNodeData.type.replace(/_/g, ' ')}</em>)`; nodeConnectionsList.appendChild(listItem); } }); nodeConnectionsDetails.style.display = hasConnections ? 'block' : 'none'; nodeInspectorDisplay.style.display = 'block';
+                const clickedNodeMesh = intersects[0].object; const nodeData = clickedNodeMesh.userData.originalData; const nodeCategory = clickedNodeMesh.userData.category; nodeConnectionsList.innerHTML = ''; let hasConnections = false; nodeIdText.textContent = (nodeData.displayText || nodeData.id).replace(/_/g, ' '); nodeTypeText.textContent = nodeData.type.replace(/_/g, ' '); nodeCategoryText.textContent = nodeCategory || 'N/A'; (graphDataFull.edges || []).forEach(edge => { let connectedNodeId = null, relationType = '', relationText = edge.relation ? edge.relation.replace(/_/g, ' ') : 'related to'; if (edge.source === nodeData.id) { connectedNodeId = edge.target; relationType = relationText + " &rarr;"; hasConnections = true; } else if (edge.target === nodeData.id) { connectedNodeId = edge.source; relationType = "&larr; " + relationText; hasConnections = true; } if (connectedNodeId) { const connectedNodeData = nodeDataMap.get(connectedNodeId); if(connectedNodeData){ const connectedNodeDisplay = (connectedNodeData.displayText || connectedNodeData.id).replace(/_/g, ' '); const listItem = document.createElement('li'); listItem.innerHTML = `${relationType} ${connectedNodeDisplay} (<em>${connectedNodeData.type.replace(/_/g, ' ')}</em>)`; nodeConnectionsList.appendChild(listItem); } } }); nodeConnectionsDetails.style.display = hasConnections ? 'block' : 'none'; nodeInspectorDisplay.style.display = 'block';
                 briefInteractionPauseUntil = Date.now() + ROTATION_PAUSE_DURATION;
             } else { 
                 clearHighlights(); hideEdgeDefinition(); hideNodeInspector(); 
@@ -394,7 +491,6 @@
         function hideNodeInspector() { nodeInspectorDisplay.style.display = 'none'; }
         function onWindowResize() { camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight); labelRenderer.setSize(window.innerWidth, window.innerHeight); }
         
-        let frameCount = 0;
         function animate() { 
             requestAnimationFrame(animate); 
             const currentTime = Date.now();
@@ -408,6 +504,10 @@
 
             nodes.forEach((nodeMesh) => {
                 if (nodeMesh.userData.label) { nodeMesh.userData.label.position.copy(nodeMesh.position); nodeMesh.userData.label.position.y += 3.0; }
+                 if (nodeMesh.userData.ring) { // Keep ring with Akbar node
+                    nodeMesh.userData.ring.position.copy(nodeMesh.position);
+                    // Ring rotation is fixed, so no update needed here if Akbar node doesn't rotate itself
+                }
             });
             edges.forEach(edgeWrapper => { 
                  if (edgeWrapper.label) {
@@ -420,8 +520,6 @@
                  }
             });
             renderer.render(scene, camera); labelRenderer.render(scene, camera);
-            // if (frameCount % 60 === 0) console.log("Animate frame running: " + frameCount) ; // Log every 60 frames
-            // frameCount++;
         }
         window.onload = function() { 
             console.log("Window loaded.");
@@ -430,18 +528,10 @@
                 animate();
                 console.log("Three.js setup and animation loop started.");
             } catch (e) {
-                console.error("Error during init or animate setup:", e);
-                // Display error to user on the page itself if console not open
+                console.error("ERROR DURING INIT OR ANIMATE:", e);
                 const errDiv = document.createElement('div');
-                errDiv.style.position = 'absolute';
-                errDiv.style.top = '0';
-                errDiv.style.left = '0';
-                errDiv.style.width = '100%';
-                errDiv.style.padding = '20px';
-                errDiv.style.backgroundColor = 'red';
-                errDiv.style.color = 'white';
-                errDiv.style.zIndex = '1000';
-                errDiv.innerText = 'An error occurred: ' + e.message + '\nCheck console for details.';
+                errDiv.style.cssText = 'position:absolute;top:0;left:0;width:100%;padding:20px;background-color:red;color:white;z-index:1000;font-family:monospace;';
+                errDiv.innerText = 'An error occurred: ' + e.message + '\n\n' + (e.stack || '') + '\n\nCheck console for more details.';
                 document.body.appendChild(errDiv);
             }
         };

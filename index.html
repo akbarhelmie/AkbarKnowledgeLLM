@@ -64,34 +64,47 @@
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/renderers/CSS2DRenderer.js"></script>
 
     <script>
-        const graphData = { /* ... YOUR GRAPH DATA ... */ }; // Kept verbatim from previous version
-        const nodeColors = { /* ... YOUR NODE COLORS ... */ }; // Kept verbatim
+        const graphData = {
+            "nodes": [
+                { "id": "Akbar", "type": "Person" }, { "id": "Legal_Entrepreneurship", "type": "Domain" }, { "id": "Legal_Tech", "type": "Domain" }, { "id": "Venture_Capital", "type": "Financial_Concept" }, { "id": "Legal_Tech_Innovation", "type": "Domain" }, { "id": "Human_Rights_Law", "type": "Domain" }, { "id": "Sovereign_Wealth_Funds", "type": "Financial_Vehicle" }, { "id": "High_Net_Worth_Client_Strategies", "type": "Strategy" }, { "id": "Dividend_Staking_Lifestyle", "type": "Lifestyle" }, { "id": "Dividends_Income", "type": "Income_Stream" }, { "id": "Crypto_Investing", "type": "Financial_Activity" }, { "id": "Staking_Rewards", "type": "Income_Stream" }, { "id": "Sovereign_Wealth_Strategies", "type": "Strategy" }, { "id": "Hedge_Funds", "type": "Financial_Vehicle" }, { "id": "Investment_Capital", "type": "Financial_Concept" }, { "id": "Global_Strategies", "type": "Strategy" }, { "id": "Legal_Reformation", "type": "Ideology" }, { "id": "Adaptability", "type": "Value" }, { "id": "Creativity", "type": "Value" }, { "id": "Proactiveness", "type": "Value" }, { "id": "Progressivism", "type": "Ideology" }, { "id": "Unbiased_Politics", "type": "Ideology" }, { "id": "Nation's_Best", "type": "Aspirational" }, { "id": "World_Government", "type": "Aspirational" }, { "id": "Pacifist_Philanthropist", "type": "Ideology" }, { "id": "Crab_Mentality", "type": "Challenge" }, { "id": "Inferiority_Complex", "type": "Challenge" }, { "id": "Equal_Access", "type": "Goal" }, { "id": "Global_Citizenship", "type": "Goal" }, { "id": "Progressive_Citizenship_Foundation", "type": "Foundation" }, { "id": "Financial_Literacy", "type": "Value" }, { "id": "Dividend_Staking", "type": "Finance_Value" }, { "id": "Sustainable_Economy", "type": "Goal" }, { "id": "Sustainable_Agriculture", "type": "Goal" }, { "id": "Welfare_Priority", "type": "Policy" }, { "id": "No_Tax_Policy", "type": "Policy" }, { "id": "Financial_Independence", "type": "Finance_Value" }, { "id": "Universal_Prosperity", "type": "Goal" }, { "id": "Bureaucratic_Stagnation", "type": "Challenge" }, { "id": "MBTI_ENFJ", "type": "Personality_Trait", "displayText": "ENFJ (51%/49%)" },
+                { "id": "Drives_Strategy", "type": "Responsibility" }, { "id": "Drives_Growth", "type": "Responsibility" }, { "id": "Drives_Innovation", "type": "Responsibility" }, { "id": "Global_Expansion_Focus", "type": "FocusArea" }, { "id": "Client_Acquisition_Method", "type": "Method" }, { "id": "UHNW_Client_Retention_Method", "type": "Method" }, { "id": "Investment_Strategy_Determination", "type": "Responsibility" }, { "id": "Profitability_Focus", "type": "FocusArea" }, { "id": "Strategic_Initiatives_Oversight", "type": "Responsibility" }, { "id": "Strategic_Target_Objectives_Setting", "type": "Responsibility" }
+            ],
+            "edges": [
+                { "source": "Akbar", "target": "Legal_Entrepreneurship", "relation": "operates_in", "definition": "Akbar is actively involved in legal entrepreneurship." },{ "source": "Akbar", "target": "Legal_Tech", "relation": "operates_in", "definition": "Akbar uses technology in the legal sector." },{ "source": "Akbar", "target": "Venture_Capital", "relation": "operates_in" },{ "source": "Akbar", "target": "Legal_Tech_Innovation", "relation": "operates_in" },{ "source": "Akbar", "target": "Human_Rights_Law", "relation": "has_expertise_in", "definition": "Akbar has knowledge in Human Rights Law." },{ "source": "Akbar", "target": "Dividend_Staking_Lifestyle", "relation": "pursues" },{ "source": "Dividend_Staking_Lifestyle", "target": "Dividends_Income", "relation": "is_characterized_by" },{ "source": "Dividend_Staking_Lifestyle", "target": "Staking_Rewards", "relation": "is_characterized_by" },{ "source": "Akbar", "target": "Crypto_Investing", "relation": "involved_in" },{ "source": "Crypto_Investing", "target": "Dividends_Income", "relation": "generates" },{ "source": "Crypto_Investing", "target": "Staking_Rewards", "relation": "generates" },{ "source": "Akbar", "target": "Sovereign_Wealth_Funds", "relation": "utilizes" },{ "source": "Sovereign_Wealth_Funds", "target": "High_Net_Worth_Client_Strategies", "relation": "employs" },{ "source": "Sovereign_Wealth_Funds", "target": "Sovereign_Wealth_Strategies", "relation": "employs" },{ "source": "Akbar", "target": "High_Net_Worth_Client_Strategies", "relation": "provides_strategies_for" },{ "source": "Akbar", "target": "Sovereign_Wealth_Strategies", "relation": "provides_strategies_for" },{ "source": "Akbar", "target": "Hedge_Funds", "relation": "invests_through" },{ "source": "Akbar", "target": "Investment_Capital", "relation": "manages" },{ "source": "Investment_Capital", "target": "Hedge_Funds", "relation": "is_deployed_in" },{ "source": "Hedge_Funds", "target": "Global_Strategies", "relation": "utilizes" },{ "source": "Sovereign_Wealth_Funds", "target": "Hedge_Funds", "relation": "can_invest_in" },{ "source": "Venture_Capital", "target": "Investment_Capital", "relation": "is_a_form_of" },{ "source": "Legal_Tech_Innovation", "target": "Venture_Capital", "relation": "attracts" },{ "source": "Akbar", "target": "Global_Strategies", "relation": "applies" },{ "source": "Akbar", "target": "Legal_Reformation", "relation": "believes_in" },{ "source": "Akbar", "target": "Adaptability", "relation": "exhibits" },{ "source": "Akbar", "target": "Creativity", "relation": "exhibits" },{ "source": "Akbar", "target": "Proactiveness", "relation": "exhibits" },{ "source": "Akbar", "target": "Progressivism", "relation": "believes_in" },{ "source": "Akbar", "target": "Unbiased_Politics", "relation": "influenced_by" },{ "source": "Akbar", "target": "Nation's_Best", "relation": "aspires_to_be" },{ "source": "Nation's_Best", "target": "World_Government", "relation": "represents_in" },{ "source": "Akbar", "target": "Pacifist_Philanthropist", "relation": "identifies_as" },{ "source": "Akbar", "target": "Crab_Mentality", "relation": "seeks_to_eradicate", "color": 0xDC143C, "definition": "Akbar works against 'crab mentality'." },{ "source": "Akbar", "target": "Inferiority_Complex", "relation": "seeks_to_eradicate", "color": 0xDC143C, "definition": "Akbar aims to overcome inferiority complexes." },{ "source": "Akbar", "target": "Bureaucratic_Stagnation", "relation": "despises", "color": 0xDC143C, "definition": "Akbar opposes bureaucratic stagnation." },{ "source": "Akbar", "target": "Equal_Access", "relation": "advocates_for" },{ "source": "Equal_Access", "target": "Global_Citizenship", "relation": "enables" },{ "source": "Akbar", "target": "Global_Citizenship", "relation": "supports" },{ "source": "Akbar", "target": "Progressive_Citizenship_Foundation", "relation": "founded", "color": 0x32CD32, "definition": "Akbar founded the Progressive Citizenship Foundation." },{ "source": "Progressive_Citizenship_Foundation", "target": "Financial_Literacy", "relation": "teaches", "color": 0x32CD32 },{ "source": "Progressive_Citizenship_Foundation", "target": "Dividend_Staking", "relation": "promotes", "color": 0x32CD32 },{ "source": "Progressive_Citizenship_Foundation", "target": "Sustainable_Economy", "relation": "supports", "color": 0x32CD32 },{ "source": "Progressive_Citizenship_Foundation", "target": "Sustainable_Agriculture", "relation": "supports", "color": 0x32CD32 },{ "source": "Progressive_Citizenship_Foundation", "target": "Welfare_Priority", "relation": "prioritizes", "color": 0x32CD32 },{ "source": "Progressive_Citizenship_Foundation", "target": "No_Tax_Policy", "relation": "proposes", "color": 0x32CD32 },{ "source": "Progressive_Citizenship_Foundation", "target": "Financial_Independence", "relation": "empowers", "color": 0x32CD32 },{ "source": "Financial_Independence", "target": "Universal_Prosperity", "relation": "leads_to", "color": 0x32CD32 },{ "source": "Akbar", "target": "MBTI_ENFJ", "relation": "is_mbti_type", "color": 0x87CEEB, "definition": "Akbar's MBTI is ENFJ (51%/49%)." },{ "source": "Human_Rights_Law", "target": "Global_Citizenship", "relation": "underpins", "color": 0x8FBC8F, "definition": "Human Rights Law supports Global Citizenship." },
+                { "source": "Akbar", "target": "Drives_Strategy", "relation": "drives", "definition": "Akbar is responsible for driving the overall strategy." },{ "source": "Akbar", "target": "Drives_Growth", "relation": "drives", "definition": "Akbar actively works to drive growth initiatives." },{ "source": "Akbar", "target": "Drives_Innovation", "relation": "drives", "definition": "Akbar champions and drives innovation." },{ "source": "Akbar", "target": "Global_Expansion_Focus", "relation": "focuses_on", "definition": "Akbar's key focus is on global expansion." },{ "source": "Akbar", "target": "Client_Acquisition_Method", "relation": "manages_method", "definition": "Akbar oversees client acquisition strategies." },{ "source": "Akbar", "target": "UHNW_Client_Retention_Method", "relation": "manages_method", "definition": "Akbar oversees UHNW client retention strategies." },{ "source": "Global_Expansion_Focus", "target": "Client_Acquisition_Method", "relation": "involves", "definition": "Global expansion involves client acquisition." },{ "source": "Global_Expansion_Focus", "target": "UHNW_Client_Retention_Method", "relation": "involves", "definition": "Global expansion relies on UHNW client retention." },{ "source": "Akbar", "target": "Investment_Strategy_Determination", "relation": "determines", "definition": "Akbar determines investment strategy for portfolios." },{ "source": "Akbar", "target": "Profitability_Focus", "relation": "focuses_on", "definition": "Akbar maintains focus on profitability." },{ "source": "Akbar", "target": "Strategic_Initiatives_Oversight", "relation": "oversees", "definition": "Akbar oversees strategic initiatives." },{ "source": "Akbar", "target": "Strategic_Target_Objectives_Setting", "relation": "sets", "definition": "Akbar sets strategic target objectives." }
+            ]
+        };
+        const nodeColors = {
+            "Person": 0xFF6347, "Domain": 0x6A5ACD, "Financial_Concept": 0xFFD700,
+            "Financial_Vehicle": 0x32CD32, "Strategy": 0x8A2BE2, "Lifestyle": 0xFF69B4,
+            "Income_Stream": 0x00CED1, "Financial_Activity": 0xFFA500, "Ideology": 0x00BFFF,
+            "Value": 0x7CFC00, "Aspirational": 0xFF8C00, "Challenge": 0xDC143C,
+            "Goal": 0x20B2AA, "default": 0xA9A9A9,
+            "Foundation": 0x4682B4, "Finance_Value": 0xFFD700, "Policy": 0xFFA07A,
+            "Personality_Trait": 0x87CEEB,
+            "Responsibility": 0xDA70D6, "FocusArea": 0x48D1CC, "Method": 0xFA8072
+        };
 
         let scene, camera, renderer, labelRenderer, controls, raycaster, mouse;
         let graphGroup; 
         const nodes = new Map(); 
         const nodeDataMap = new Map(); 
-        const edges = []; // Will store guide lines, their userData will have DNA strands
+        const edges = []; 
 
         let isHighlightActive = false;
         const HIGHLIGHT_NODE_COLOR = 0xFFD700; const HIGHLIGHT_EDGE_COLOR = 0xFFA500; 
         const FAINT_OPACITY = 0.1; const NORMAL_NODE_OPACITY = 1.0;
-        const NORMAL_EDGE_OPACITY = 0.7; // Default opacity for DNA strands
-        const HIGHLIGHT_OPACITY = 0.9;
+        const NORMAL_EDGE_OPACITY = 0.7; const HIGHLIGHT_OPACITY = 0.95; // slightly less than 1 for a bit of blend
         
-        let autoRotationSpeed = 0.0003 * 3; // 3x faster
-        let isGraphDragging = false; // True if user is actively dragging with OrbitControls
-        let briefInteractionPauseUntil = 0; // Timestamp for brief pause after clicks
+        let autoRotationSpeed = 0.0003 * 3; 
+        let isGraphDragging = false; 
+        let briefInteractionPauseUntil = 0;
         const ROTATION_PAUSE_DURATION = 3000; 
-        const DNA_ANIMATION_DURATION = 4000; // Not used for a timed effect anymore, but good to have if needed
-
-        const DNA_NORMAL_RADIUS = 0.2;
-        const DNA_HIGHLIGHT_RADIUS = 0.4;
-        const DNA_NUM_SEGMENTS = 20; // Reduced for performance
-        const DNA_NUM_TURNS = 3;
+        
+        const DNA_NORMAL_RADIUS = 0.2; const DNA_HIGHLIGHT_RADIUS = 0.45;
+        const DNA_NUM_SEGMENTS = 20; const DNA_NUM_TURNS = 3;
 
         const nodeInspectorDisplay = document.getElementById('node-inspector-display');
-        // ... other getElementById calls ... (kept verbatim)
         const nodeIdText = document.getElementById('node-id-text');
         const nodeTypeText = document.getElementById('node-type-text');
         const nodeCategoryText = document.getElementById('node-category-text');
@@ -100,10 +113,9 @@
         const edgeDefinitionDisplay = document.getElementById('definition-display');
         const edgeDefinitionText = document.getElementById('definition-text');
 
-
         const SPREAD_DISTANCE = 75; 
 
-        function getNodeCategory(node) { /* ... same as previous ... */ 
+        function getNodeCategory(node) { 
             const id = node.id; const type = node.type;
             if (type === "Responsibility" || type === "FocusArea" || type === "Method") return 'OTHER';
             const financeTypes = ["Financial_Concept", "Financial_Vehicle", "Income_Stream", "Financial_Activity", "Finance_Value"];
@@ -121,11 +133,11 @@
             if (id === "Akbar") return 'CENTER';
             return 'OTHER';
         }
-        function relationToColor(relationString) { /* ... same as previous ... */ 
-             if (!relationString) relationString = "default";
+        function relationToColor(relationString) { 
+            if (!relationString) relationString = "default";
             let hash = 0;
             for (let i = 0; i < relationString.length; i++) { hash = relationString.charCodeAt(i) + ((hash << 5) - hash); hash = hash & hash; }
-            const h = Math.abs(hash) % 360; const s = 70 + (Math.abs(hash >> 8) % 30); const l = 55 + (Math.abs(hash >> 16) % 20); // Brighter/more saturated
+            const h = Math.abs(hash) % 360; const s = 70 + (Math.abs(hash >> 8) % 30); const l = 55 + (Math.abs(hash >> 16) % 20); 
             return new THREE.Color(`hsl(${h}, ${s}%, ${l}%)`).getHex();
         }
 
@@ -148,7 +160,7 @@
             controls.enableDamping = true; controls.dampingFactor = 0.05; controls.screenSpacePanning = false;
             controls.minDistance = 20; controls.maxDistance = SPREAD_DISTANCE * 6; 
             controls.addEventListener('start', () => { isGraphDragging = true; });
-            controls.addEventListener('end', () => { isGraphDragging = false; /* No automatic 3s pause after drag, resumes if no other pause is active */ });
+            controls.addEventListener('end', () => { isGraphDragging = false; });
 
             raycaster = new THREE.Raycaster(); mouse = new THREE.Vector2();
 
@@ -157,7 +169,7 @@
             directionalLight.position.set(SPREAD_DISTANCE, SPREAD_DISTANCE, SPREAD_DISTANCE); graphGroup.add(directionalLight);
 
             const nodeGeometry = new THREE.SphereGeometry(1.8, 32, 32); 
-            graphData.nodes.forEach(nd => { // Node creation and positioning logic largely same as previous
+            graphData.nodes.forEach(nd => {
                 nodeDataMap.set(nd.id, nd); 
                 const category = getNodeCategory(nd); nd.category = category; 
                 let nodeColorVal = nodeColors[nd.type] || nodeColors['default'];
@@ -165,7 +177,7 @@
                 nd.originalColor = nodeColorVal; 
                 const material = new THREE.MeshLambertMaterial({ color: nodeColorVal, transparent: true, opacity: NORMAL_NODE_OPACITY });
                 const nodeMesh = new THREE.Mesh(nodeGeometry, material);
-                let x, y, z; // Positioning logic from previous version...
+                let x, y, z; 
                 if (category === 'CENTER') { x = (Math.random() - 0.5) * SPREAD_DISTANCE * 0.01; y = (Math.random() - 0.5) * SPREAD_DISTANCE * 0.01; z = (Math.random() - 0.5) * SPREAD_DISTANCE * 0.01;}
                 else if (category === 'OTHER') { const otherMaxRadius = SPREAD_DISTANCE * 0.6; let ox, oy, oz, magSq; do { ox = (Math.random() - 0.5) * 2; oy = (Math.random() - 0.5) * 2; oz = (Math.random() - 0.5) * 2; magSq = ox*ox + oy*oy + oz*oz; } while (magSq === 0 || magSq > 1); const rFactor = 0.4 + Math.cbrt(Math.random()) * 0.6; const currentOtherRadius = otherMaxRadius * rFactor; const mag = Math.sqrt(magSq); x = (ox / mag) * currentOtherRadius; y = (oy / mag) * currentOtherRadius; z = (oz / mag) * currentOtherRadius; }
                 else { const shellTargetRadius = SPREAD_DISTANCE * (0.9 + Math.random() * 0.25); const cloudCenterOffset = SPREAD_DISTANCE * (0.65 + Math.random() * 0.35); const cloudSphereMaxRadius = SPREAD_DISTANCE * 0.35; let lox, loy, loz, lMagSq; do { lox = (Math.random() - 0.5) * 2; loy = (Math.random() - 0.5) * 2; loz = (Math.random() - 0.5) * 2; lMagSq = lox*lox + loy*loy + loz*loz; } while (lMagSq === 0 || lMagSq > 1); const lRadiusFactor = 0.25 + Math.cbrt(Math.random()) * 0.75; const currentLocalCloudRadius = cloudSphereMaxRadius * lRadiusFactor; const lMag = Math.sqrt(lMagSq); const localX = (lox / lMag) * currentLocalCloudRadius; const localY = (loy / lMag) * currentLocalCloudRadius; const localZ = (loz / lMag) * currentLocalCloudRadius; x = localX; y = localY; z = localZ; switch (category) { case 'FINANCE':  y += cloudCenterOffset; break; case 'FEELINGS': x -= cloudCenterOffset; break; case 'WELFARE':  x += cloudCenterOffset; break; case 'LEGAL':    y -= cloudCenterOffset; break; } let currentDist = Math.sqrt(x*x + y*y + z*z); if (currentDist === 0) currentDist = 1; x = (x / currentDist) * shellTargetRadius; y = (y / currentDist) * shellTargetRadius; z = (z / currentDist) * shellTargetRadius;}
@@ -184,38 +196,32 @@
                     if (edgeData.color !== undefined) { edgeColorToUse = edgeData.color; } 
                     else if (edgeData.relation) { edgeColorToUse = relationToColor(edgeData.relation); } 
                     else { edgeColorToUse = 0xAAAAAA; }
-                    edgeData.originalColor = edgeColorToUse; // Store for DNA strands
+                    edgeData.originalColor = edgeColorToUse; 
 
                     const p1 = sourceNodeMesh.position.clone(); const p2 = targetNodeMesh.position.clone();
                     const points1 = []; const points2 = [];
                     for (let i = 0; i <= DNA_NUM_SEGMENTS; i++) { points1.push(new THREE.Vector3()); points2.push(new THREE.Vector3()); }
                     const dnaGeometry1 = new THREE.BufferGeometry().setFromPoints(points1);
                     const dnaGeometry2 = new THREE.BufferGeometry().setFromPoints(points2);
-                    
-                    // Use slightly different colors for the two strands, derived from edgeColorToUse
-                    const strandColor1 = new THREE.Color(edgeColorToUse).offsetHSL(0, 0.1, 0.05).getHex(); // Slightly lighter/more saturated
-                    const strandColor2 = new THREE.Color(edgeColorToUse).offsetHSL(0, -0.05, -0.05).getHex(); // Slightly darker/less saturated
-
+                    const strandColor1 = new THREE.Color(edgeColorToUse).offsetHSL(0, 0.1, 0.05).getHex();
+                    const strandColor2 = new THREE.Color(edgeColorToUse).offsetHSL(0, -0.05, -0.05).getHex();
                     const dnaMaterial1 = new THREE.LineBasicMaterial({ color: strandColor1, transparent: true, opacity: NORMAL_EDGE_OPACITY });
                     const dnaMaterial2 = new THREE.LineBasicMaterial({ color: strandColor2, transparent: true, opacity: NORMAL_EDGE_OPACITY });
-                    const strand1 = new THREE.Line(dnaGeometry1, dnaMaterial1);
-                    const strand2 = new THREE.Line(dnaGeometry2, dnaMaterial2);
+                    const strand1 = new THREE.Line(dnaGeometry1, dnaMaterial1); const strand2 = new THREE.Line(dnaGeometry2, dnaMaterial2);
                     graphGroup.add(strand1); graphGroup.add(strand2);
 
-                    const edgeGuideData = { // This object will be stored in the 'edges' array
+                    const edgeWrapper = { 
                         id: `${edgeData.source}_${edgeData.target}_${edgeData.relation}`,
                         originalData: edgeData,
                         dna: {
-                            strand1, strand2,
-                            phase: Math.random() * Math.PI * 2, // Random initial phase for variety
+                            strand1, strand2, phase: Math.random() * Math.PI * 2,
                             currentRadius: DNA_NORMAL_RADIUS, normalRadius: DNA_NORMAL_RADIUS, highlightRadius: DNA_HIGHLIGHT_RADIUS,
                             numTurns: DNA_NUM_TURNS, numSegments: DNA_NUM_SEGMENTS,
-                            p1, p2, // Store initial positions (local to graphGroup)
                             originalColor1: strandColor1, originalColor2: strandColor2
                         },
                         label: null 
                     };
-                    edges.push(edgeGuideData); 
+                    edges.push(edgeWrapper); 
                     
                     if (edgeData.relation) {
                         const midpoint = new THREE.Vector3().addVectors(p1, p2).multiplyScalar(0.5);
@@ -223,17 +229,15 @@
                         relationLabelDiv.className = 'node-label edge-relation-label';
                         relationLabelDiv.textContent = edgeData.relation.replace(/_/g, ' ');
                         relationLabelDiv.addEventListener('click', (event) => {
-                            event.stopPropagation(); 
-                            clearHighlights(); 
-                            applyEdgeHighlight(edgeData); // This will also handle making DNA bigger
-                            briefInteractionPauseUntil = Date.now() + ROTATION_PAUSE_DURATION; // Pause for 3s after click + DNA grow
+                            event.stopPropagation(); clearHighlights(); applyEdgeHighlight(edgeData);
+                            briefInteractionPauseUntil = Date.now() + ROTATION_PAUSE_DURATION;
                             hideNodeInspector(); 
                             if (edgeData.definition) { edgeDefinitionText.innerHTML = edgeData.definition.replace(/\n/g, '<br>'); edgeDefinitionDisplay.style.display = 'block'; } 
                             else { edgeDefinitionText.textContent = 'No specific details for this relationship.'; edgeDefinitionDisplay.style.display = 'block'; }
                         });
                         const relationLabel = new THREE.CSS2DObject(relationLabelDiv);
                         relationLabel.position.copy(midpoint); graphGroup.add(relationLabel); 
-                        edgeGuideData.label = relationLabel; // Assign label to our wrapper object
+                        edgeWrapper.label = relationLabel;
                     }
                 }
             });
@@ -256,8 +260,8 @@
                 if (nodeMesh.material.emissive) nodeMesh.material.emissive.setHex(0x000000);
                 nodeMesh.material.needsUpdate = true;
             });
-            edges.forEach(edgeWrapper => { // Iterate our edge wrappers
-                edgeWrapper.dna.currentRadius = edgeWrapper.dna.normalRadius; // Reset DNA radius
+            edges.forEach(edgeWrapper => {
+                edgeWrapper.dna.currentRadius = edgeWrapper.dna.normalRadius; 
                 edgeWrapper.dna.strand1.material.color.setHex(edgeWrapper.dna.originalColor1);
                 edgeWrapper.dna.strand1.material.opacity = NORMAL_EDGE_OPACITY;
                 edgeWrapper.dna.strand2.material.color.setHex(edgeWrapper.dna.originalColor2);
@@ -281,55 +285,54 @@
                 nodeMesh.material.needsUpdate = true;
             });
 
-            edges.forEach(edgeWrapper => { // Iterate our edge wrappers
-                const edge = edgeWrapper.originalData;
-                const dna = edgeWrapper.dna;
+            edges.forEach(edgeWrapper => {
+                const edge = edgeWrapper.originalData; const dna = edgeWrapper.dna;
                 const isClickedEdge = edge.source === sourceId && edge.target === targetId && edge.relation === clickedEdgeData.relation;
                 const isRelatedToHighlightedNodes = edge.source === sourceId || edge.target === sourceId || edge.source === targetId || edge.target === targetId;
 
                 if (isClickedEdge) { 
-                    dna.currentRadius = dna.highlightRadius; // Make DNA bigger
-                    dna.strand1.material.color.setHex(HIGHLIGHT_EDGE_COLOR); 
-                    dna.strand1.material.opacity = HIGHLIGHT_OPACITY;
-                    dna.strand2.material.color.setHex(HIGHLIGHT_EDGE_COLOR); 
-                    dna.strand2.material.opacity = HIGHLIGHT_OPACITY;
+                    dna.currentRadius = dna.highlightRadius; 
+                    dna.strand1.material.color.setHex(HIGHLIGHT_EDGE_COLOR); dna.strand1.material.opacity = HIGHLIGHT_OPACITY;
+                    dna.strand2.material.color.setHex(HIGHLIGHT_EDGE_COLOR); dna.strand2.material.opacity = HIGHLIGHT_OPACITY;
                 } else if (isRelatedToHighlightedNodes) { 
-                    // dna.currentRadius remains dna.normalRadius for these
-                    dna.strand1.material.color.setHex(new THREE.Color(dna.originalColor1).lerp(new THREE.Color(HIGHLIGHT_EDGE_COLOR), 0.5).getHex()); // Mix
+                    dna.currentRadius = dna.normalRadius; // Keep other related DNA normal size
+                    dna.strand1.material.color.setHex(new THREE.Color(dna.originalColor1).lerp(new THREE.Color(HIGHLIGHT_EDGE_COLOR), 0.6).getHex()); 
                     dna.strand1.material.opacity = HIGHLIGHT_OPACITY * 0.7; 
-                    dna.strand2.material.color.setHex(new THREE.Color(dna.originalColor2).lerp(new THREE.Color(HIGHLIGHT_EDGE_COLOR), 0.5).getHex()); // Mix
+                    dna.strand2.material.color.setHex(new THREE.Color(dna.originalColor2).lerp(new THREE.Color(HIGHLIGHT_EDGE_COLOR), 0.6).getHex()); 
                     dna.strand2.material.opacity = HIGHLIGHT_OPACITY * 0.7;
                 } else { 
-                    // dna.currentRadius remains dna.normalRadius
-                    dna.strand1.material.color.setHex(dna.originalColor1); 
-                    dna.strand1.material.opacity = FAINT_OPACITY * 0.7; 
-                    dna.strand2.material.color.setHex(dna.originalColor2); 
-                    dna.strand2.material.opacity = FAINT_OPACITY * 0.7;
+                    dna.currentRadius = dna.normalRadius;
+                    dna.strand1.material.color.setHex(dna.originalColor1); dna.strand1.material.opacity = FAINT_OPACITY * 0.7; 
+                    dna.strand2.material.color.setHex(dna.originalColor2); dna.strand2.material.opacity = FAINT_OPACITY * 0.7;
                 }
-                dna.strand1.material.needsUpdate = true;
-                dna.strand2.material.needsUpdate = true;
+                dna.strand1.material.needsUpdate = true; dna.strand2.material.needsUpdate = true;
             });
         }
         
         function updateAllDNAStrands() {
             edges.forEach(edgeWrapper => {
                 const dna = edgeWrapper.dna;
-                dna.phase += 0.05; // Constant animation speed for all DNA
+                const sourceNode = nodes.get(edgeWrapper.originalData.source);
+                const targetNode = nodes.get(edgeWrapper.originalData.target);
+
+                if (!sourceNode || !targetNode) return; // Nodes might not be ready/found
+
+                // Update p1 and p2 based on current node positions within graphGroup
+                dna.p1.copy(sourceNode.position);
+                dna.p2.copy(targetNode.position);
+
+                dna.phase += 0.035; // Adjust for desired animation speed
 
                 const points1 = []; const points2 = [];
-                // Ensure p1 and p2 are updated if nodes can move relative to graphGroup (not in this version, but good for future)
-                const p1 = nodes.get(edgeWrapper.originalData.source).position;
-                const p2 = nodes.get(edgeWrapper.originalData.target).position;
-                
-                const direction = new THREE.Vector3().subVectors(p2, p1);
+                const direction = new THREE.Vector3().subVectors(dna.p2, dna.p1);
                 const edgeLength = direction.length();
-                if (edgeLength < 0.01) { // If nodes are too close, hide DNA or simplify
+
+                if (edgeLength < 0.01) { 
                     dna.strand1.visible = false; dna.strand2.visible = false; return;
                 } else {
                     dna.strand1.visible = true; dna.strand2.visible = true;
                 }
                 direction.normalize();
-
                 let up = new THREE.Vector3(0, 1, 0);
                 if (Math.abs(direction.y) > 0.99) { up.set(1, 0, 0); } 
                 const ortho1 = new THREE.Vector3().crossVectors(direction, up).normalize();
@@ -337,9 +340,9 @@
 
                 for (let i = 0; i <= dna.numSegments; i++) {
                     const t = i / dna.numSegments;
-                    const currentPointOnEdge = new THREE.Vector3().copy(p1).addScaledVector(direction, t * edgeLength);
+                    const currentPointOnEdge = new THREE.Vector3().copy(dna.p1).addScaledVector(direction, t * edgeLength);
                     const angle = t * dna.numTurns * 2 * Math.PI + dna.phase;
-                    const radius = dna.currentRadius; // Use currentRadius (can be normal or highlighted)
+                    const radius = dna.currentRadius; 
                     
                     const offset1 = new THREE.Vector3().addScaledVector(ortho1, Math.cos(angle) * radius).addScaledVector(ortho2, Math.sin(angle) * radius);
                     points1.push(currentPointOnEdge.clone().add(offset1));
@@ -347,7 +350,9 @@
                     points2.push(currentPointOnEdge.clone().add(offset2));
                 }
                 dna.strand1.geometry.setFromPoints(points1); 
+                dna.strand1.geometry.attributes.position.needsUpdate = true; // <<< CRITICAL FIX
                 dna.strand2.geometry.setFromPoints(points2);
+                dna.strand2.geometry.attributes.position.needsUpdate = true; // <<< CRITICAL FIX
             });
         }
 
@@ -358,25 +363,24 @@
             
             if (intersects.length > 0) { 
                 clearHighlights(); hideEdgeDefinition();
-                // ... Node inspector logic from previous (kept verbatim) ...
                 const clickedNodeMesh = intersects[0].object; const nodeData = clickedNodeMesh.userData.originalData; const nodeCategory = clickedNodeMesh.userData.category; nodeConnectionsList.innerHTML = ''; let hasConnections = false; nodeIdText.textContent = (nodeData.displayText || nodeData.id).replace(/_/g, ' '); nodeTypeText.textContent = nodeData.type.replace(/_/g, ' '); nodeCategoryText.textContent = nodeCategory || 'N/A'; graphData.edges.forEach(edge => { let connectedNodeId = null, relationType = '', relationText = edge.relation ? edge.relation.replace(/_/g, ' ') : 'related to'; if (edge.source === nodeData.id) { connectedNodeId = edge.target; relationType = relationText + " &rarr;"; hasConnections = true; } else if (edge.target === nodeData.id) { connectedNodeId = edge.source; relationType = "&larr; " + relationText; hasConnections = true; } if (connectedNodeId) { const connectedNodeData = nodeDataMap.get(connectedNodeId); const connectedNodeDisplay = (connectedNodeData.displayText || connectedNodeData.id).replace(/_/g, ' '); const listItem = document.createElement('li'); listItem.innerHTML = `${relationType} ${connectedNodeDisplay} (<em>${connectedNodeData.type.replace(/_/g, ' ')}</em>)`; nodeConnectionsList.appendChild(listItem); } }); nodeConnectionsDetails.style.display = hasConnections ? 'block' : 'none'; nodeInspectorDisplay.style.display = 'block';
-                briefInteractionPauseUntil = Date.now() + ROTATION_PAUSE_DURATION;
+                briefInteractionPauseUntil = Date.now() + ROTATION_PAUSE_DURATION; // Pause for 3s after node click
             } else { 
                 clearHighlights(); hideEdgeDefinition(); hideNodeInspector(); 
-                // briefInteractionPauseUntil = Date.now() + ROTATION_PAUSE_DURATION; // Clicking empty space also pauses briefly
+                // No explicit pause needed here if not interacting with elements; drag handles its own pause.
             }
         }
         function hideEdgeDefinition() { edgeDefinitionDisplay.style.display = 'none'; }
         function hideNodeInspector() { nodeInspectorDisplay.style.display = 'none'; }
-        function onWindowResize() { /* ... same ... */ camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight); labelRenderer.setSize(window.innerWidth, window.innerHeight); }
+        function onWindowResize() { camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight); labelRenderer.setSize(window.innerWidth, window.innerHeight); }
         
         function animate() { 
             requestAnimationFrame(animate); 
             const currentTime = Date.now();
-            let المحلية_autoRotate = true;
-            if (isGraphDragging) { المحلية_autoRotate = false; }
-            if (currentTime < briefInteractionPauseUntil) { المحلية_autoRotate = false; }
-            if (المحلية_autoRotate && graphGroup) { graphGroup.rotation.y += autoRotationSpeed; }
+            let canAutoRotate = true;
+            if (isGraphDragging) { canAutoRotate = false; }
+            if (currentTime < briefInteractionPauseUntil) { canAutoRotate = false; }
+            if (canAutoRotate && graphGroup) { graphGroup.rotation.y += autoRotationSpeed; }
             
             controls.update();
             updateAllDNAStrands(); 

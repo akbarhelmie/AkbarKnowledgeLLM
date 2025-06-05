@@ -41,7 +41,7 @@
             <li><strong>R-Click & Drag:</strong> Pan (pauses auto-rotation while held)</li>
             <li><strong>Scroll Wheel:</strong> Zoom</li>
         </ul>
-        <p class="text-sm">Central node is blue with a spinning ring. Edges have animated rings.</p>
+        <p class="text-sm">Central node is blue with a spinning ring. Edges have animated rings. Graph auto-rotates within a transparent sphere.</p>
         
         <div id="node-inspector-display" style="display:none;">
             <h2 id="node-inspector-title">Node Details:</h2>
@@ -64,35 +64,44 @@
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/renderers/CSS2DRenderer.js"></script>
 
     <script>
-        const graphDataFull = { /* Full graphData from previous working version */ };
-        const nodeColorsFull = { /* Full nodeColors from previous working version */ };
-        // Data objects from the version that fixed the "black screen":
-        // const graphDataFull = { ... as provided ... };
-        // const nodeColorsFull = { ... as provided ... };
-        // For brevity, I'll use the same structure as before, the generator will insert the full data.
-        const graphDataFullFallback = { // Fallback, actual data will be used by generator
+        console.log("Script started. Defining graphDataFull and nodeColorsFull...");
+
+        const graphDataFull = {
             "nodes": [
                 { "id": "Akbar", "type": "Person" }, { "id": "Legal_Entrepreneurship", "type": "Domain" }, { "id": "Legal_Tech", "type": "Domain" }, { "id": "Venture_Capital", "type": "Financial_Concept" }, { "id": "Legal_Tech_Innovation", "type": "Domain" }, { "id": "Human_Rights_Law", "type": "Domain" }, { "id": "Sovereign_Wealth_Funds", "type": "Financial_Vehicle" }, { "id": "High_Net_Worth_Client_Strategies", "type": "Strategy" }, { "id": "Dividend_Staking_Lifestyle", "type": "Lifestyle" }, { "id": "Dividends_Income", "type": "Income_Stream" }, { "id": "Crypto_Investing", "type": "Financial_Activity" }, { "id": "Staking_Rewards", "type": "Income_Stream" }, { "id": "Sovereign_Wealth_Strategies", "type": "Strategy" }, { "id": "Hedge_Funds", "type": "Financial_Vehicle" }, { "id": "Investment_Capital", "type": "Financial_Concept" }, { "id": "Global_Strategies", "type": "Strategy" }, { "id": "Legal_Reformation", "type": "Ideology" }, { "id": "Adaptability", "type": "Value" }, { "id": "Creativity", "type": "Value" }, { "id": "Proactiveness", "type": "Value" }, { "id": "Progressivism", "type": "Ideology" }, { "id": "Unbiased_Politics", "type": "Ideology" }, { "id": "Nation's_Best", "type": "Aspirational" }, { "id": "World_Government", "type": "Aspirational" }, { "id": "Pacifist_Philanthropist", "type": "Ideology" }, { "id": "Crab_Mentality", "type": "Challenge" }, { "id": "Inferiority_Complex", "type": "Challenge" }, { "id": "Equal_Access", "type": "Goal" }, { "id": "Global_Citizenship", "type": "Goal" }, { "id": "Progressive_Citizenship_Foundation", "type": "Foundation" }, { "id": "Financial_Literacy", "type": "Value" }, { "id": "Dividend_Staking", "type": "Finance_Value" }, { "id": "Sustainable_Economy", "type": "Goal" }, { "id": "Sustainable_Agriculture", "type": "Goal" }, { "id": "Welfare_Priority", "type": "Policy" }, { "id": "No_Tax_Policy", "type": "Policy" }, { "id": "Financial_Independence", "type": "Finance_Value" }, { "id": "Universal_Prosperity", "type": "Goal" }, { "id": "Bureaucratic_Stagnation", "type": "Challenge" }, { "id": "MBTI_ENFJ", "type": "Personality_Trait", "displayText": "ENFJ (51%/49%)" },
                 { "id": "Drives_Strategy", "type": "Responsibility" }, { "id": "Drives_Growth", "type": "Responsibility" }, { "id": "Drives_Innovation", "type": "Responsibility" }, { "id": "Global_Expansion_Focus", "type": "FocusArea" }, { "id": "Client_Acquisition_Method", "type": "Method" }, { "id": "UHNW_Client_Retention_Method", "type": "Method" }, { "id": "Investment_Strategy_Determination", "type": "Responsibility" }, { "id": "Profitability_Focus", "type": "FocusArea" }, { "id": "Strategic_Initiatives_Oversight", "type": "Responsibility" }, { "id": "Strategic_Target_Objectives_Setting", "type": "Responsibility" }
             ],
-            "edges": [ /* ... all edges ... */ ]
+            "edges": [
+                { "source": "Akbar", "target": "Legal_Entrepreneurship", "relation": "operates_in", "definition": "Akbar is actively involved in legal entrepreneurship." },{ "source": "Akbar", "target": "Legal_Tech", "relation": "operates_in", "definition": "Akbar uses technology in the legal sector." },{ "source": "Akbar", "target": "Venture_Capital", "relation": "operates_in" },{ "source": "Akbar", "target": "Legal_Tech_Innovation", "relation": "operates_in" },{ "source": "Akbar", "target": "Human_Rights_Law", "relation": "has_expertise_in", "definition": "Akbar has knowledge in Human Rights Law." },{ "source": "Akbar", "target": "Dividend_Staking_Lifestyle", "relation": "pursues" },{ "source": "Dividend_Staking_Lifestyle", "target": "Dividends_Income", "relation": "is_characterized_by" },{ "source": "Dividend_Staking_Lifestyle", "target": "Staking_Rewards", "relation": "is_characterized_by" },{ "source": "Akbar", "target": "Crypto_Investing", "relation": "involved_in" },{ "source": "Crypto_Investing", "target": "Dividends_Income", "relation": "generates" },{ "source": "Crypto_Investing", "target": "Staking_Rewards", "relation": "generates" },{ "source": "Akbar", "target": "Sovereign_Wealth_Funds", "relation": "utilizes" },{ "source": "Sovereign_Wealth_Funds", "target": "High_Net_Worth_Client_Strategies", "relation": "employs" },{ "source": "Sovereign_Wealth_Funds", "target": "Sovereign_Wealth_Strategies", "relation": "employs" },{ "source": "Akbar", "target": "High_Net_Worth_Client_Strategies", "relation": "provides_strategies_for" },{ "source": "Akbar", "target": "Sovereign_Wealth_Strategies", "relation": "provides_strategies_for" },{ "source": "Akbar", "target": "Hedge_Funds", "relation": "invests_through" },{ "source": "Akbar", "target": "Investment_Capital", "relation": "manages" },{ "source": "Investment_Capital", "target": "Hedge_Funds", "relation": "is_deployed_in" },{ "source": "Hedge_Funds", "target": "Global_Strategies", "relation": "utilizes" },{ "source": "Sovereign_Wealth_Funds", "target": "Hedge_Funds", "relation": "can_invest_in" },{ "source": "Venture_Capital", "target": "Investment_Capital", "relation": "is_a_form_of" },{ "source": "Legal_Tech_Innovation", "target": "Venture_Capital", "relation": "attracts" },{ "source": "Akbar", "target": "Global_Strategies", "relation": "applies" },{ "source": "Akbar", "target": "Legal_Reformation", "relation": "believes_in" },{ "source": "Akbar", "target": "Adaptability", "relation": "exhibits" },{ "source": "Akbar", "target": "Creativity", "relation": "exhibits" },{ "source": "Akbar", "target": "Proactiveness", "relation": "exhibits" },{ "source": "Akbar", "target": "Progressivism", "relation": "believes_in" },{ "source": "Akbar", "target": "Unbiased_Politics", "relation": "influenced_by" },{ "source": "Akbar", "target": "Nation's_Best", "relation": "aspires_to_be" },{ "source": "Nation's_Best", "target": "World_Government", "relation": "represents_in" },{ "source": "Akbar", "target": "Pacifist_Philanthropist", "relation": "identifies_as" },{ "source": "Akbar", "target": "Crab_Mentality", "relation": "seeks_to_eradicate", "color": 0xDC143C, "definition": "Akbar works against 'crab mentality'." },{ "source": "Akbar", "target": "Inferiority_Complex", "relation": "seeks_to_eradicate", "color": 0xDC143C, "definition": "Akbar aims to overcome inferiority complexes." },{ "source": "Akbar", "target": "Bureaucratic_Stagnation", "relation": "despises", "color": 0xDC143C, "definition": "Akbar opposes bureaucratic stagnation." },{ "source": "Akbar", "target": "Equal_Access", "relation": "advocates_for" },{ "source": "Equal_Access", "target": "Global_Citizenship", "relation": "enables" },{ "source": "Akbar", "target": "Global_Citizenship", "relation": "supports" },{ "source": "Akbar", "target": "Progressive_Citizenship_Foundation", "relation": "founded", "color": 0x32CD32, "definition": "Akbar founded the Progressive Citizenship Foundation." },{ "source": "Progressive_Citizenship_Foundation", "target": "Financial_Literacy", "relation": "teaches", "color": 0x32CD32 },{ "source": "Progressive_Citizenship_Foundation", "target": "Dividend_Staking", "relation": "promotes", "color": 0x32CD32 },{ "source": "Progressive_Citizenship_Foundation", "target": "Sustainable_Economy", "relation": "supports", "color": 0x32CD32 },{ "source": "Progressive_Citizenship_Foundation", "target": "Sustainable_Agriculture", "relation": "supports", "color": 0x32CD32 },{ "source": "Progressive_Citizenship_Foundation", "target": "Welfare_Priority", "relation": "prioritizes", "color": 0x32CD32 },{ "source": "Progressive_Citizenship_Foundation", "target": "No_Tax_Policy", "relation": "proposes", "color": 0x32CD32 },{ "source": "Progressive_Citizenship_Foundation", "target": "Financial_Independence", "relation": "empowers", "color": 0x32CD32 },{ "source": "Financial_Independence", "target": "Universal_Prosperity", "relation": "leads_to", "color": 0x32CD32 },{ "source": "Akbar", "target": "MBTI_ENFJ", "relation": "is_mbti_type", "color": 0x87CEEB, "definition": "Akbar's MBTI is ENFJ (51%/49%)." },{ "source": "Human_Rights_Law", "target": "Global_Citizenship", "relation": "underpins", "color": 0x8FBC8F, "definition": "Human Rights Law supports Global Citizenship." },
+                { "source": "Akbar", "target": "Drives_Strategy", "relation": "drives", "definition": "Akbar is responsible for driving the overall strategy." },{ "source": "Akbar", "target": "Drives_Growth", "relation": "drives", "definition": "Akbar actively works to drive growth initiatives." },{ "source": "Akbar", "target": "Drives_Innovation", "relation": "drives", "definition": "Akbar champions and drives innovation." },{ "source": "Akbar", "target": "Global_Expansion_Focus", "relation": "focuses_on", "definition": "Akbar's key focus is on global expansion." },{ "source": "Akbar", "target": "Client_Acquisition_Method", "relation": "manages_method", "definition": "Akbar oversees client acquisition strategies." },{ "source": "Akbar", "target": "UHNW_Client_Retention_Method", "relation": "manages_method", "definition": "Akbar oversees UHNW client retention strategies." },{ "source": "Global_Expansion_Focus", "target": "Client_Acquisition_Method", "relation": "involves", "definition": "Global expansion involves client acquisition." },{ "source": "Global_Expansion_Focus", "target": "UHNW_Client_Retention_Method", "relation": "involves", "definition": "Global expansion relies on UHNW client retention." },{ "source": "Akbar", "target": "Investment_Strategy_Determination", "relation": "determines", "definition": "Akbar determines investment strategy for portfolios." },{ "source": "Akbar", "target": "Profitability_Focus", "relation": "focuses_on", "definition": "Akbar maintains focus on profitability." },{ "source": "Akbar", "target": "Strategic_Initiatives_Oversight", "relation": "oversees", "definition": "Akbar oversees strategic initiatives." },{ "source": "Akbar", "target": "Strategic_Target_Objectives_Setting", "relation": "sets", "definition": "Akbar sets strategic target objectives." }
+            ]
         };
-        const nodeColorsFullFallback = { /* ... all node colors ... */ };
+        const nodeColorsFull = {
+            "Person": 0xFF6347, "Domain": 0x6A5ACD, "Financial_Concept": 0xFFD700,
+            "Financial_Vehicle": 0x32CD32, "Strategy": 0x8A2BE2, "Lifestyle": 0xFF69B4,
+            "Income_Stream": 0x00CED1, "Financial_Activity": 0xFFA500, "Ideology": 0x00BFFF,
+            "Value": 0x7CFC00, "Aspirational": 0xFF8C00, "Challenge": 0xDC143C,
+            "Goal": 0x20B2AA, "default": 0xA9A9A9,
+            "Foundation": 0x4682B4, "Finance_Value": 0xFFD700, "Policy": 0xFFA07A,
+            "Personality_Trait": 0x87CEEB,
+            "Responsibility": 0xDA70D6, "FocusArea": 0x48D1CC, "Method": 0xFA8072
+        };
 
+        console.log("graphDataFull and nodeColorsFull defined.");
 
         let scene, camera, renderer, labelRenderer, controls, raycaster, mouse;
         let graphGroup; 
         const nodes = new Map(); 
         const nodeDataMap = new Map(); 
-        const edges = []; // Will store edge wrappers including DNA and new rings
+        const edges = []; 
 
         let isHighlightActive = false;
         const HIGHLIGHT_NODE_COLOR = 0xFFD700; const HIGHLIGHT_EDGE_COLOR = 0xFFA500; 
         const FAINT_OPACITY = 0.08; 
         const NORMAL_NODE_OPACITY = 1.0;
-        const AKBAR_NODE_OPACITY = 0.75; // 25% transparent
-        const NORMAL_EDGE_OPACITY = 0.35; // More translucent DNA strands
-        const EDGE_RING_OPACITY = 0.3; // Opacity for rings on edges
+        const AKBAR_NODE_OPACITY = 0.75; 
+        const NORMAL_EDGE_OPACITY = 0.35; 
+        const EDGE_RING_OPACITY = 0.3; 
         const HIGHLIGHT_OPACITY = 0.9;
         
         let autoRotationSpeed = 0.0003 * 3; 
@@ -100,22 +109,63 @@
         let briefInteractionPauseUntil = 0;
         const ROTATION_PAUSE_DURATION = 3000; 
         
-        const DNA_NORMAL_RADIUS = 0.18; // Slightly thinner DNA strands
-        const DNA_HIGHLIGHT_RADIUS = 0.40;
-        const DNA_NUM_SEGMENTS = 16; // Reduced for performance
-        const DNA_NUM_TURNS = 2;     // Reduced for performance
+        const DNA_NORMAL_RADIUS = 0.18; const DNA_HIGHLIGHT_RADIUS = 0.40; // Adjusted highlight radius
+        const DNA_NUM_SEGMENTS = 16; const DNA_NUM_TURNS = 2;
 
-        const EDGE_RING_RADIUS = 0.5; // Radius of the small rings on edges
-        const EDGE_RING_TUBE_RADIUS = 0.05; // Thickness of these rings
+        const EDGE_RING_RADIUS = 0.4; // Slightly smaller rings on edges
+        const EDGE_RING_TUBE_RADIUS = 0.04;
+
 
         const nodeInspectorDisplay = document.getElementById('node-inspector-display');
-        // ... other getElementById calls ...
+        const nodeIdText = document.getElementById('node-id-text');
+        const nodeTypeText = document.getElementById('node-type-text');
+        const nodeCategoryText = document.getElementById('node-category-text');
+        const nodeConnectionsDetails = document.getElementById('node-connections-details');
+        const nodeConnectionsList = document.getElementById('node-connections-list');
+        const edgeDefinitionDisplay = document.getElementById('definition-display');
+        const edgeDefinitionText = document.getElementById('definition-text');
 
         const SPREAD_DISTANCE = 85; 
 
         function getNodeCategory(node) { /* ... same as previous ... */ }
         function relationToColor(relationString) { /* ... same as previous ... */ }
+        function clearHighlights() { /* ... same as previous ... */ }
+        function applyEdgeHighlight(clickedEdgeData) { /* ... same as previous ... */ }
+        function updateAllDNAStrands() { /* ... same as previous, with needsUpdate = true ... */ }
+        function updateEdgeRings() { /* ... same as previous ... */ }
+        function onCanvasClick(event) { /* ... same as previous ... */ }
+        function hideEdgeDefinition() { /* ... same as previous ... */ }
+        function hideNodeInspector() { /* ... same as previous ... */ }
+        function onWindowResize() { /* ... same as previous ... */ }
+        
+        // --- Full function definitions from the previous working version will be used below ---
+        // For brevity in showing the diff, they are collapsed here, but the generator will use the full ones.
+        // ... (All helper functions: getNodeCategory, relationToColor, init, clearHighlights, applyEdgeHighlight, updateAllDNAStrands, updateEdgeRings, onCanvasClick, hideEdgeDefinition, hideNodeInspector, onWindowResize, animate, window.onload)
+        // Critical: ensure init() uses graphDataFull and nodeColorsFull correctly.
+        // The full, correct init() and other functions from the prior "transparent sphere" response will be used.
 
+        // Re-inserting full functions here from last known good state + modifications from last response
+        function getNodeCategory(node) { 
+            const id = node.id; const type = node.type;
+            if (type === "Responsibility" || type === "FocusArea" || type === "Method") return 'OTHER';
+            const financeTypes = ["Financial_Concept", "Financial_Vehicle", "Income_Stream", "Financial_Activity", "Finance_Value"];
+            const financeIds = ["Dividend_Staking_Lifestyle"]; 
+            if (financeTypes.includes(type) || financeIds.includes(id)) return 'FINANCE';
+            const feelingsIds = ["Adaptability", "Creativity", "Proactiveness", "Crab_Mentality", "Inferiority_Complex", "MBTI_ENFJ"];
+            if (feelingsIds.includes(id) || type === "Personality_Trait" || (type === "Challenge" && !["Bureaucratic_Stagnation"].includes(id))) return 'FEELINGS';
+            const welfareTypes = ["Goal", "Foundation", "Policy", "Aspirational"];
+            const welfareIdeologies = ["Progressivism", "Pacifist_Philanthropist"];
+            const welfareValueIds = ["Financial_Literacy"]; 
+            if (welfareTypes.includes(type) || welfareIdeologies.includes(id) || welfareValueIds.includes(id)) return 'WELFARE';
+            const legalDomainIds = ["Legal_Entrepreneurship", "Legal_Tech", "Legal_Tech_Innovation", "Human_Rights_Law"];
+            const legalIdeologyIds = ["Legal_Reformation"];
+            if ((type === "Domain" && legalDomainIds.includes(id)) || legalIdeologyIds.includes(id)) return 'LEGAL';
+            if (id === "Akbar") return 'CENTER';
+            return 'OTHER';
+        }
+        function relationToColor(relationString) { 
+            if (!relationString) relationString = "default"; let hash = 0; for (let i = 0; i < relationString.length; i++) { hash = relationString.charCodeAt(i) + ((hash << 5) - hash); hash = hash & hash; } const h = Math.abs(hash) % 360; const s = 70 + (Math.abs(hash >> 8) % 30); const l = 55 + (Math.abs(hash >> 16) % 20); return new THREE.Color(`hsl(${h}, ${s}%, ${l}%)`).getHex();
+        }
 
         function init() {
             console.log("init started");
@@ -132,7 +182,6 @@
             camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, encompassingSphereRadius * 2.5); 
             camera.position.z = SPREAD_DISTANCE * 2.2; 
 
-            // ... renderer, labelRenderer, controls, raycaster setup (same as previous) ...
             renderer = new THREE.WebGLRenderer({ antialias: true });
             renderer.setSize(window.innerWidth, window.innerHeight); document.body.appendChild(renderer.domElement);
             labelRenderer = new THREE.CSS2DRenderer();
@@ -145,19 +194,18 @@
             controls.addEventListener('end', () => { isGraphDragging = false; });
             raycaster = new THREE.Raycaster(); mouse = new THREE.Vector2();
 
-
-            const ambientLight = new THREE.AmbientLight(0xeeeeee, 0.9); // Slightly brighter ambient
-            graphGroup.add(ambientLight);
-            const directionalLight = new THREE.DirectionalLight(0xffffff, 1.1); // Slightly brighter directional
+            const ambientLight = new THREE.AmbientLight(0xeeeeee, 0.9); graphGroup.add(ambientLight);
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 1.1); 
             directionalLight.position.set(SPREAD_DISTANCE, SPREAD_DISTANCE, SPREAD_DISTANCE); graphGroup.add(directionalLight);
             console.log("Basic scene setup complete.");
 
             const nodeGeometry = new THREE.SphereGeometry(1.8, 32, 32); 
+            if (!graphDataFull || !graphDataFull.nodes) { console.error("graphDataFull.nodes is undefined or graphDataFull is missing!"); return; } 
             
-            (graphDataFull.nodes || []).forEach(nd => {
+            graphDataFull.nodes.forEach(nd => { // Use graphDataFull
                 nodeDataMap.set(nd.id, nd); 
                 const category = getNodeCategory(nd); nd.category = category; 
-                let nodeColorVal = (nodeColorsFull[nd.type] || nodeColorsFull['default']); 
+                let nodeColorVal = (nodeColorsFull[nd.type] || nodeColorsFull['default']); // Use nodeColorsFull
                 nd.originalColor = nodeColorVal; 
                 
                 let material;
@@ -165,13 +213,8 @@
                     nodeColorVal = 0x6495ED; // Cornflower Blue for Akbar
                     nd.originalColor = nodeColorVal;
                     material = new THREE.MeshStandardMaterial({
-                        color: nodeColorVal,
-                        emissive: nodeColorVal, // Make it glow blue
-                        emissiveIntensity: 0.4,
-                        metalness: 0.2,
-                        roughness: 0.6,
-                        transparent: true, 
-                        opacity: AKBAR_NODE_OPACITY // 25% transparent
+                        color: nodeColorVal, emissive: nodeColorVal, emissiveIntensity: 0.4, metalness: 0.2, roughness: 0.6,
+                        transparent: true, opacity: AKBAR_NODE_OPACITY 
                     });
                 } else {
                      if (category === 'FINANCE') { nodeColorVal = 0x1E90FF; nd.originalColor = nodeColorVal;}
@@ -179,7 +222,6 @@
                 }
                 
                 const nodeMesh = new THREE.Mesh(nodeGeometry, material);
-                // ... Node positioning logic (same as previous dispersion adjustments) ...
                 let x, y, z; 
                 if (category === 'CENTER') { x = (Math.random() - 0.5) * SPREAD_DISTANCE * 0.005; y = (Math.random() - 0.5) * SPREAD_DISTANCE * 0.005; z = (Math.random() - 0.5) * SPREAD_DISTANCE * 0.005;}
                 else if (category === 'OTHER') { 
@@ -203,13 +245,11 @@
                 graphGroup.add(nodeMesh); nodes.set(nd.id, nodeMesh);
 
                 if (nd.id === "Akbar") {
-                    const akbarRingGeometry = new THREE.TorusGeometry(2.6, 0.15, 16, 64); // Ring radius, tube radius
-                    const akbarRingMaterial = new THREE.MeshBasicMaterial({ color: 0xADD8E6, transparent: true, opacity: 0.6, side: THREE.DoubleSide }); // Light Blue
+                    const akbarRingGeometry = new THREE.TorusGeometry(2.6, 0.15, 16, 64); 
+                    const akbarRingMaterial = new THREE.MeshBasicMaterial({ color: 0xADD8E6, transparent: true, opacity: 0.6, side: THREE.DoubleSide }); 
                     const akbarRingMesh = new THREE.Mesh(akbarRingGeometry, akbarRingMaterial);
-                    akbarRingMesh.position.copy(nodeMesh.position); 
-                    akbarRingMesh.rotation.x = Math.PI / 2; // Make it flat
-                    graphGroup.add(akbarRingMesh);
-                    nodeMesh.userData.akbarRing = akbarRingMesh; // Store reference to animate
+                    akbarRingMesh.position.copy(nodeMesh.position); akbarRingMesh.rotation.x = Math.PI / 2; 
+                    graphGroup.add(akbarRingMesh); nodeMesh.userData.akbarRing = akbarRingMesh;
                 }
 
                 const labelDiv = document.createElement('div'); labelDiv.className = 'node-label'; labelDiv.textContent = (nd.displayText || nd.id).replace(/_/g, ' ');
@@ -217,17 +257,27 @@
                 graphGroup.add(label); nodeMesh.userData.label = label;
             });
             console.log("Nodes created: " + nodes.size);
+
+            if (!graphDataFull || !graphDataFull.edges) { console.error("graphDataFull.edges is undefined or graphDataFull is missing!"); return; }
             
-            (graphDataFull.edges || []).forEach(edgeData => {
+            graphDataFull.edges.forEach(edgeData => { // Use graphDataFull
                 const sourceNodeMesh = nodes.get(edgeData.source); const targetNodeMesh = nodes.get(edgeData.target);
                 if (sourceNodeMesh && targetNodeMesh) {
-                    // ... (edge color, DNA strand creation - same as previous) ...
-                    let edgeColorToUse; if (edgeData.color !== undefined) { edgeColorToUse = edgeData.color; } else if (edgeData.relation) { edgeColorToUse = relationToColor(edgeData.relation); } else { edgeColorToUse = 0xAAAAAA; } edgeData.originalColor = edgeColorToUse; 
+                    let edgeColorToUse;
+                    if (edgeData.color !== undefined) { edgeColorToUse = edgeData.color; } 
+                    else if (edgeData.relation) { edgeColorToUse = relationToColor(edgeData.relation); } 
+                    else { edgeColorToUse = 0xAAAAAA; }
+                    edgeData.originalColor = edgeColorToUse; 
+
                     const p1 = sourceNodeMesh.position.clone(); const p2 = targetNodeMesh.position.clone();
-                    const points1 = []; const points2 = []; for (let i = 0; i <= DNA_NUM_SEGMENTS; i++) { points1.push(new THREE.Vector3()); points2.push(new THREE.Vector3()); }
-                    const dnaGeometry1 = new THREE.BufferGeometry().setFromPoints(points1); const dnaGeometry2 = new THREE.BufferGeometry().setFromPoints(points2);
-                    const strandColor1 = new THREE.Color(edgeColorToUse).offsetHSL(0, 0.1, 0.05).getHex(); const strandColor2 = new THREE.Color(edgeColorToUse).offsetHSL(0, -0.05, -0.05).getHex();
-                    const dnaMaterial1 = new THREE.LineBasicMaterial({ color: strandColor1, transparent: true, opacity: NORMAL_EDGE_OPACITY }); const dnaMaterial2 = new THREE.LineBasicMaterial({ color: strandColor2, transparent: true, opacity: NORMAL_EDGE_OPACITY });
+                    const points1 = []; const points2 = [];
+                    for (let i = 0; i <= DNA_NUM_SEGMENTS; i++) { points1.push(new THREE.Vector3()); points2.push(new THREE.Vector3()); }
+                    const dnaGeometry1 = new THREE.BufferGeometry().setFromPoints(points1);
+                    const dnaGeometry2 = new THREE.BufferGeometry().setFromPoints(points2);
+                    const strandColor1 = new THREE.Color(edgeColorToUse).offsetHSL(0, 0.1, 0.05).getHex();
+                    const strandColor2 = new THREE.Color(edgeColorToUse).offsetHSL(0, -0.05, -0.05).getHex();
+                    const dnaMaterial1 = new THREE.LineBasicMaterial({ color: strandColor1, transparent: true, opacity: NORMAL_EDGE_OPACITY });
+                    const dnaMaterial2 = new THREE.LineBasicMaterial({ color: strandColor2, transparent: true, opacity: NORMAL_EDGE_OPACITY });
                     const strand1 = new THREE.Line(dnaGeometry1, dnaMaterial1); const strand2 = new THREE.Line(dnaGeometry2, dnaMaterial2);
                     graphGroup.add(strand1); graphGroup.add(strand2);
 
@@ -235,15 +285,13 @@
                     let numRings = (edgeData.source === "Akbar" || edgeData.target === "Akbar") ? 4 : Math.floor(Math.random() * 4);
                     
                     for (let i = 0; i < numRings; i++) {
-                        const ringGeom = new THREE.TorusGeometry(EDGE_RING_RADIUS, EDGE_RING_TUBE_RADIUS, 8, 24); // Simpler geometry for edge rings
+                        const ringGeom = new THREE.TorusGeometry(EDGE_RING_RADIUS, EDGE_RING_TUBE_RADIUS, 8, 24); 
                         const ringMat = new THREE.MeshBasicMaterial({ color: 0xADD8E6, transparent: true, opacity: EDGE_RING_OPACITY, side: THREE.DoubleSide });
                         const ringMesh = new THREE.Mesh(ringGeom, ringMat);
                         graphGroup.add(ringMesh);
                         edgeRings.push({
-                            mesh: ringMesh,
-                            t: Math.random(), // Initial random position along edge
-                            spinPhase: Math.random() * Math.PI * 2,
-                            speedFactor: 0.3 + Math.random() * 0.4 // Random speed
+                            mesh: ringMesh, t: (i + 1) / (numRings + 1) + (Math.random()-0.5)*0.1, // Staggered initial position
+                            spinPhase: Math.random() * Math.PI * 2, speedFactor: 0.25 + Math.random() * 0.3 
                         });
                     }
 
@@ -251,111 +299,85 @@
                         id: `${edgeData.source}_${edgeData.target}_${edgeData.relation}`,
                         originalData: edgeData,
                         dna: { strand1, strand2, phase: Math.random() * Math.PI * 2, currentRadius: DNA_NORMAL_RADIUS, normalRadius: DNA_NORMAL_RADIUS, highlightRadius: DNA_HIGHLIGHT_RADIUS, numTurns: DNA_NUM_TURNS, numSegments: DNA_NUM_SEGMENTS, originalColor1: strandColor1, originalColor2: strandColor2 },
-                        edgeRings: edgeRings, // Store the new rings
-                        label: null 
+                        edgeRings: edgeRings, label: null 
                     };
                     edges.push(edgeWrapper); 
-                    // ... (edge label creation - same as previous) ...
-                    if (edgeData.relation) { const midpoint = new THREE.Vector3().addVectors(p1, p2).multiplyScalar(0.5); const relationLabelDiv = document.createElement('div'); relationLabelDiv.className = 'node-label edge-relation-label'; relationLabelDiv.textContent = edgeData.relation.replace(/_/g, ' '); relationLabelDiv.addEventListener('click', (event) => { event.stopPropagation(); clearHighlights(); applyEdgeHighlight(edgeData); briefInteractionPauseUntil = Date.now() + ROTATION_PAUSE_DURATION; hideNodeInspector(); if (edgeData.definition) { edgeDefinitionText.innerHTML = edgeData.definition.replace(/\n/g, '<br>'); edgeDefinitionDisplay.style.display = 'block'; } else { edgeDefinitionText.textContent = 'No specific details for this relationship.'; edgeDefinitionDisplay.style.display = 'block'; } }); const relationLabel = new THREE.CSS2DObject(relationLabelDiv); relationLabel.position.copy(midpoint); graphGroup.add(relationLabel); edgeWrapper.label = relationLabel; }
-                } else { console.warn("Could not find source or target node for edge: ", edgeData); }
+                    
+                    if (edgeData.relation) {
+                        const midpoint = new THREE.Vector3().addVectors(p1, p2).multiplyScalar(0.5);
+                        const relationLabelDiv = document.createElement('div');
+                        relationLabelDiv.className = 'node-label edge-relation-label';
+                        relationLabelDiv.textContent = edgeData.relation.replace(/_/g, ' ');
+                        relationLabelDiv.addEventListener('click', (event) => {
+                            event.stopPropagation(); clearHighlights(); applyEdgeHighlight(edgeData);
+                            briefInteractionPauseUntil = Date.now() + ROTATION_PAUSE_DURATION;
+                            hideNodeInspector(); 
+                            if (edgeData.definition) { edgeDefinitionText.innerHTML = edgeData.definition.replace(/\n/g, '<br>'); edgeDefinitionDisplay.style.display = 'block'; } 
+                            else { edgeDefinitionText.textContent = 'No specific details for this relationship.'; edgeDefinitionDisplay.style.display = 'block'; }
+                        });
+                        const relationLabel = new THREE.CSS2DObject(relationLabelDiv);
+                        relationLabel.position.copy(midpoint); graphGroup.add(relationLabel); 
+                        edgeWrapper.label = relationLabel;
+                    }
+                } else { console.warn("Could not find source/target node for edge: ", edgeData); }
             });
             console.log("Edges created: " + edges.length);
-            // ... (event listeners, window.onload - same as previous) ...
+
             renderer.domElement.addEventListener('click', onCanvasClick, false); 
             labelRenderer.domElement.addEventListener('click', (event) => { if (event.target === labelRenderer.domElement) { clearHighlights(); hideEdgeDefinition(); hideNodeInspector(); briefInteractionPauseUntil = Date.now() + ROTATION_PAUSE_DURATION; } }, false);
             window.addEventListener('resize', onWindowResize, false);
             console.log("init finished.");
         }
         
-        // --- Helper Functions (getNodeCategory, relationToColor, clearHighlights, applyEdgeHighlight, etc. ---
-        // These will be the full functions from the previous working version, with adjustments for new features.
-        function getNodeCategory(node) { 
-            const id = node.id; const type = node.type; if (type === "Responsibility" || type === "FocusArea" || type === "Method") return 'OTHER'; const financeTypes = ["Financial_Concept", "Financial_Vehicle", "Income_Stream", "Financial_Activity", "Finance_Value"]; const financeIds = ["Dividend_Staking_Lifestyle"]; if (financeTypes.includes(type) || financeIds.includes(id)) return 'FINANCE'; const feelingsIds = ["Adaptability", "Creativity", "Proactiveness", "Crab_Mentality", "Inferiority_Complex", "MBTI_ENFJ"]; if (feelingsIds.includes(id) || type === "Personality_Trait" || (type === "Challenge" && !["Bureaucratic_Stagnation"].includes(id))) return 'FEELINGS'; const welfareTypes = ["Goal", "Foundation", "Policy", "Aspirational"]; const welfareIdeologies = ["Progressivism", "Pacifist_Philanthropist"]; const welfareValueIds = ["Financial_Literacy"]; if (welfareTypes.includes(type) || welfareIdeologies.includes(id) || welfareValueIds.includes(id)) return 'WELFARE'; const legalDomainIds = ["Legal_Entrepreneurship", "Legal_Tech", "Legal_Tech_Innovation", "Human_Rights_Law"]; const legalIdeologyIds = ["Legal_Reformation"]; if ((type === "Domain" && legalDomainIds.includes(id)) || legalIdeologyIds.includes(id)) return 'LEGAL'; if (id === "Akbar") return 'CENTER'; return 'OTHER';
-        }
-        function relationToColor(relationString) { 
-            if (!relationString) relationString = "default"; let hash = 0; for (let i = 0; i < relationString.length; i++) { hash = relationString.charCodeAt(i) + ((hash << 5) - hash); hash = hash & hash; } const h = Math.abs(hash) % 360; const s = 70 + (Math.abs(hash >> 8) % 30); const l = 55 + (Math.abs(hash >> 16) % 20); return new THREE.Color(`hsl(${h}, ${s}%, ${l}%)`).getHex();
-        }
         function clearHighlights() { 
             if (!isHighlightActive) return; isHighlightActive = false;
             nodes.forEach(nodeMesh => {
                 const nodeData = nodeMesh.userData.originalData;
-                let originalColor = nodeData.originalColor;
-                let opacity = NORMAL_NODE_OPACITY;
-
-                if (nodeData.id === "Akbar") {
-                     originalColor = 0x6495ED; // Akbar's special blue
-                     nodeMesh.material.color.setHex(originalColor);
-                     nodeMesh.material.emissive.setHex(originalColor);
-                     nodeMesh.material.emissiveIntensity = 0.4;
-                     opacity = AKBAR_NODE_OPACITY;
-                } else {
-                    if (nodeData.category === 'FINANCE') originalColor = 0x1E90FF;
-                    nodeMesh.material.color.setHex(originalColor);
-                    if (nodeMesh.material.emissive) nodeMesh.material.emissive.setHex(0x000000);
-                }
-                nodeMesh.material.opacity = opacity;
-                nodeMesh.material.needsUpdate = true;
+                let originalColor = nodeData.originalColor; let opacity = NORMAL_NODE_OPACITY;
+                if (nodeData.id === "Akbar") { originalColor = 0x6495ED; opacity = AKBAR_NODE_OPACITY; nodeMesh.material.emissive.setHex(originalColor); nodeMesh.material.emissiveIntensity = 0.4; } 
+                else { if (nodeData.category === 'FINANCE') originalColor = 0x1E90FF; if (nodeMesh.material.emissive) nodeMesh.material.emissive.setHex(0x000000); }
+                nodeMesh.material.color.setHex(originalColor); nodeMesh.material.opacity = opacity; nodeMesh.material.needsUpdate = true;
             });
             edges.forEach(edgeWrapper => {
                 edgeWrapper.dna.currentRadius = edgeWrapper.dna.normalRadius; 
-                edgeWrapper.dna.strand1.material.color.setHex(edgeWrapper.dna.originalColor1);
-                edgeWrapper.dna.strand1.material.opacity = NORMAL_EDGE_OPACITY;
-                edgeWrapper.dna.strand2.material.color.setHex(edgeWrapper.dna.originalColor2);
-                edgeWrapper.dna.strand2.material.opacity = NORMAL_EDGE_OPACITY;
-                edgeWrapper.dna.strand1.material.needsUpdate = true;
-                edgeWrapper.dna.strand2.material.needsUpdate = true;
-                (edgeWrapper.edgeRings || []).forEach(ringData => {
-                    ringData.mesh.material.opacity = EDGE_RING_OPACITY;
-                });
+                edgeWrapper.dna.strand1.material.color.setHex(edgeWrapper.dna.originalColor1); edgeWrapper.dna.strand1.material.opacity = NORMAL_EDGE_OPACITY;
+                edgeWrapper.dna.strand2.material.color.setHex(edgeWrapper.dna.originalColor2); edgeWrapper.dna.strand2.material.opacity = NORMAL_EDGE_OPACITY;
+                edgeWrapper.dna.strand1.material.needsUpdate = true; edgeWrapper.dna.strand2.material.needsUpdate = true;
+                (edgeWrapper.edgeRings || []).forEach(ringData => { ringData.mesh.material.opacity = EDGE_RING_OPACITY; ringData.mesh.material.needsUpdate = true; });
             });
         }
+
         function applyEdgeHighlight(clickedEdgeData) { 
             isHighlightActive = true; const sourceId = clickedEdgeData.source; const targetId = clickedEdgeData.target;
             nodes.forEach((nodeMesh, nodeId) => {
                 const nodeData = nodeMesh.userData.originalData;
                 if (nodeId === sourceId || nodeId === targetId) {
                     nodeMesh.material.opacity = HIGHLIGHT_OPACITY;
-                    if (nodeData.id === "Akbar") {
-                        nodeMesh.material.color.setHex(HIGHLIGHT_NODE_COLOR); // Gold highlight for Akbar
-                        nodeMesh.material.emissive.setHex(HIGHLIGHT_NODE_COLOR);
-                        nodeMesh.material.emissiveIntensity = 0.7; 
-                        nodeMesh.material.opacity = AKBAR_NODE_OPACITY; // Keep Akbar's base opacity
-                    } else {
-                        nodeMesh.material.color.setHex(HIGHLIGHT_NODE_COLOR);
-                        if(nodeMesh.material.emissive) nodeMesh.material.emissive.setHex(HIGHLIGHT_NODE_COLOR); 
-                    }
-                } else { // Fainting others
-                    if (nodeData.id === "Akbar") { 
-                        nodeMesh.material.color.setHex(0x6495ED); // Akbar's blue
-                        nodeMesh.material.emissive.setHex(0x6495ED);
-                        nodeMesh.material.emissiveIntensity = 0.2; 
-                        nodeMesh.material.opacity = AKBAR_NODE_OPACITY * 0.7; // Slightly fainter Akbar
-                    } else {
-                        nodeMesh.material.color.setHex(nodeData.originalColor); 
-                        if(nodeMesh.material.emissive) nodeMesh.material.emissive.setHex(0x000000);
-                        nodeMesh.material.opacity = FAINT_OPACITY;
-                    }
+                    if (nodeData.id === "Akbar") { nodeMesh.material.color.setHex(HIGHLIGHT_NODE_COLOR); nodeMesh.material.emissive.setHex(HIGHLIGHT_NODE_COLOR); nodeMesh.material.emissiveIntensity = 0.7; nodeMesh.material.opacity = AKBAR_NODE_OPACITY; } 
+                    else { nodeMesh.material.color.setHex(HIGHLIGHT_NODE_COLOR); if(nodeMesh.material.emissive) nodeMesh.material.emissive.setHex(HIGHLIGHT_NODE_COLOR); }
+                } else { 
+                    if (nodeData.id === "Akbar") { nodeMesh.material.color.setHex(0x6495ED); nodeMesh.material.emissive.setHex(0x6495ED); nodeMesh.material.emissiveIntensity = 0.2; nodeMesh.material.opacity = AKBAR_NODE_OPACITY * 0.7; } 
+                    else { nodeMesh.material.color.setHex(nodeData.originalColor); if(nodeMesh.material.emissive) nodeMesh.material.emissive.setHex(0x000000); nodeMesh.material.opacity = FAINT_OPACITY; }
                 }
                 nodeMesh.material.needsUpdate = true;
             });
-            edges.forEach(edgeWrapper => { /* ... (DNA highlight logic same, add ring opacity changes) ... */
+            edges.forEach(edgeWrapper => {
                 const edge = edgeWrapper.originalData; const dna = edgeWrapper.dna;
                 const isClickedEdge = edge.source === sourceId && edge.target === targetId && edge.relation === clickedEdgeData.relation;
                 const isRelatedToHighlightedNodes = edge.source === sourceId || edge.target === sourceId || edge.source === targetId || edge.target === targetId;
                 let ringOpacity = FAINT_OPACITY * 0.4;
-
                 if (isClickedEdge) { 
                     dna.currentRadius = dna.highlightRadius; 
-                    dna.strand1.material.color.setHex(HIGHLIGHT_EDGE_COLOR); dna.strand1.material.opacity = HIGHLIGHT_OPACITY * 0.8; // Slightly less for DNA
+                    dna.strand1.material.color.setHex(HIGHLIGHT_EDGE_COLOR); dna.strand1.material.opacity = HIGHLIGHT_OPACITY * 0.8; 
                     dna.strand2.material.color.setHex(HIGHLIGHT_EDGE_COLOR); dna.strand2.material.opacity = HIGHLIGHT_OPACITY * 0.8;
-                    ringOpacity = EDGE_RING_OPACITY + 0.2; // More visible rings on selected edge
+                    ringOpacity = EDGE_RING_OPACITY + 0.2; 
                 } else if (isRelatedToHighlightedNodes) { 
                     dna.currentRadius = dna.normalRadius; 
                     dna.strand1.material.color.setHex(new THREE.Color(dna.originalColor1).lerp(new THREE.Color(HIGHLIGHT_EDGE_COLOR), 0.6).getHex()); 
                     dna.strand1.material.opacity = NORMAL_EDGE_OPACITY + 0.1; 
                     dna.strand2.material.color.setHex(new THREE.Color(dna.originalColor2).lerp(new THREE.Color(HIGHLIGHT_EDGE_COLOR), 0.6).getHex()); 
                     dna.strand2.material.opacity = NORMAL_EDGE_OPACITY + 0.1;
-                     ringOpacity = EDGE_RING_OPACITY;
+                    ringOpacity = EDGE_RING_OPACITY;
                 } else { 
                     dna.currentRadius = dna.normalRadius;
                     dna.strand1.material.color.setHex(dna.originalColor1); dna.strand1.material.opacity = FAINT_OPACITY * 0.6; 
@@ -366,95 +388,37 @@
             });
         }
         
-        function updateAllDNAStrands() { /* ... same as previous ... */ }
-        function updateEdgeRings() {
-            edges.forEach(edgeWrapper => {
-                if (!edgeWrapper.edgeRings || edgeWrapper.edgeRings.length === 0) return;
-
-                const sourceNode = nodes.get(edgeWrapper.originalData.source);
-                const targetNode = nodes.get(edgeWrapper.originalData.target);
-                if (!sourceNode || !targetNode) {
-                    edgeWrapper.edgeRings.forEach(ringData => ringData.mesh.visible = false);
-                    return;
-                } else {
-                     edgeWrapper.edgeRings.forEach(ringData => ringData.mesh.visible = true);
-                }
-
-                const p1 = sourceNode.position;
-                const p2 = targetNode.position;
-                const direction = new THREE.Vector3().subVectors(p2, p1);
-                const edgeLength = direction.length();
-                if (edgeLength < 0.1) { // Hide rings if edge is too short
-                    edgeWrapper.edgeRings.forEach(ringData => ringData.mesh.visible = false);
-                    return;
-                }
-                direction.normalize();
-
-                // A stable "up" vector for quaternion orientation, avoiding issues if edge is aligned with world Y
-                const worldYAxis = new THREE.Vector3(0, 1, 0);
-                const quat = new THREE.Quaternion();
-
-                edgeWrapper.edgeRings.forEach(ringData => {
-                    ringData.t += 0.003 * ringData.speedFactor; // Slower movement along edge
-                    if (ringData.t > 1) ringData.t -= 1;
-                    
-                    ringData.mesh.position.copy(p1).addScaledVector(direction, ringData.t * edgeLength);
-                    
-                    // Orientation: make ring perpendicular to edge direction
-                    const tempUp = Math.abs(direction.y) > 0.99 ? new THREE.Vector3(1,0,0) : worldYAxis.clone();
-                    quat.setFromUnitVectors(worldYAxis, direction); // Quaternion to align Y (or Z) to direction
-                    
-                    // Torus geometry is created with its central axis along Z if not rotated.
-                    // We want its plane perpendicular to the edge. So, its own Z should align with edge direction.
-                    // Or, if its default normal is Z, we align its Z with 'direction'.
-                    // A simpler way: make the torus in XY plane, then align its Z with 'direction'.
-                    // If TorusGeometry's central axis is Z, then default normal is Z.
-                    // We want this Z axis to be parallel to 'direction'.
-                    // The default orientation of TorusGeometry is in the XY plane, with its axis of revolution along Z.
-                    // To make it "wrap" the edge, its central hole's axis should be the edge direction.
-                    // So, we need to rotate the ring so its local Z axis points along 'direction'.
-                    
-                    // A common method is to create a matrix that looks in the direction.
-                    const lookAtMatrix = new THREE.Matrix4().lookAt(ringData.mesh.position, ringData.mesh.position.clone().add(direction), tempUp);
-                    ringData.mesh.quaternion.setFromRotationMatrix(lookAtMatrix);
-
-                    // Spin the ring around its own axis (which is now aligned with the edge direction)
-                    ringData.spinPhase += 0.05; // Speed of spin
-                    ringData.mesh.rotateZ(0.05); // Assuming Z is the axis through the hole after lookAt alignment
-                });
-            });
-        }
-
-        function onCanvasClick(event) { /* ... same as previous, but ensure it uses graphDataFull.edges ... */ }
-        function hideEdgeDefinition() { /* ... same as previous ... */ }
-        function hideNodeInspector() { /* ... same as previous ... */ }
-        function onWindowResize() { /* ... same as previous ... */ }
+        function updateAllDNAStrands() { /* ... ensure needsUpdate = true is present ... */ } // Kept Verbatim
+        function updateEdgeRings() { /* ... same as previous ... */ } // Kept Verbatim
+        function onCanvasClick(event) { /* ... same as previous, ensure graphDataFull.edges is used ... */ } // Kept Verbatim
+        function hideEdgeDefinition() { edgeDefinitionDisplay.style.display = 'none'; }
+        function hideNodeInspector() { nodeInspectorDisplay.style.display = 'none'; }
+        function onWindowResize() { camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight); labelRenderer.setSize(window.innerWidth, window.innerHeight); }
         
         function animate() { 
-            requestAnimationFrame(animate); 
-            const currentTime = Date.now();
+            requestAnimationFrame(animate); const currentTime = Date.now();
             let canAutoRotate = true;
             if (isGraphDragging) { canAutoRotate = false; }
             if (currentTime < briefInteractionPauseUntil) { canAutoRotate = false; }
             if (canAutoRotate && graphGroup) { graphGroup.rotation.y += autoRotationSpeed; }
             
-            controls.update();
-            updateAllDNAStrands(); 
-            updateEdgeRings(); // Call the new function to update edge rings
+            controls.update(); updateAllDNAStrands(); updateEdgeRings(); 
 
             nodes.forEach((nodeMesh) => {
                 if (nodeMesh.userData.label) { nodeMesh.userData.label.position.copy(nodeMesh.position); nodeMesh.userData.label.position.y += 3.0; }
-                 if (nodeMesh.userData.akbarRing) { 
-                    nodeMesh.userData.akbarRing.position.copy(nodeMesh.position);
-                    nodeMesh.userData.akbarRing.rotation.z += 0.015; // Spin Akbar's ring
-                }
+                if (nodeMesh.userData.akbarRing) { nodeMesh.userData.akbarRing.position.copy(nodeMesh.position); nodeMesh.userData.akbarRing.rotation.z += 0.015; }
             });
-            edges.forEach(edgeWrapper => { /* ... update edge labels ... */ });
-
+            edges.forEach(edgeWrapper => { 
+                 if (edgeWrapper.label) {
+                    const sourceNodeMesh = nodes.get(edgeWrapper.originalData.source); const targetNodeMesh = nodes.get(edgeWrapper.originalData.target);
+                    if (sourceNodeMesh && targetNodeMesh) { const midpoint = new THREE.Vector3().addVectors(sourceNodeMesh.position, targetNodeMesh.position).multiplyScalar(0.5); edgeWrapper.label.position.copy(midpoint); }
+                 }
+            });
             renderer.render(scene, camera); labelRenderer.render(scene, camera);
         }
-        // ... (Full copies of onCanvasClick, hideEdgeDefinition, hideNodeInspector, onWindowResize, animate, and window.onload, making sure graphDataFull is used for edges in onCanvasClick)
-        // The full functions from the previous working version will be used here, with the new updateEdgeRings call in animate.
+        window.onload = function() { /* ... same try/catch with console.logs ... */ };
+
+        // --- Full definitions of functions that were collapsed above for brevity in diff view ---
         function updateAllDNAStrands() {
             edges.forEach(edgeWrapper => {
                 const dna = edgeWrapper.dna; const sourceNode = nodes.get(edgeWrapper.originalData.source); const targetNode = nodes.get(edgeWrapper.originalData.target);
@@ -474,6 +438,29 @@
                 dna.strand2.geometry.setFromPoints(points2); dna.strand2.geometry.attributes.position.needsUpdate = true;
             });
         }
+        function updateEdgeRings() {
+            edges.forEach(edgeWrapper => {
+                if (!edgeWrapper.edgeRings || edgeWrapper.edgeRings.length === 0) return;
+                const sourceNode = nodes.get(edgeWrapper.originalData.source); const targetNode = nodes.get(edgeWrapper.originalData.target);
+                if (!sourceNode || !targetNode) { edgeWrapper.edgeRings.forEach(ringData => ringData.mesh.visible = false); return; } 
+                else { edgeWrapper.edgeRings.forEach(ringData => ringData.mesh.visible = true); }
+                const p1 = sourceNode.position; const p2 = targetNode.position;
+                const direction = new THREE.Vector3().subVectors(p2, p1); const edgeLength = direction.length();
+                if (edgeLength < 0.1) { edgeWrapper.edgeRings.forEach(ringData => ringData.mesh.visible = false); return; }
+                direction.normalize();
+                const worldYAxis = new THREE.Vector3(0, 1, 0); const quat = new THREE.Quaternion();
+                edgeWrapper.edgeRings.forEach(ringData => {
+                    ringData.t += 0.003 * ringData.speedFactor; if (ringData.t > 1) ringData.t -= 1;
+                    ringData.mesh.position.copy(p1).addScaledVector(direction, ringData.t * edgeLength);
+                    const tempUp = Math.abs(direction.y) > 0.99 ? new THREE.Vector3(1,0,0) : worldYAxis.clone(); // Handle vertical edges
+                    const targetPositionForLookAt = ringData.mesh.position.clone().add(direction); // A point along the edge direction from the ring's current position
+                    ringData.mesh.up.copy(tempUp); // Set 'up' before lookAt
+                    ringData.mesh.lookAt(targetPositionForLookAt);
+                    ringData.spinPhase += 0.05 * ringData.speedFactor; 
+                    ringData.mesh.rotation.z = ringData.spinPhase; // Spin around its local Z (which should now be aligned with edge direction)
+                });
+            });
+        }
         function onCanvasClick(event) { 
             const rect = renderer.domElement.getBoundingClientRect(); mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1; mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
             raycaster.setFromCamera(mouse, camera); const intersects = raycaster.intersectObjects(Array.from(nodes.values())); 
@@ -485,9 +472,6 @@
                 briefInteractionPauseUntil = Date.now() + ROTATION_PAUSE_DURATION;
             } else { clearHighlights(); hideEdgeDefinition(); hideNodeInspector(); }
         }
-        function hideEdgeDefinition() { edgeDefinitionDisplay.style.display = 'none'; }
-        function hideNodeInspector() { nodeInspectorDisplay.style.display = 'none'; }
-        function onWindowResize() { camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight); labelRenderer.setSize(window.innerWidth, window.innerHeight); }
         window.onload = function() { 
             console.log("Window loaded."); try { init(); animate(); console.log("Three.js setup and animation loop started."); } catch (e) { console.error("ERROR DURING INIT OR ANIMATE:", e); const errDiv = document.createElement('div'); errDiv.style.cssText = 'position:absolute;top:0;left:0;width:100%;padding:20px;background-color:red;color:white;z-index:1000;font-family:monospace;'; errDiv.innerText = 'An error occurred: ' + e.message + '\n\n' + (e.stack || '') + '\n\nCheck console for more details.'; document.body.appendChild(errDiv); }
         };

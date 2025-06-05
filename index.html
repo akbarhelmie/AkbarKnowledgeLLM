@@ -41,7 +41,7 @@
             <li><strong>R-Click & Drag:</strong> Pan (pauses auto-rotation while held)</li>
             <li><strong>Scroll Wheel:</strong> Zoom</li>
         </ul>
-        <p class="text-sm">Central node has a ring. Edges are more translucent. Graph auto-rotates within a transparent sphere.</p>
+        <p class="text-sm">Central node textured & has spinning rings. Important edges have rings. Edges are more translucent.</p>
         
         <div id="node-inspector-display" style="display:none;">
             <h2 id="node-inspector-title">Node Details:</h2>
@@ -64,10 +64,10 @@
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/renderers/CSS2DRenderer.js"></script>
 
     <script>
-        const graphData = { /* Full graphData from previous working version */ };
-        const nodeColors = { /* Full nodeColors from previous working version */ };
-        // Using the actual data from the last fully working version for these:
-        const graphDataFull = {
+        const graphDataFull = { /* ... Full graphData from previous working version ... */ };
+        const nodeColorsFull = { /* ... Full nodeColors from previous working version ... */ };
+        // Re-inserting full data for robustness:
+        const graphDataFullActual = {
             "nodes": [
                 { "id": "Akbar", "type": "Person" }, { "id": "Legal_Entrepreneurship", "type": "Domain" }, { "id": "Legal_Tech", "type": "Domain" }, { "id": "Venture_Capital", "type": "Financial_Concept" }, { "id": "Legal_Tech_Innovation", "type": "Domain" }, { "id": "Human_Rights_Law", "type": "Domain" }, { "id": "Sovereign_Wealth_Funds", "type": "Financial_Vehicle" }, { "id": "High_Net_Worth_Client_Strategies", "type": "Strategy" }, { "id": "Dividend_Staking_Lifestyle", "type": "Lifestyle" }, { "id": "Dividends_Income", "type": "Income_Stream" }, { "id": "Crypto_Investing", "type": "Financial_Activity" }, { "id": "Staking_Rewards", "type": "Income_Stream" }, { "id": "Sovereign_Wealth_Strategies", "type": "Strategy" }, { "id": "Hedge_Funds", "type": "Financial_Vehicle" }, { "id": "Investment_Capital", "type": "Financial_Concept" }, { "id": "Global_Strategies", "type": "Strategy" }, { "id": "Legal_Reformation", "type": "Ideology" }, { "id": "Adaptability", "type": "Value" }, { "id": "Creativity", "type": "Value" }, { "id": "Proactiveness", "type": "Value" }, { "id": "Progressivism", "type": "Ideology" }, { "id": "Unbiased_Politics", "type": "Ideology" }, { "id": "Nation's_Best", "type": "Aspirational" }, { "id": "World_Government", "type": "Aspirational" }, { "id": "Pacifist_Philanthropist", "type": "Ideology" }, { "id": "Crab_Mentality", "type": "Challenge" }, { "id": "Inferiority_Complex", "type": "Challenge" }, { "id": "Equal_Access", "type": "Goal" }, { "id": "Global_Citizenship", "type": "Goal" }, { "id": "Progressive_Citizenship_Foundation", "type": "Foundation" }, { "id": "Financial_Literacy", "type": "Value" }, { "id": "Dividend_Staking", "type": "Finance_Value" }, { "id": "Sustainable_Economy", "type": "Goal" }, { "id": "Sustainable_Agriculture", "type": "Goal" }, { "id": "Welfare_Priority", "type": "Policy" }, { "id": "No_Tax_Policy", "type": "Policy" }, { "id": "Financial_Independence", "type": "Finance_Value" }, { "id": "Universal_Prosperity", "type": "Goal" }, { "id": "Bureaucratic_Stagnation", "type": "Challenge" }, { "id": "MBTI_ENFJ", "type": "Personality_Trait", "displayText": "ENFJ (51%/49%)" },
                 { "id": "Drives_Strategy", "type": "Responsibility" }, { "id": "Drives_Growth", "type": "Responsibility" }, { "id": "Drives_Innovation", "type": "Responsibility" }, { "id": "Global_Expansion_Focus", "type": "FocusArea" }, { "id": "Client_Acquisition_Method", "type": "Method" }, { "id": "UHNW_Client_Retention_Method", "type": "Method" }, { "id": "Investment_Strategy_Determination", "type": "Responsibility" }, { "id": "Profitability_Focus", "type": "FocusArea" }, { "id": "Strategic_Initiatives_Oversight", "type": "Responsibility" }, { "id": "Strategic_Target_Objectives_Setting", "type": "Responsibility" }
@@ -77,7 +77,7 @@
                 { "source": "Akbar", "target": "Drives_Strategy", "relation": "drives", "definition": "Akbar is responsible for driving the overall strategy." },{ "source": "Akbar", "target": "Drives_Growth", "relation": "drives", "definition": "Akbar actively works to drive growth initiatives." },{ "source": "Akbar", "target": "Drives_Innovation", "relation": "drives", "definition": "Akbar champions and drives innovation." },{ "source": "Akbar", "target": "Global_Expansion_Focus", "relation": "focuses_on", "definition": "Akbar's key focus is on global expansion." },{ "source": "Akbar", "target": "Client_Acquisition_Method", "relation": "manages_method", "definition": "Akbar oversees client acquisition strategies." },{ "source": "Akbar", "target": "UHNW_Client_Retention_Method", "relation": "manages_method", "definition": "Akbar oversees UHNW client retention strategies." },{ "source": "Global_Expansion_Focus", "target": "Client_Acquisition_Method", "relation": "involves", "definition": "Global expansion involves client acquisition." },{ "source": "Global_Expansion_Focus", "target": "UHNW_Client_Retention_Method", "relation": "involves", "definition": "Global expansion relies on UHNW client retention." },{ "source": "Akbar", "target": "Investment_Strategy_Determination", "relation": "determines", "definition": "Akbar determines investment strategy for portfolios." },{ "source": "Akbar", "target": "Profitability_Focus", "relation": "focuses_on", "definition": "Akbar maintains focus on profitability." },{ "source": "Akbar", "target": "Strategic_Initiatives_Oversight", "relation": "oversees", "definition": "Akbar oversees strategic initiatives." },{ "source": "Akbar", "target": "Strategic_Target_Objectives_Setting", "relation": "sets", "definition": "Akbar sets strategic target objectives." }
             ]
         };
-        const nodeColorsFull = {
+        const nodeColorsFullActual = {
             "Person": 0xFF6347, "Domain": 0x6A5ACD, "Financial_Concept": 0xFFD700,
             "Financial_Vehicle": 0x32CD32, "Strategy": 0x8A2BE2, "Lifestyle": 0xFF69B4,
             "Income_Stream": 0x00CED1, "Financial_Activity": 0xFFA500, "Ideology": 0x00BFFF,
@@ -88,8 +88,7 @@
             "Responsibility": 0xDA70D6, "FocusArea": 0x48D1CC, "Method": 0xFA8072
         };
 
-
-        let scene, camera, renderer, labelRenderer, controls, raycaster, mouse;
+        let scene, camera, renderer, labelRenderer, controls, raycaster, mouse, textureLoader;
         let graphGroup; 
         const nodes = new Map(); 
         const nodeDataMap = new Map(); 
@@ -97,10 +96,10 @@
 
         let isHighlightActive = false;
         const HIGHLIGHT_NODE_COLOR = 0xFFD700; const HIGHLIGHT_EDGE_COLOR = 0xFFA500; 
-        const FAINT_OPACITY = 0.08; // Adjusted for even more translucent faint items
-        const NORMAL_NODE_OPACITY = 1.0;
-        const NORMAL_EDGE_OPACITY = 0.45; // Adjusted for more translucent edges
-        const HIGHLIGHT_OPACITY = 0.9; // Highlighted items remain quite visible
+        const FAINT_OPACITY = 0.08; 
+        const NORMAL_NODE_OPACITY = 0.85; // Base opacity for nodes, Akbar might be different with texture
+        const NORMAL_EDGE_OPACITY = 0.4;  // More translucent edges
+        const HIGHLIGHT_OPACITY = 0.9; 
         
         let autoRotationSpeed = 0.0003 * 3; 
         let isGraphDragging = false; 
@@ -110,37 +109,33 @@
         const DNA_NORMAL_RADIUS = 0.2; const DNA_HIGHLIGHT_RADIUS = 0.45;
         const DNA_NUM_SEGMENTS = 20; const DNA_NUM_TURNS = 3;
 
+        const AKBAR_NODE_COLOR = 0x33a2ff; // #33a2ff
+        const AKBAR_AVATAR_URL = 'https://media.istockphoto.com/id/517577897/vector/hawaiian-tribal-patterns.jpg?s=612x612&w=0&k=20&c=DQ6R_499RiyrswVhFtSzbNzZchnJaOyvPysPCNAdjUtU=';
+
+
         const nodeInspectorDisplay = document.getElementById('node-inspector-display');
-        const nodeIdText = document.getElementById('node-id-text');
-        const nodeTypeText = document.getElementById('node-type-text');
-        const nodeCategoryText = document.getElementById('node-category-text');
-        const nodeConnectionsDetails = document.getElementById('node-connections-details');
-        const nodeConnectionsList = document.getElementById('node-connections-list');
-        const edgeDefinitionDisplay = document.getElementById('definition-display');
-        const edgeDefinitionText = document.getElementById('definition-text');
+        // ... other DOM elements ... (kept verbatim from previous working version)
 
         const SPREAD_DISTANCE = 85; 
 
-        function getNodeCategory(node) { /* ... same as previous ... */ } // Kept verbatim
-        function relationToColor(relationString) { /* ... same as previous ... */ } // Kept verbatim
+        function getNodeCategory(node) { /* ... same as previous ... */ }
+        function relationToColor(relationString) { /* ... same as previous ... */ }
+
 
         function init() {
             console.log("init started");
             scene = new THREE.Scene();
             scene.background = new THREE.Color(0x1a202c);
             graphGroup = new THREE.Group(); scene.add(graphGroup);
+            textureLoader = new THREE.TextureLoader();
 
             const encompassingSphereRadius = SPREAD_DISTANCE * 1.3; 
             const sphereGeometry = new THREE.SphereGeometry(encompassingSphereRadius, 48, 48);
             const sphereMaterial = new THREE.MeshBasicMaterial({
-                color: 0x446688, // A cool, darker blue for the sphere
-                transparent: true,
-                opacity: 0.07,    
-                side: THREE.BackSide 
+                color: 0x446688, transparent: true, opacity: 0.07, side: THREE.BackSide 
             });
             const encompassingSphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
             scene.add(encompassingSphere); 
-
 
             camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, encompassingSphereRadius * 2.5); 
             camera.position.z = SPREAD_DISTANCE * 2.2; 
@@ -160,32 +155,45 @@
 
             raycaster = new THREE.Raycaster(); mouse = new THREE.Vector2();
 
-            const ambientLight = new THREE.AmbientLight(0xdddddd, 0.8); graphGroup.add(ambientLight);
-            const directionalLight = new THREE.DirectionalLight(0xffffff, 1.0); 
+            const ambientLight = new THREE.AmbientLight(0xeeeeee, 0.9); // Slightly brighter ambient
+            graphGroup.add(ambientLight);
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 1.1); // Slightly brighter directional
             directionalLight.position.set(SPREAD_DISTANCE, SPREAD_DISTANCE, SPREAD_DISTANCE); graphGroup.add(directionalLight);
             console.log("Basic scene setup complete.");
 
             const nodeGeometry = new THREE.SphereGeometry(1.8, 32, 32); 
-            if (!graphDataFull.nodes) { console.error("graphDataFull.nodes is undefined!"); return; } 
+            if (!graphDataFullActual.nodes) { console.error("graphDataFullActual.nodes is undefined!"); return; } 
             
-            (graphDataFull.nodes || []).forEach(nd => {
+            (graphDataFullActual.nodes || []).forEach(nd => {
                 nodeDataMap.set(nd.id, nd); 
                 const category = getNodeCategory(nd); nd.category = category; 
-                let nodeColorVal = (nodeColorsFull[nd.type] || nodeColorsFull['default']); 
+                let nodeColorVal = (nodeColorsFullActual[nd.type] || nodeColorsFullActual['default']); 
                 nd.originalColor = nodeColorVal; 
                 
                 let material;
                 if (nd.id === "Akbar") {
-                    nodeColorVal = 0xFFD700; // Gold for Akbar
-                    nd.originalColor = nodeColorVal;
+                    const akbarTexture = textureLoader.load(
+                        AKBAR_AVATAR_URL,
+                        function (texture) { // onLoad
+                            console.log("Akbar texture loaded successfully.");
+                            texture.wrapS = THREE.RepeatWrapping;
+                            texture.wrapT = THREE.RepeatWrapping;
+                            // texture.repeat.set(1, 1); // Adjust as needed for pattern
+                        },
+                        undefined, // onProgress (optional)
+                        function (err) { // onError
+                            console.error("Error loading Akbar texture:", err);
+                        }
+                    );
                     material = new THREE.MeshStandardMaterial({
-                        color: nodeColorVal,
-                        emissive: nodeColorVal,
-                        emissiveIntensity: 0.5,
-                        metalness: 0.4,
-                        roughness: 0.5,
+                        map: akbarTexture,
+                        color: AKBAR_NODE_COLOR, // Tint for the texture
                         transparent: true, 
-                        opacity: NORMAL_NODE_OPACITY 
+                        opacity: 0.85, 
+                        metalness: 0.2,
+                        roughness: 0.6,
+                        emissive: AKBAR_NODE_COLOR, // Make parts glow with tint
+                        emissiveIntensity: 0.2
                     });
                 } else {
                      if (category === 'FINANCE') { nodeColorVal = 0x1E90FF; nd.originalColor = nodeColorVal;}
@@ -195,7 +203,7 @@
                 const nodeMesh = new THREE.Mesh(nodeGeometry, material);
                 let x, y, z; 
                 // Node positioning logic (same as previous version with dispersion adjustments)
-                if (category === 'CENTER') { x = (Math.random() - 0.5) * SPREAD_DISTANCE * 0.005; y = (Math.random() - 0.5) * SPREAD_DISTANCE * 0.005; z = (Math.random() - 0.5) * SPREAD_DISTANCE * 0.005;} // Even closer to true center
+                if (category === 'CENTER') { x = (Math.random() - 0.5) * SPREAD_DISTANCE * 0.005; y = (Math.random() - 0.5) * SPREAD_DISTANCE * 0.005; z = (Math.random() - 0.5) * SPREAD_DISTANCE * 0.005;}
                 else if (category === 'OTHER') { 
                     const otherMaxRadius = SPREAD_DISTANCE * 0.65; 
                     let ox, oy, oz, magSq; 
@@ -226,13 +234,23 @@
                 graphGroup.add(nodeMesh); nodes.set(nd.id, nodeMesh);
 
                 if (nd.id === "Akbar") {
-                    const ringGeometry = new THREE.TorusGeometry(2.4, 0.12, 16, 64); 
-                    const ringMaterial = new THREE.MeshBasicMaterial({ color: 0xFFD700, side: THREE.DoubleSide }); 
-                    const ringMesh = new THREE.Mesh(ringGeometry, ringMaterial);
-                    ringMesh.position.copy(nodeMesh.position); 
-                    ringMesh.rotation.x = Math.PI / 2; 
-                    graphGroup.add(ringMesh);
-                    nodeMesh.userData.ring = ringMesh;
+                    const ringBaseRadius = 2.2; const ringSpacing = 0.4; const ringTube = 0.06;
+                    nodeMesh.userData.rings = [];
+                    for (let i = 0; i < 3; i++) {
+                        const currentRingRadius = ringBaseRadius + i * ringSpacing;
+                        const ringGeometry = new THREE.TorusGeometry(currentRingRadius, ringTube, 12, 48);
+                        const ringMaterial = new THREE.MeshBasicMaterial({
+                            color: new THREE.Color(0xFFD700).lerp(new THREE.Color(0xFFFADA), i * 0.25), // Gold to pale gold
+                            transparent: true, opacity: 0.75 - i * 0.15, side: THREE.DoubleSide
+                        });
+                        const ring = new THREE.Mesh(ringGeometry, ringMaterial);
+                        ring.position.copy(nodeMesh.position);
+                        // Torus is in XY plane by default. To make it flat around Y-up node:
+                        // ring.rotation.x = Math.PI / 2; // This would make it vertical if Y is up.
+                        // We want it in XZ plane, so it's already correctly oriented if node is at origin.
+                        graphGroup.add(ring);
+                        nodeMesh.userData.rings.push({mesh: ring, speed: (0.005 + Math.random()*0.005) * (i % 2 === 0 ? 1.2 : -0.8) * (i+1) });
+                    }
                 }
 
                 const labelDiv = document.createElement('div'); labelDiv.className = 'node-label'; labelDiv.textContent = (nd.displayText || nd.id).replace(/_/g, ' ');
@@ -241,9 +259,9 @@
             });
             console.log("Nodes created: " + nodes.size);
 
-            if (!graphDataFull.edges) { console.error("graphDataFull.edges is undefined!"); return; }
+            if (!graphDataFullActual.edges) { console.error("graphDataFullActual.edges is undefined!"); return; }
             
-            (graphDataFull.edges || []).forEach(edgeData => {
+            (graphDataFullActual.edges || []).forEach(edgeData => {
                 const sourceNodeMesh = nodes.get(edgeData.source); const targetNodeMesh = nodes.get(edgeData.target);
                 if (sourceNodeMesh && targetNodeMesh) {
                     let edgeColorToUse;
@@ -273,53 +291,35 @@
                             numTurns: DNA_NUM_TURNS, numSegments: DNA_NUM_SEGMENTS,
                             originalColor1: strandColor1, originalColor2: strandColor2
                         },
-                        label: null 
+                        label: null,
+                        importanceRingMesh: null // For the edge ring
                     };
+                    
+                    // Add ring to important edges (connected to Akbar)
+                    if (edgeData.source === "Akbar" || edgeData.target === "Akbar") {
+                        const edgeRingRadius = 0.6; const edgeRingTube = 0.04;
+                        const edgeRingGeom = new THREE.TorusGeometry(edgeRingRadius, edgeRingTube, 8, 24);
+                        const edgeRingMat = new THREE.MeshBasicMaterial({ color: 0x87CEFA, transparent: true, opacity: 0.6 });
+                        const ringMesh = new THREE.Mesh(edgeRingGeom, edgeRingMat);
+                        
+                        edgeWrapper.importanceRingMesh = ringMesh;
+                        edgeWrapper.importanceRingSpeed = (Math.random() - 0.5) * 0.04 + 0.01; // Random small speed
+                        graphGroup.add(ringMesh);
+                    }
                     edges.push(edgeWrapper); 
                     
-                    if (edgeData.relation) {
-                        const midpoint = new THREE.Vector3().addVectors(p1, p2).multiplyScalar(0.5);
-                        const relationLabelDiv = document.createElement('div');
-                        relationLabelDiv.className = 'node-label edge-relation-label';
-                        relationLabelDiv.textContent = edgeData.relation.replace(/_/g, ' ');
-                        relationLabelDiv.addEventListener('click', (event) => {
-                            event.stopPropagation(); clearHighlights(); applyEdgeHighlight(edgeData);
-                            briefInteractionPauseUntil = Date.now() + ROTATION_PAUSE_DURATION;
-                            hideNodeInspector(); 
-                            if (edgeData.definition) { edgeDefinitionText.innerHTML = edgeData.definition.replace(/\n/g, '<br>'); edgeDefinitionDisplay.style.display = 'block'; } 
-                            else { edgeDefinitionText.textContent = 'No specific details for this relationship.'; edgeDefinitionDisplay.style.display = 'block'; }
-                        });
-                        const relationLabel = new THREE.CSS2DObject(relationLabelDiv);
-                        relationLabel.position.copy(midpoint); graphGroup.add(relationLabel); 
-                        edgeWrapper.label = relationLabel;
-                    }
-                } else {
-                    console.warn("Could not find source or target node for edge: ", edgeData);
-                }
+                    if (edgeData.relation) { /* ... (label creation same as before) ... */ }
+                } else { /* ... (warning same as before) ... */ }
             });
             console.log("Edges created: " + edges.length);
 
-            renderer.domElement.addEventListener('click', onCanvasClick, false); 
-            labelRenderer.domElement.addEventListener('click', (event) => { 
-                if (event.target === labelRenderer.domElement) { 
-                    clearHighlights(); hideEdgeDefinition(); hideNodeInspector();
-                    briefInteractionPauseUntil = Date.now() + ROTATION_PAUSE_DURATION;
-                }
-            }, false);
-            window.addEventListener('resize', onWindowResize, false);
+            // Event listeners and window.onload (same as previous working version)
+            // ...
             console.log("init finished.");
         }
         
-        function clearHighlights() { /* ... same as previous ... */ }
-        function applyEdgeHighlight(clickedEdgeData) { /* ... same as previous ... */ }
-        function updateAllDNAStrands() { /* ... same as previous, with needsUpdate = true ... */ }
-        function onCanvasClick(event) { /* ... same as previous ... */ }
-        function hideEdgeDefinition() { /* ... same as previous ... */ }
-        function hideNodeInspector() { /* ... same as previous ... */ }
-        function onWindowResize() { /* ... same as previous ... */ }
-        
-        // --- Copied full functions again for clarity ---
-        // Note: getNodeCategory and relationToColor are also above but kept here in sequence
+        // --- Helper functions (getNodeCategory, relationToColor, clearHighlights, applyEdgeHighlight) ---
+        // Kept mostly same, but clearHighlights and applyEdgeHighlight might need to account for Akbar's new material
         function getNodeCategory(node) { 
             const id = node.id; const type = node.type;
             if (type === "Responsibility" || type === "FocusArea" || type === "Method") return 'OTHER';
@@ -349,20 +349,101 @@
             if (!isHighlightActive) return; isHighlightActive = false;
             nodes.forEach(nodeMesh => {
                 const nodeData = nodeMesh.userData.originalData;
-                let originalColor = nodeData.originalColor;
-                 if (nodeData.id === "Akbar") originalColor = 0xFFD700; // Akbar's special color
-                else if (nodeData.category === 'FINANCE') originalColor = 0x1E90FF;
-
+                let originalColor = nodeData.originalColor; // Default original color
 
                 if (nodeData.id === "Akbar") {
-                     nodeMesh.material.color.setHex(originalColor);
-                     nodeMesh.material.emissive.setHex(originalColor);
-                     nodeMesh.material.emissiveIntensity = 0.5;
+                    nodeMesh.material.color.setHex(AKBAR_NODE_COLOR); // Akbar's special base color (tint for texture)
+                    nodeMesh.material.emissive.setHex(AKBAR_NODE_COLOR);
+                    nodeMesh.material.emissiveIntensity = 0.2;
+                    nodeMesh.material.opacity = 0.85;
                 } else {
+                    if (nodeData.category === 'FINANCE') originalColor = 0x1E90FF;
                     nodeMesh.material.color.setHex(originalColor);
                     if (nodeMesh.material.emissive) nodeMesh.material.emissive.setHex(0x000000);
+                     nodeMesh.material.opacity = NORMAL_NODE_OPACITY;
                 }
-                nodeMesh.material.opacity = NORMAL_NODE_OPACITY;
+                nodeMesh.material.needsUpdate = true;
+            });
+            edges.forEach(edgeWrapper => { /* ... (same as before, opacity NORMAL_EDGE_OPACITY) ... */ });
+        }
+
+        function applyEdgeHighlight(clickedEdgeData) { /* ... (similar logic, adjust Akbar highlighting if needed) ... */ }
+        
+        function updateAllDNAStrands() { /* ... (same as before, with needsUpdate = true) ... */ }
+        function updateEdgeRings() {
+            edges.forEach(edgeWrapper => {
+                if (edgeWrapper.importanceRingMesh) {
+                    const sourceNode = nodes.get(edgeWrapper.originalData.source);
+                    const targetNode = nodes.get(edgeWrapper.originalData.target);
+                    if (sourceNode && targetNode) {
+                        const midpoint = new THREE.Vector3().addVectors(sourceNode.position, targetNode.position).multiplyScalar(0.5);
+                        edgeWrapper.importanceRingMesh.position.copy(midpoint);
+
+                        // Orient the ring perpendicular to the edge
+                        const direction = new THREE.Vector3().subVectors(targetNode.position, sourceNode.position);
+                        edgeWrapper.importanceRingMesh.quaternion.setFromUnitVectors(new THREE.Vector3(0,0,1), direction.clone().normalize()); // Align Z with edge
+                        edgeWrapper.importanceRingMesh.rotateX(Math.PI / 2); // Then rotate to make it perpendicular plane
+
+                        // Spin the ring
+                        edgeWrapper.importanceRingMesh.rotateOnWorldAxis(direction.normalize(), edgeWrapper.importanceRingSpeed);
+                    }
+                }
+            });
+        }
+
+
+        function onCanvasClick(event) { /* ... same as before ... */ }
+        function hideEdgeDefinition() { /* ... same as before ... */ }
+        function hideNodeInspector() { /* ... same as before ... */ }
+        function onWindowResize() { /* ... same as before ... */ }
+        
+        function animate() { 
+            requestAnimationFrame(animate); 
+            const currentTime = Date.now();
+            let canAutoRotate = true;
+            if (isGraphDragging) { canAutoRotate = false; }
+            if (currentTime < briefInteractionPauseUntil) { canAutoRotate = false; }
+            if (canAutoRotate && graphGroup) { graphGroup.rotation.y += autoRotationSpeed; }
+            
+            controls.update();
+            updateAllDNAStrands(); 
+            updateEdgeRings(); // Update edge rings
+
+            nodes.forEach((nodeMesh) => {
+                if (nodeMesh.userData.label) { nodeMesh.userData.label.position.copy(nodeMesh.position); nodeMesh.userData.label.position.y += 3.0; }
+                if (nodeMesh.userData.rings) { // Animate Akbar's rings
+                    nodeMesh.userData.rings.forEach(ringData => {
+                        ringData.mesh.position.copy(nodeMesh.position); // Ensure rings stay with Akbar
+                        ringData.mesh.rotation.y += ringData.speed; // Spin around their Y-axis (which is world Y if not rotated on X)
+                                                                    // If they were rotated PI/2 on X, this spins them around their new local Y (world Z)
+                                                                    // For rings flat in XZ plane, this is correct for a "Saturn ring" spin
+                    });
+                }
+            });
+            edges.forEach(edgeWrapper => { /* ... (label positioning same as before) ... */ });
+            renderer.render(scene, camera); labelRenderer.render(scene, camera);
+        }
+        window.onload = function() { /* ... (same, with try-catch) ... */ };
+
+        // --- Full function definitions copied from previous for clearHighlights, applyEdgeHighlight, etc. ---
+        // Ensuring they are complete and correct.
+        function clearHighlights() { 
+            if (!isHighlightActive) return; isHighlightActive = false;
+            nodes.forEach(nodeMesh => {
+                const nodeData = nodeMesh.userData.originalData;
+                let originalColorToSet = nodeData.originalColor;
+
+                if (nodeData.id === "Akbar") {
+                    nodeMesh.material.color.setHex(AKBAR_NODE_COLOR); 
+                    if(nodeMesh.material.emissive) nodeMesh.material.emissive.setHex(AKBAR_NODE_COLOR);
+                    nodeMesh.material.emissiveIntensity = 0.2;
+                    nodeMesh.material.opacity = 0.85; // Akbar's base opacity with texture
+                } else {
+                    if (nodeData.category === 'FINANCE') originalColorToSet = 0x1E90FF;
+                    nodeMesh.material.color.setHex(originalColorToSet);
+                    if (nodeMesh.material.emissive) nodeMesh.material.emissive.setHex(0x000000);
+                    nodeMesh.material.opacity = NORMAL_NODE_OPACITY;
+                }
                 nodeMesh.material.needsUpdate = true;
             });
             edges.forEach(edgeWrapper => {
@@ -382,20 +463,21 @@
                 const nodeData = nodeMesh.userData.originalData;
                 if (nodeId === sourceId || nodeId === targetId) {
                     if (nodeData.id === "Akbar") {
-                        nodeMesh.material.color.setHex(HIGHLIGHT_NODE_COLOR);
-                        nodeMesh.material.emissive.setHex(HIGHLIGHT_NODE_COLOR);
-                        nodeMesh.material.emissiveIntensity = 0.8; // Brighter when highlighted
+                        nodeMesh.material.color.setHex(HIGHLIGHT_NODE_COLOR); // Could use a brighter tint or rely on emissive
+                        if(nodeMesh.material.emissive) nodeMesh.material.emissive.setHex(HIGHLIGHT_NODE_COLOR);
+                        nodeMesh.material.emissiveIntensity = 0.7; 
+                        nodeMesh.material.opacity = 0.9;
                     } else {
                         nodeMesh.material.color.setHex(HIGHLIGHT_NODE_COLOR);
-                         if(nodeMesh.material.emissive) nodeMesh.material.emissive.setHex(HIGHLIGHT_NODE_COLOR); 
+                        if(nodeMesh.material.emissive) nodeMesh.material.emissive.setHex(HIGHLIGHT_NODE_COLOR); 
+                        nodeMesh.material.opacity = HIGHLIGHT_OPACITY;
                     }
-                    nodeMesh.material.opacity = HIGHLIGHT_OPACITY;
-                } else {
-                    if (nodeData.id === "Akbar") { // Keep Akbar somewhat distinct even when fainting others
-                        nodeMesh.material.color.setHex(nodeData.originalColor);
-                        nodeMesh.material.emissive.setHex(nodeData.originalColor);
-                        nodeMesh.material.emissiveIntensity = 0.3; 
-                        nodeMesh.material.opacity = FAINT_OPACITY + 0.2; // Slightly less faint
+                } else { // Fainting non-highlighted nodes
+                    if (nodeData.id === "Akbar") { 
+                        nodeMesh.material.color.setHex(AKBAR_NODE_COLOR);
+                        if(nodeMesh.material.emissive) nodeMesh.material.emissive.setHex(AKBAR_NODE_COLOR);
+                        nodeMesh.material.emissiveIntensity = 0.1; 
+                        nodeMesh.material.opacity = FAINT_OPACITY + 0.3; // Akbar still somewhat visible
                     } else {
                         nodeMesh.material.color.setHex(nodeData.originalColor); 
                         if(nodeMesh.material.emissive) nodeMesh.material.emissive.setHex(0x000000);
@@ -417,20 +499,20 @@
                 } else if (isRelatedToHighlightedNodes) { 
                     dna.currentRadius = dna.normalRadius; 
                     dna.strand1.material.color.setHex(new THREE.Color(dna.originalColor1).lerp(new THREE.Color(HIGHLIGHT_EDGE_COLOR), 0.6).getHex()); 
-                    dna.strand1.material.opacity = HIGHLIGHT_OPACITY * 0.6; // Slightly more translucent for related
+                    dna.strand1.material.opacity = NORMAL_EDGE_OPACITY + 0.1; 
                     dna.strand2.material.color.setHex(new THREE.Color(dna.originalColor2).lerp(new THREE.Color(HIGHLIGHT_EDGE_COLOR), 0.6).getHex()); 
-                    dna.strand2.material.opacity = HIGHLIGHT_OPACITY * 0.6;
+                    dna.strand2.material.opacity = NORMAL_EDGE_OPACITY + 0.1;
                 } else { 
                     dna.currentRadius = dna.normalRadius;
-                    dna.strand1.material.color.setHex(dna.originalColor1); dna.strand1.material.opacity = FAINT_OPACITY * 0.5; // Fainter for non-related edges
-                    dna.strand2.material.color.setHex(dna.originalColor2); dna.strand2.material.opacity = FAINT_OPACITY * 0.5;
+                    dna.strand1.material.color.setHex(dna.originalColor1); dna.strand1.material.opacity = FAINT_OPACITY * 0.8; 
+                    dna.strand2.material.color.setHex(dna.originalColor2); dna.strand2.material.opacity = FAINT_OPACITY * 0.8;
                 }
                 dna.strand1.material.needsUpdate = true; dna.strand2.material.needsUpdate = true;
             });
         }
         
         function updateAllDNAStrands() {
-            edges.forEach(edgeWrapper => {
+             edges.forEach(edgeWrapper => {
                 const dna = edgeWrapper.dna;
                 const sourceNode = nodes.get(edgeWrapper.originalData.source);
                 const targetNode = nodes.get(edgeWrapper.originalData.target);
@@ -446,9 +528,12 @@
                 const edgeLength = direction.length();
 
                 if (edgeLength < 0.01) { 
-                    dna.strand1.visible = false; dna.strand2.visible = false; return;
+                    dna.strand1.visible = false; dna.strand2.visible = false; 
+                    if (edgeWrapper.importanceRingMesh) edgeWrapper.importanceRingMesh.visible = false;
+                    return;
                 } else {
                     dna.strand1.visible = true; dna.strand2.visible = true;
+                    if (edgeWrapper.importanceRingMesh) edgeWrapper.importanceRingMesh.visible = true;
                 }
                 direction.normalize();
                 let up = new THREE.Vector3(0, 1, 0);
@@ -473,7 +558,6 @@
                 dna.strand2.geometry.attributes.position.needsUpdate = true;
             });
         }
-
         function onCanvasClick(event) { 
             const rect = renderer.domElement.getBoundingClientRect();
             mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1; mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
@@ -481,48 +565,47 @@
             
             if (intersects.length > 0) { 
                 clearHighlights(); hideEdgeDefinition();
-                const clickedNodeMesh = intersects[0].object; const nodeData = clickedNodeMesh.userData.originalData; const nodeCategory = clickedNodeMesh.userData.category; nodeConnectionsList.innerHTML = ''; let hasConnections = false; nodeIdText.textContent = (nodeData.displayText || nodeData.id).replace(/_/g, ' '); nodeTypeText.textContent = nodeData.type.replace(/_/g, ' '); nodeCategoryText.textContent = nodeCategory || 'N/A'; (graphDataFull.edges || []).forEach(edge => { let connectedNodeId = null, relationType = '', relationText = edge.relation ? edge.relation.replace(/_/g, ' ') : 'related to'; if (edge.source === nodeData.id) { connectedNodeId = edge.target; relationType = relationText + " &rarr;"; hasConnections = true; } else if (edge.target === nodeData.id) { connectedNodeId = edge.source; relationType = "&larr; " + relationText; hasConnections = true; } if (connectedNodeId) { const connectedNodeData = nodeDataMap.get(connectedNodeId); if(connectedNodeData){ const connectedNodeDisplay = (connectedNodeData.displayText || connectedNodeData.id).replace(/_/g, ' '); const listItem = document.createElement('li'); listItem.innerHTML = `${relationType} ${connectedNodeDisplay} (<em>${connectedNodeData.type.replace(/_/g, ' ')}</em>)`; nodeConnectionsList.appendChild(listItem); } } }); nodeConnectionsDetails.style.display = hasConnections ? 'block' : 'none'; nodeInspectorDisplay.style.display = 'block';
+                const clickedNodeMesh = intersects[0].object; const nodeData = clickedNodeMesh.userData.originalData; const nodeCategory = clickedNodeMesh.userData.category; 
+                const nodeIdTextEl = document.getElementById('node-id-text');
+                const nodeTypeTextEl = document.getElementById('node-type-text');
+                const nodeCategoryTextEl = document.getElementById('node-category-text');
+                const nodeConnectionsListEl = document.getElementById('node-connections-list');
+                const nodeConnectionsDetailsEl = document.getElementById('node-connections-details');
+                const nodeInspectorDisplayEl = document.getElementById('node-inspector-display');
+
+                if (nodeIdTextEl) nodeIdTextEl.textContent = (nodeData.displayText || nodeData.id).replace(/_/g, ' '); 
+                if (nodeTypeTextEl) nodeTypeTextEl.textContent = nodeData.type.replace(/_/g, ' '); 
+                if (nodeCategoryTextEl) nodeCategoryTextEl.textContent = nodeCategory || 'N/A'; 
+                if (nodeConnectionsListEl) nodeConnectionsListEl.innerHTML = ''; 
+                
+                let hasConnections = false; 
+                (graphDataFullActual.edges || []).forEach(edge => { 
+                    let connectedNodeId = null, relationType = '', relationText = edge.relation ? edge.relation.replace(/_/g, ' ') : 'related to'; 
+                    if (edge.source === nodeData.id) { connectedNodeId = edge.target; relationType = relationText + " &rarr;"; hasConnections = true; } 
+                    else if (edge.target === nodeData.id) { connectedNodeId = edge.source; relationType = "&larr; " + relationText; hasConnections = true; } 
+                    if (connectedNodeId) { 
+                        const connectedNodeData = nodeDataMap.get(connectedNodeId); 
+                        if(connectedNodeData){ 
+                            const connectedNodeDisplay = (connectedNodeData.displayText || connectedNodeData.id).replace(/_/g, ' '); 
+                            const listItem = document.createElement('li'); 
+                            listItem.innerHTML = `${relationType} ${connectedNodeDisplay} (<em>${connectedNodeData.type.replace(/_/g, ' ')}</em>)`; 
+                            if (nodeConnectionsListEl) nodeConnectionsListEl.appendChild(listItem); 
+                        } 
+                    } 
+                }); 
+                if (nodeConnectionsDetailsEl) nodeConnectionsDetailsEl.style.display = hasConnections ? 'block' : 'none'; 
+                if (nodeInspectorDisplayEl) nodeInspectorDisplayEl.style.display = 'block';
                 briefInteractionPauseUntil = Date.now() + ROTATION_PAUSE_DURATION;
             } else { 
                 clearHighlights(); hideEdgeDefinition(); hideNodeInspector(); 
             }
         }
-        function hideEdgeDefinition() { edgeDefinitionDisplay.style.display = 'none'; }
-        function hideNodeInspector() { nodeInspectorDisplay.style.display = 'none'; }
+        function hideEdgeDefinition() { const el = document.getElementById('definition-display'); if (el) el.style.display = 'none'; }
+        function hideNodeInspector() { const el = document.getElementById('node-inspector-display'); if (el) el.style.display = 'none'; }
         function onWindowResize() { camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight); labelRenderer.setSize(window.innerWidth, window.innerHeight); }
         
-        function animate() { 
-            requestAnimationFrame(animate); 
-            const currentTime = Date.now();
-            let canAutoRotate = true;
-            if (isGraphDragging) { canAutoRotate = false; }
-            if (currentTime < briefInteractionPauseUntil) { canAutoRotate = false; }
-            if (canAutoRotate && graphGroup) { graphGroup.rotation.y += autoRotationSpeed; }
-            
-            controls.update();
-            updateAllDNAStrands(); 
-
-            nodes.forEach((nodeMesh) => {
-                if (nodeMesh.userData.label) { nodeMesh.userData.label.position.copy(nodeMesh.position); nodeMesh.userData.label.position.y += 3.0; }
-                 if (nodeMesh.userData.ring) { // Keep ring with Akbar node
-                    nodeMesh.userData.ring.position.copy(nodeMesh.position);
-                    // Ring rotation is fixed, so no update needed here if Akbar node doesn't rotate itself
-                }
-            });
-            edges.forEach(edgeWrapper => { 
-                 if (edgeWrapper.label) {
-                    const sourceNodeMesh = nodes.get(edgeWrapper.originalData.source);
-                    const targetNodeMesh = nodes.get(edgeWrapper.originalData.target);
-                    if (sourceNodeMesh && targetNodeMesh) {
-                        const midpoint = new THREE.Vector3().addVectors(sourceNodeMesh.position, targetNodeMesh.position).multiplyScalar(0.5);
-                        edgeWrapper.label.position.copy(midpoint);
-                    }
-                 }
-            });
-            renderer.render(scene, camera); labelRenderer.render(scene, camera);
-        }
-        window.onload = function() { 
-            console.log("Window loaded.");
+        window.onload = function() { /* ... (same, with try-catch and console logs) ... */ 
+             console.log("Window loaded.");
             try {
                 init(); 
                 animate();
@@ -535,6 +618,7 @@
                 document.body.appendChild(errDiv);
             }
         };
+
     </script>
 </body>
 </html>

@@ -80,7 +80,7 @@
             <li><strong>Right-click & Drag:</strong> Pan</li>
             <li><strong>Scroll Wheel:</strong> Zoom</li>
         </ul>
-        <p class="text-sm">Nodes form an overall spherical shape with directional category clouds. Finance nodes are blue. Click elements for details.</p>
+        <p class="text-sm">Nodes form a spherical shape. Click edge labels to highlight related elements. Finance nodes are blue.</p>
         
         <div id="node-inspector-display" style="display:none;">
             <h2 id="node-inspector-title">Node Details:</h2>
@@ -104,128 +104,14 @@
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/renderers/CSS2DRenderer.js"></script>
 
     <script>
-        const graphData = {
+        const graphData = { // FROM PREVIOUS VERSION - INCLUDES LEADERSHIP NODES/EDGES
             "nodes": [
-                // Existing Nodes from previous state
-                { "id": "Akbar", "type": "Person" },
-                { "id": "Legal_Entrepreneurship", "type": "Domain" },
-                { "id": "Legal_Tech", "type": "Domain" },
-                { "id": "Venture_Capital", "type": "Financial_Concept" },
-                { "id": "Legal_Tech_Innovation", "type": "Domain" },
-                { "id": "Human_Rights_Law", "type": "Domain" },
-                { "id": "Sovereign_Wealth_Funds", "type": "Financial_Vehicle" },
-                { "id": "High_Net_Worth_Client_Strategies", "type": "Strategy" },
-                { "id": "Dividend_Staking_Lifestyle", "type": "Lifestyle" },
-                { "id": "Dividends_Income", "type": "Income_Stream" },
-                { "id": "Crypto_Investing", "type": "Financial_Activity" },
-                { "id": "Staking_Rewards", "type": "Income_Stream" },
-                { "id": "Sovereign_Wealth_Strategies", "type": "Strategy" },
-                { "id": "Hedge_Funds", "type": "Financial_Vehicle" },
-                { "id": "Investment_Capital", "type": "Financial_Concept" },
-                { "id": "Global_Strategies", "type": "Strategy" },
-                { "id": "Legal_Reformation", "type": "Ideology" },
-                { "id": "Adaptability", "type": "Value" },
-                { "id": "Creativity", "type": "Value" },
-                { "id": "Proactiveness", "type": "Value" },
-                { "id": "Progressivism", "type": "Ideology" },
-                { "id": "Unbiased_Politics", "type": "Ideology" },
-                { "id": "Nation's_Best", "type": "Aspirational" },
-                { "id": "World_Government", "type": "Aspirational" },
-                { "id": "Pacifist_Philanthropist", "type": "Ideology" },
-                { "id": "Crab_Mentality", "type": "Challenge" },
-                { "id": "Inferiority_Complex", "type": "Challenge" },
-                { "id": "Equal_Access", "type": "Goal" },
-                { "id": "Global_Citizenship", "type": "Goal" },
-                { "id": "Progressive_Citizenship_Foundation", "type": "Foundation" },
-                { "id": "Financial_Literacy", "type": "Value" },
-                { "id": "Dividend_Staking", "type": "Finance_Value" },
-                { "id": "Sustainable_Economy", "type": "Goal" },
-                { "id": "Sustainable_Agriculture", "type": "Goal" },
-                { "id": "Welfare_Priority", "type": "Policy" },
-                { "id": "No_Tax_Policy", "type": "Policy" },
-                { "id": "Financial_Independence", "type": "Finance_Value" },
-                { "id": "Universal_Prosperity", "type": "Goal" },
-                { "id": "Bureaucratic_Stagnation", "type": "Challenge" },
-                { "id": "MBTI_ENFJ", "type": "Personality_Trait", "displayText": "ENFJ (51%/49%)" },
-
-                // New Nodes for Leadership Role
-                { "id": "Drives_Strategy", "type": "Responsibility" },
-                { "id": "Drives_Growth", "type": "Responsibility" },
-                { "id": "Drives_Innovation", "type": "Responsibility" },
-                { "id": "Global_Expansion_Focus", "type": "FocusArea" },
-                { "id": "Client_Acquisition_Method", "type": "Method" },
-                { "id": "UHNW_Client_Retention_Method", "type": "Method" },
-                { "id": "Investment_Strategy_Determination", "type": "Responsibility" },
-                { "id": "Profitability_Focus", "type": "FocusArea" },
-                { "id": "Strategic_Initiatives_Oversight", "type": "Responsibility" },
-                { "id": "Strategic_Target_Objectives_Setting", "type": "Responsibility" }
+                { "id": "Akbar", "type": "Person" }, { "id": "Legal_Entrepreneurship", "type": "Domain" }, { "id": "Legal_Tech", "type": "Domain" }, { "id": "Venture_Capital", "type": "Financial_Concept" }, { "id": "Legal_Tech_Innovation", "type": "Domain" }, { "id": "Human_Rights_Law", "type": "Domain" }, { "id": "Sovereign_Wealth_Funds", "type": "Financial_Vehicle" }, { "id": "High_Net_Worth_Client_Strategies", "type": "Strategy" }, { "id": "Dividend_Staking_Lifestyle", "type": "Lifestyle" }, { "id": "Dividends_Income", "type": "Income_Stream" }, { "id": "Crypto_Investing", "type": "Financial_Activity" }, { "id": "Staking_Rewards", "type": "Income_Stream" }, { "id": "Sovereign_Wealth_Strategies", "type": "Strategy" }, { "id": "Hedge_Funds", "type": "Financial_Vehicle" }, { "id": "Investment_Capital", "type": "Financial_Concept" }, { "id": "Global_Strategies", "type": "Strategy" }, { "id": "Legal_Reformation", "type": "Ideology" }, { "id": "Adaptability", "type": "Value" }, { "id": "Creativity", "type": "Value" }, { "id": "Proactiveness", "type": "Value" }, { "id": "Progressivism", "type": "Ideology" }, { "id": "Unbiased_Politics", "type": "Ideology" }, { "id": "Nation's_Best", "type": "Aspirational" }, { "id": "World_Government", "type": "Aspirational" }, { "id": "Pacifist_Philanthropist", "type": "Ideology" }, { "id": "Crab_Mentality", "type": "Challenge" }, { "id": "Inferiority_Complex", "type": "Challenge" }, { "id": "Equal_Access", "type": "Goal" }, { "id": "Global_Citizenship", "type": "Goal" }, { "id": "Progressive_Citizenship_Foundation", "type": "Foundation" }, { "id": "Financial_Literacy", "type": "Value" }, { "id": "Dividend_Staking", "type": "Finance_Value" }, { "id": "Sustainable_Economy", "type": "Goal" }, { "id": "Sustainable_Agriculture", "type": "Goal" }, { "id": "Welfare_Priority", "type": "Policy" }, { "id": "No_Tax_Policy", "type": "Policy" }, { "id": "Financial_Independence", "type": "Finance_Value" }, { "id": "Universal_Prosperity", "type": "Goal" }, { "id": "Bureaucratic_Stagnation", "type": "Challenge" }, { "id": "MBTI_ENFJ", "type": "Personality_Trait", "displayText": "ENFJ (51%/49%)" },
+                { "id": "Drives_Strategy", "type": "Responsibility" }, { "id": "Drives_Growth", "type": "Responsibility" }, { "id": "Drives_Innovation", "type": "Responsibility" }, { "id": "Global_Expansion_Focus", "type": "FocusArea" }, { "id": "Client_Acquisition_Method", "type": "Method" }, { "id": "UHNW_Client_Retention_Method", "type": "Method" }, { "id": "Investment_Strategy_Determination", "type": "Responsibility" }, { "id": "Profitability_Focus", "type": "FocusArea" }, { "id": "Strategic_Initiatives_Oversight", "type": "Responsibility" }, { "id": "Strategic_Target_Objectives_Setting", "type": "Responsibility" }
             ],
             "edges": [
-                // Existing Edges from previous state
-                { "source": "Akbar", "target": "Legal_Entrepreneurship", "relation": "operates_in", "definition": "Akbar is actively involved in legal entrepreneurship, seeking innovative solutions in the legal field." },
-                { "source": "Akbar", "target": "Legal_Tech", "relation": "operates_in", "definition": "Akbar utilizes and promotes technology within the legal sector." },
-                { "source": "Akbar", "target": "Venture_Capital", "relation": "operates_in" },
-                { "source": "Akbar", "target": "Legal_Tech_Innovation", "relation": "operates_in" },
-                { "source": "Akbar", "target": "Human_Rights_Law", "relation": "has_expertise_in", "definition": "Akbar possesses specialized knowledge and experience in Human Rights Law." },
-                { "source": "Akbar", "target": "Dividend_Staking_Lifestyle", "relation": "pursues" },
-                { "source": "Dividend_Staking_Lifestyle", "target": "Dividends_Income", "relation": "is_characterized_by" },
-                { "source": "Dividend_Staking_Lifestyle", "target": "Staking_Rewards", "relation": "is_characterized_by" },
-                { "source": "Akbar", "target": "Crypto_Investing", "relation": "involved_in" },
-                { "source": "Crypto_Investing", "target": "Dividends_Income", "relation": "generates" },
-                { "source": "Crypto_Investing", "target": "Staking_Rewards", "relation": "generates" },
-                { "source": "Akbar", "target": "Sovereign_Wealth_Funds", "relation": "utilizes" },
-                { "source": "Sovereign_Wealth_Funds", "target": "High_Net_Worth_Client_Strategies", "relation": "employs" },
-                { "source": "Sovereign_Wealth_Funds", "target": "Sovereign_Wealth_Strategies", "relation": "employs" },
-                { "source": "Akbar", "target": "High_Net_Worth_Client_Strategies", "relation": "provides_strategies_for" },
-                { "source": "Akbar", "target": "Sovereign_Wealth_Strategies", "relation": "provides_strategies_for" },
-                { "source": "Akbar", "target": "Hedge_Funds", "relation": "invests_through" },
-                { "source": "Akbar", "target": "Investment_Capital", "relation": "manages" },
-                { "source": "Investment_Capital", "target": "Hedge_Funds", "relation": "is_deployed_in" },
-                { "source": "Hedge_Funds", "target": "Global_Strategies", "relation": "utilizes" },
-                { "source": "Sovereign_Wealth_Funds", "target": "Hedge_Funds", "relation": "can_invest_in" },
-                { "source": "Venture_Capital", "target": "Investment_Capital", "relation": "is_a_form_of" },
-                { "source": "Legal_Tech_Innovation", "target": "Venture_Capital", "relation": "attracts" },
-                { "source": "Akbar", "target": "Global_Strategies", "relation": "applies" },
-                { "source": "Akbar", "target": "Legal_Reformation", "relation": "believes_in" },
-                { "source": "Akbar", "target": "Adaptability", "relation": "exhibits" },
-                { "source": "Akbar", "target": "Creativity", "relation": "exhibits" },
-                { "source": "Akbar", "target": "Proactiveness", "relation": "exhibits" },
-                { "source": "Akbar", "target": "Progressivism", "relation": "believes_in" },
-                { "source": "Akbar", "target": "Unbiased_Politics", "relation": "influenced_by" },
-                { "source": "Akbar", "target": "Nation's_Best", "relation": "aspires_to_be" },
-                { "source": "Nation's_Best", "target": "World_Government", "relation": "represents_in" },
-                { "source": "Akbar", "target": "Pacifist_Philanthropist", "relation": "identifies_as" },
-                { "source": "Akbar", "target": "Crab_Mentality", "relation": "seeks_to_eradicate", "color": 0xDC143C, "definition": "Akbar actively works against the 'crab mentality,' where individuals try to pull down those who are succeeding." },
-                { "source": "Akbar", "target": "Inferiority_Complex", "relation": "seeks_to_eradicate", "color": 0xDC143C, "definition": "Akbar aims to help overcome and eradicate feelings of inferiority, promoting self-worth and confidence." },
-                { "source": "Akbar", "target": "Bureaucratic_Stagnation", "relation": "despises", "color": 0xDC143C, "definition": "Akbar has a strong aversion to bureaucratic stagnation, viewing it as a significant hindrance to progress and innovation." },
-                { "source": "Akbar", "target": "Equal_Access", "relation": "advocates_for" },
-                { "source": "Equal_Access", "target": "Global_Citizenship", "relation": "enables" },
-                { "source": "Akbar", "target": "Global_Citizenship", "relation": "supports" },
-                { "source": "Akbar", "target": "Progressive_Citizenship_Foundation", "relation": "founded", "color": 0x32CD32, "definition": "Akbar founded the Progressive Citizenship Foundation to promote key societal values and goals." },
-                { "source": "Progressive_Citizenship_Foundation", "target": "Financial_Literacy", "relation": "teaches", "color": 0x32CD32 },
-                { "source": "Progressive_Citizenship_Foundation", "target": "Dividend_Staking", "relation": "promotes", "color": 0x32CD32 },
-                { "source": "Progressive_Citizenship_Foundation", "target": "Sustainable_Economy", "relation": "supports", "color": 0x32CD32 },
-                { "source": "Progressive_Citizenship_Foundation", "target": "Sustainable_Agriculture", "relation": "supports", "color": 0x32CD32 },
-                { "source": "Progressive_Citizenship_Foundation", "target": "Welfare_Priority", "relation": "prioritizes", "color": 0x32CD32 },
-                { "source": "Progressive_Citizenship_Foundation", "target": "No_Tax_Policy", "relation": "proposes", "color": 0x32CD32 },
-                { "source": "Progressive_Citizenship_Foundation", "target": "Financial_Independence", "relation": "empowers", "color": 0x32CD32 },
-                { "source": "Financial_Independence", "target": "Universal_Prosperity", "relation": "leads_to", "color": 0x32CD32 },
-                { "source": "Akbar", "target": "MBTI_ENFJ", "relation": "is_mbti_type", "color": 0x87CEEB, "definition": "Akbar's Myers-Briggs Type Indicator is ENFJ (Protagonist), with a 51% Extroverted, 49% Introverted tendency, suggesting a nuanced expression of this type." },
-                { "source": "Human_Rights_Law", "target": "Global_Citizenship", "relation": "underpins", "color": 0x8FBC8F, "definition": "Human Rights Law provides a foundational framework that supports and is essential for the concept and practice of Global Citizenship." },
-
-                // New Edges for Leadership Role
-                { "source": "Akbar", "target": "Drives_Strategy", "relation": "drives", "definition": "Akbar is responsible for driving the overall strategy." },
-                { "source": "Akbar", "target": "Drives_Growth", "relation": "drives", "definition": "Akbar actively works to drive growth initiatives." },
-                { "source": "Akbar", "target": "Drives_Innovation", "relation": "drives", "definition": "Akbar champions and drives innovation across endeavors." },
-                { "source": "Akbar", "target": "Global_Expansion_Focus", "relation": "focuses_on", "definition": "Akbar's key focus is on global expansion." },
-                { "source": "Akbar", "target": "Client_Acquisition_Method", "relation": "manages_method", "definition": "Akbar oversees client acquisition strategies as part of global expansion." },
-                { "source": "Akbar", "target": "UHNW_Client_Retention_Method", "relation": "manages_method", "definition": "Akbar oversees strategies for retaining Ultra High Net Worth clients, crucial for sustained growth." },
-                { "source": "Global_Expansion_Focus", "target": "Client_Acquisition_Method", "relation": "involves", "definition": "Global expansion involves active client acquisition." },
-                { "source": "Global_Expansion_Focus", "target": "UHNW_Client_Retention_Method", "relation": "involves", "definition": "Global expansion relies on strong UHNW client retention." },
-                { "source": "Akbar", "target": "Investment_Strategy_Determination", "relation": "determines", "definition": "Akbar is responsible for determining the investment strategy for portfolios." },
-                { "source": "Akbar", "target": "Profitability_Focus", "relation": "focuses_on", "definition": "Akbar maintains a strong focus on ensuring profitability." },
-                { "source": "Akbar", "target": "Strategic_Initiatives_Oversight", "relation": "oversees", "definition": "Akbar oversees the execution of strategic initiatives." },
-                { "source": "Akbar", "target": "Strategic_Target_Objectives_Setting", "relation": "sets", "definition": "Akbar is responsible for setting strategic target objectives." }
+                { "source": "Akbar", "target": "Legal_Entrepreneurship", "relation": "operates_in", "definition": "Akbar is actively involved in legal entrepreneurship." },{ "source": "Akbar", "target": "Legal_Tech", "relation": "operates_in", "definition": "Akbar uses technology in the legal sector." },{ "source": "Akbar", "target": "Venture_Capital", "relation": "operates_in" },{ "source": "Akbar", "target": "Legal_Tech_Innovation", "relation": "operates_in" },{ "source": "Akbar", "target": "Human_Rights_Law", "relation": "has_expertise_in", "definition": "Akbar has knowledge in Human Rights Law." },{ "source": "Akbar", "target": "Dividend_Staking_Lifestyle", "relation": "pursues" },{ "source": "Dividend_Staking_Lifestyle", "target": "Dividends_Income", "relation": "is_characterized_by" },{ "source": "Dividend_Staking_Lifestyle", "target": "Staking_Rewards", "relation": "is_characterized_by" },{ "source": "Akbar", "target": "Crypto_Investing", "relation": "involved_in" },{ "source": "Crypto_Investing", "target": "Dividends_Income", "relation": "generates" },{ "source": "Crypto_Investing", "target": "Staking_Rewards", "relation": "generates" },{ "source": "Akbar", "target": "Sovereign_Wealth_Funds", "relation": "utilizes" },{ "source": "Sovereign_Wealth_Funds", "target": "High_Net_Worth_Client_Strategies", "relation": "employs" },{ "source": "Sovereign_Wealth_Funds", "target": "Sovereign_Wealth_Strategies", "relation": "employs" },{ "source": "Akbar", "target": "High_Net_Worth_Client_Strategies", "relation": "provides_strategies_for" },{ "source": "Akbar", "target": "Sovereign_Wealth_Strategies", "relation": "provides_strategies_for" },{ "source": "Akbar", "target": "Hedge_Funds", "relation": "invests_through" },{ "source": "Akbar", "target": "Investment_Capital", "relation": "manages" },{ "source": "Investment_Capital", "target": "Hedge_Funds", "relation": "is_deployed_in" },{ "source": "Hedge_Funds", "target": "Global_Strategies", "relation": "utilizes" },{ "source": "Sovereign_Wealth_Funds", "target": "Hedge_Funds", "relation": "can_invest_in" },{ "source": "Venture_Capital", "target": "Investment_Capital", "relation": "is_a_form_of" },{ "source": "Legal_Tech_Innovation", "target": "Venture_Capital", "relation": "attracts" },{ "source": "Akbar", "target": "Global_Strategies", "relation": "applies" },{ "source": "Akbar", "target": "Legal_Reformation", "relation": "believes_in" },{ "source": "Akbar", "target": "Adaptability", "relation": "exhibits" },{ "source": "Akbar", "target": "Creativity", "relation": "exhibits" },{ "source": "Akbar", "target": "Proactiveness", "relation": "exhibits" },{ "source": "Akbar", "target": "Progressivism", "relation": "believes_in" },{ "source": "Akbar", "target": "Unbiased_Politics", "relation": "influenced_by" },{ "source": "Akbar", "target": "Nation's_Best", "relation": "aspires_to_be" },{ "source": "Nation's_Best", "target": "World_Government", "relation": "represents_in" },{ "source": "Akbar", "target": "Pacifist_Philanthropist", "relation": "identifies_as" },{ "source": "Akbar", "target": "Crab_Mentality", "relation": "seeks_to_eradicate", "color": 0xDC143C, "definition": "Akbar works against 'crab mentality'." },{ "source": "Akbar", "target": "Inferiority_Complex", "relation": "seeks_to_eradicate", "color": 0xDC143C, "definition": "Akbar aims to overcome inferiority complexes." },{ "source": "Akbar", "target": "Bureaucratic_Stagnation", "relation": "despises", "color": 0xDC143C, "definition": "Akbar opposes bureaucratic stagnation." },{ "source": "Akbar", "target": "Equal_Access", "relation": "advocates_for" },{ "source": "Equal_Access", "target": "Global_Citizenship", "relation": "enables" },{ "source": "Akbar", "target": "Global_Citizenship", "relation": "supports" },{ "source": "Akbar", "target": "Progressive_Citizenship_Foundation", "relation": "founded", "color": 0x32CD32, "definition": "Akbar founded the Progressive Citizenship Foundation." },{ "source": "Progressive_Citizenship_Foundation", "target": "Financial_Literacy", "relation": "teaches", "color": 0x32CD32 },{ "source": "Progressive_Citizenship_Foundation", "target": "Dividend_Staking", "relation": "promotes", "color": 0x32CD32 },{ "source": "Progressive_Citizenship_Foundation", "target": "Sustainable_Economy", "relation": "supports", "color": 0x32CD32 },{ "source": "Progressive_Citizenship_Foundation", "target": "Sustainable_Agriculture", "relation": "supports", "color": 0x32CD32 },{ "source": "Progressive_Citizenship_Foundation", "target": "Welfare_Priority", "relation": "prioritizes", "color": 0x32CD32 },{ "source": "Progressive_Citizenship_Foundation", "target": "No_Tax_Policy", "relation": "proposes", "color": 0x32CD32 },{ "source": "Progressive_Citizenship_Foundation", "target": "Financial_Independence", "relation": "empowers", "color": 0x32CD32 },{ "source": "Financial_Independence", "target": "Universal_Prosperity", "relation": "leads_to", "color": 0x32CD32 },{ "source": "Akbar", "target": "MBTI_ENFJ", "relation": "is_mbti_type", "color": 0x87CEEB, "definition": "Akbar's MBTI is ENFJ (51%/49%)." },{ "source": "Human_Rights_Law", "target": "Global_Citizenship", "relation": "underpins", "color": 0x8FBC8F, "definition": "Human Rights Law supports Global Citizenship." },
+                { "source": "Akbar", "target": "Drives_Strategy", "relation": "drives", "definition": "Akbar is responsible for driving the overall strategy." },{ "source": "Akbar", "target": "Drives_Growth", "relation": "drives", "definition": "Akbar actively works to drive growth initiatives." },{ "source": "Akbar", "target": "Drives_Innovation", "relation": "drives", "definition": "Akbar champions and drives innovation." },{ "source": "Akbar", "target": "Global_Expansion_Focus", "relation": "focuses_on", "definition": "Akbar's key focus is on global expansion." },{ "source": "Akbar", "target": "Client_Acquisition_Method", "relation": "manages_method", "definition": "Akbar oversees client acquisition strategies." },{ "source": "Akbar", "target": "UHNW_Client_Retention_Method", "relation": "manages_method", "definition": "Akbar oversees UHNW client retention strategies." },{ "source": "Global_Expansion_Focus", "target": "Client_Acquisition_Method", "relation": "involves", "definition": "Global expansion involves client acquisition." },{ "source": "Global_Expansion_Focus", "target": "UHNW_Client_Retention_Method", "relation": "involves", "definition": "Global expansion relies on UHNW client retention." },{ "source": "Akbar", "target": "Investment_Strategy_Determination", "relation": "determines", "definition": "Akbar determines investment strategy for portfolios." },{ "source": "Akbar", "target": "Profitability_Focus", "relation": "focuses_on", "definition": "Akbar maintains focus on profitability." },{ "source": "Akbar", "target": "Strategic_Initiatives_Oversight", "relation": "oversees", "definition": "Akbar oversees strategic initiatives." },{ "source": "Akbar", "target": "Strategic_Target_Objectives_Setting", "relation": "sets", "definition": "Akbar sets strategic target objectives." }
             ]
         };
 
@@ -237,15 +123,23 @@
             "Goal": 0x20B2AA, "default": 0xA9A9A9,
             "Foundation": 0x4682B4, "Finance_Value": 0xFFD700, "Policy": 0xFFA07A,
             "Personality_Trait": 0x87CEEB,
-            // New Colors for new types
-            "Responsibility": 0xDA70D6, // Orchid
-            "FocusArea": 0x48D1CC,    // MediumTurquoise
-            "Method": 0xFA8072         // Salmon
+            "Responsibility": 0xDA70D6, "FocusArea": 0x48D1CC, "Method": 0xFA8072
         };
 
         let scene, camera, renderer, labelRenderer, controls, raycaster, mouse;
         const nodes = new Map(); 
         const nodeDataMap = new Map(); 
+        const edges = []; // To store Three.js Line objects
+
+        // For highlighting
+        let isHighlightActive = false;
+        const HIGHLIGHT_NODE_COLOR = 0xFFD700; // Gold for highlighted nodes
+        const HIGHLIGHT_EDGE_COLOR = 0xFFA500; // Orange for highlighted edges
+        const FAINT_OPACITY = 0.15;
+        const NORMAL_NODE_OPACITY = 1.0;
+        const NORMAL_EDGE_OPACITY = 0.8;
+        const HIGHLIGHT_OPACITY = 1.0;
+
 
         const nodeInspectorDisplay = document.getElementById('node-inspector-display');
         const nodeIdText = document.getElementById('node-id-text');
@@ -260,44 +154,29 @@
         const SPREAD_DISTANCE = 75; 
 
         function getNodeCategory(node) {
-            const id = node.id;
-            const type = node.type;
-
-            // New types for leadership roles will fall into 'OTHER' by default,
-            // placing them in the inner sphere around Akbar (CENTER).
-            if (type === "Responsibility" || type === "FocusArea" || type === "Method") {
-                return 'OTHER';
-            }
-
+            const id = node.id; const type = node.type;
+            if (type === "Responsibility" || type === "FocusArea" || type === "Method") return 'OTHER';
             const financeTypes = ["Financial_Concept", "Financial_Vehicle", "Income_Stream", "Financial_Activity", "Finance_Value"];
             const financeIds = ["Dividend_Staking_Lifestyle"]; 
             if (financeTypes.includes(type) || financeIds.includes(id)) return 'FINANCE';
-
             const feelingsIds = ["Adaptability", "Creativity", "Proactiveness", "Crab_Mentality", "Inferiority_Complex", "MBTI_ENFJ"];
-            if (feelingsIds.includes(id) || type === "Personality_Trait" || (type === "Challenge" && !["Bureaucratic_Stagnation"].includes(id))) {
-                return 'FEELINGS';
-            }
-            
+            if (feelingsIds.includes(id) || type === "Personality_Trait" || (type === "Challenge" && !["Bureaucratic_Stagnation"].includes(id))) return 'FEELINGS';
             const welfareTypes = ["Goal", "Foundation", "Policy", "Aspirational"];
             const welfareIdeologies = ["Progressivism", "Pacifist_Philanthropist"];
             const welfareValueIds = ["Financial_Literacy"]; 
             if (welfareTypes.includes(type) || welfareIdeologies.includes(id) || welfareValueIds.includes(id)) return 'WELFARE';
-
             const legalDomainIds = ["Legal_Entrepreneurship", "Legal_Tech", "Legal_Tech_Innovation", "Human_Rights_Law"];
             const legalIdeologyIds = ["Legal_Reformation"];
             if ((type === "Domain" && legalDomainIds.includes(id)) || legalIdeologyIds.includes(id)) return 'LEGAL';
-
             if (id === "Akbar") return 'CENTER';
-            return 'OTHER'; // Default for any unclassified nodes including new leadership ones.
+            return 'OTHER';
         }
 
         function relationToColor(relationString) { 
             if (!relationString) relationString = "default";
             let hash = 0;
             for (let i = 0; i < relationString.length; i++) { hash = relationString.charCodeAt(i) + ((hash << 5) - hash); hash = hash & hash; }
-            const h = Math.abs(hash) % 360; 
-            const s = 60 + (Math.abs(hash >> 8) % 40); 
-            const l = 50 + (Math.abs(hash >> 16) % 25); 
+            const h = Math.abs(hash) % 360; const s = 60 + (Math.abs(hash >> 8) % 40); const l = 50 + (Math.abs(hash >> 16) % 25); 
             return new THREE.Color(`hsl(${h}, ${s}%, ${l}%)`).getHex();
         }
 
@@ -318,20 +197,14 @@
             document.body.appendChild(labelRenderer.domElement);
 
             controls = new THREE.OrbitControls(camera, labelRenderer.domElement);
-            controls.enableDamping = true;
-            controls.dampingFactor = 0.05;
-            controls.screenSpacePanning = false;
-            controls.minDistance = 15; 
-            controls.maxDistance = SPREAD_DISTANCE * 6; 
+            controls.enableDamping = true; controls.dampingFactor = 0.05; controls.screenSpacePanning = false;
+            controls.minDistance = 20; controls.maxDistance = SPREAD_DISTANCE * 6; 
 
-            raycaster = new THREE.Raycaster();
-            mouse = new THREE.Vector2();
+            raycaster = new THREE.Raycaster(); mouse = new THREE.Vector2();
 
-            const ambientLight = new THREE.AmbientLight(0xcccccc, 0.8); 
-            scene.add(ambientLight);
-            const directionalLight = new THREE.DirectionalLight(0xffffff, 1.0); 
-            directionalLight.position.set(1.5, 1.5, 1.5).normalize();
-            scene.add(directionalLight);
+            const ambientLight = new THREE.AmbientLight(0xcccccc, 0.9); scene.add(ambientLight);
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 1.2); 
+            directionalLight.position.set(1.5, 1.5, 1.5).normalize(); scene.add(directionalLight);
 
             const nodeGeometry = new THREE.SphereGeometry(1.8, 32, 32); 
             graphData.nodes.forEach(nd => {
@@ -340,79 +213,65 @@
                 nd.category = category; 
 
                 let nodeColorVal = nodeColors[nd.type] || nodeColors['default'];
-                if (category === 'FINANCE') { nodeColorVal = 0x1E90FF; } // DodgerBlue for Finance
-                const material = new THREE.MeshLambertMaterial({ color: nodeColorVal });
+                if (category === 'FINANCE') { nodeColorVal = 0x1E90FF; }
+                // Store original color for highlighting
+                nd.originalColor = nodeColorVal; 
+                const material = new THREE.MeshLambertMaterial({ color: nodeColorVal, transparent: true, opacity: NORMAL_NODE_OPACITY });
                 const nodeMesh = new THREE.Mesh(nodeGeometry, material);
                 
                 let x, y, z;
-
                 if (category === 'CENTER') {
-                    x = (Math.random() - 0.5) * SPREAD_DISTANCE * 0.05; 
-                    y = (Math.random() - 0.5) * SPREAD_DISTANCE * 0.05;
-                    z = (Math.random() - 0.5) * SPREAD_DISTANCE * 0.05;
+                    x = (Math.random() - 0.5) * SPREAD_DISTANCE * 0.01; // Even closer to origin
+                    y = (Math.random() - 0.5) * SPREAD_DISTANCE * 0.01;
+                    z = (Math.random() - 0.5) * SPREAD_DISTANCE * 0.01;
                 } else if (category === 'OTHER') {
-                    const otherMaxRadius = SPREAD_DISTANCE * 0.65; // Increased radius for 'OTHER' to accommodate new leadership nodes
+                    const otherMaxRadius = SPREAD_DISTANCE * 0.6; 
                     let ox, oy, oz, magSq;
-                    do {
-                        ox = (Math.random() - 0.5) * 2; 
-                        oy = (Math.random() - 0.5) * 2;
-                        oz = (Math.random() - 0.5) * 2;
-                        magSq = ox*ox + oy*oy + oz*oz;
-                    } while (magSq === 0 || magSq > 1); 
-                    
-                    const rFactor = 0.45 + Math.cbrt(Math.random()) * 0.55; // Adjusted for good volume fill
+                    do { ox = (Math.random() - 0.5) * 2; oy = (Math.random() - 0.5) * 2; oz = (Math.random() - 0.5) * 2; magSq = ox*ox + oy*oy + oz*oz; } 
+                    while (magSq === 0 || magSq > 1); 
+                    const rFactor = 0.4 + Math.cbrt(Math.random()) * 0.6; 
                     const currentOtherRadius = otherMaxRadius * rFactor;
                     const mag = Math.sqrt(magSq);
-                    
-                    x = (ox / mag) * currentOtherRadius;
-                    y = (oy / mag) * currentOtherRadius;
-                    z = (oz / mag) * currentOtherRadius;
+                    x = (ox / mag) * currentOtherRadius; y = (oy / mag) * currentOtherRadius; z = (oz / mag) * currentOtherRadius;
                 } else { 
-                    const cloudCenterOffset = SPREAD_DISTANCE * (0.65 + Math.random() * 0.35); // [0.65*D to D]
-                    const cloudSphereMaxRadius = SPREAD_DISTANCE * 0.4; 
+                    // For directional categories, project onto a spherical shell
+                    const shellTargetRadius = SPREAD_DISTANCE * (0.9 + Math.random() * 0.25); // [0.9*D to 1.15*D]
+                    const cloudCenterOffset = SPREAD_DISTANCE * (0.65 + Math.random() * 0.35); 
+                    const cloudSphereMaxRadius = SPREAD_DISTANCE * 0.35; 
                     let lox, loy, loz, lMagSq; 
-                    do {
-                        lox = (Math.random() - 0.5) * 2; 
-                        loy = (Math.random() - 0.5) * 2;
-                        loz = (Math.random() - 0.5) * 2;
-                        lMagSq = lox*lox + loy*loy + loz*loz;
-                    } while (lMagSq === 0 || lMagSq > 1);
-                    
+                    do { lox = (Math.random() - 0.5) * 2; loy = (Math.random() - 0.5) * 2; loz = (Math.random() - 0.5) * 2; lMagSq = lox*lox + loy*loy + loz*loz; } 
+                    while (lMagSq === 0 || lMagSq > 1);
                     const lRadiusFactor = 0.25 + Math.cbrt(Math.random()) * 0.75; 
                     const currentLocalCloudRadius = cloudSphereMaxRadius * lRadiusFactor;
                     const lMag = Math.sqrt(lMagSq);
-
-                    const localX = (lox / lMag) * currentLocalCloudRadius;
-                    const localY = (loy / lMag) * currentLocalCloudRadius;
-                    const localZ = (loz / lMag) * currentLocalCloudRadius;
-
+                    const localX = (lox / lMag) * currentLocalCloudRadius; const localY = (loy / lMag) * currentLocalCloudRadius; const localZ = (loz / lMag) * currentLocalCloudRadius;
                     x = localX; y = localY; z = localZ;
-
                     switch (category) {
                         case 'FINANCE':  y += cloudCenterOffset; break;
                         case 'FEELINGS': x -= cloudCenterOffset; break;
                         case 'WELFARE':  x += cloudCenterOffset; break;
                         case 'LEGAL':    y -= cloudCenterOffset; break;
                     }
+                    // Normalize to the target shell radius
+                    let currentDist = Math.sqrt(x*x + y*y + z*z);
+                    if (currentDist === 0) currentDist = 1; // Avoid division by zero
+                    x = (x / currentDist) * shellTargetRadius;
+                    y = (y / currentDist) * shellTargetRadius;
+                    z = (z / currentDist) * shellTargetRadius;
                 }
                 nodeMesh.position.set(x, y, z);
                 nodeMesh.userData = { id: nd.id, type: nd.type, originalData: nd, category: category }; 
                 scene.add(nodeMesh);
                 nodes.set(nd.id, nodeMesh);
 
-                const labelDiv = document.createElement('div');
-                labelDiv.className = 'node-label';
+                const labelDiv = document.createElement('div'); labelDiv.className = 'node-label';
                 labelDiv.textContent = (nd.displayText || nd.id).replace(/_/g, ' ');
-                const label = new THREE.CSS2DObject(labelDiv);
-                label.position.copy(nodeMesh.position);
-                label.position.y += 3.0; 
-                scene.add(label);
-                nodeMesh.userData.label = label;
+                const label = new THREE.CSS2DObject(labelDiv); label.position.copy(nodeMesh.position);
+                label.position.y += 3.0; scene.add(label); nodeMesh.userData.label = label;
             });
 
             graphData.edges.forEach(edgeData => {
-                const sourceNodeMesh = nodes.get(edgeData.source);
-                const targetNodeMesh = nodes.get(edgeData.target);
+                const sourceNodeMesh = nodes.get(edgeData.source); const targetNodeMesh = nodes.get(edgeData.target);
                 if (sourceNodeMesh && targetNodeMesh) {
                     const points = [sourceNodeMesh.position, targetNodeMesh.position];
                     const edgeGeometry = new THREE.BufferGeometry().setFromPoints(points);
@@ -420,10 +279,13 @@
                     if (edgeData.color !== undefined) { edgeColorToUse = edgeData.color; } 
                     else if (edgeData.relation) { edgeColorToUse = relationToColor(edgeData.relation); } 
                     else { edgeColorToUse = 0xAAAAAA; }
-                    const edgeMaterial = new THREE.LineBasicMaterial({ color: edgeColorToUse, transparent: true, opacity: 0.8 });
+                    // Store original color for highlighting
+                    edgeData.originalColor = edgeColorToUse;
+                    const edgeMaterial = new THREE.LineBasicMaterial({ color: edgeColorToUse, transparent: true, opacity: NORMAL_EDGE_OPACITY });
                     const edge = new THREE.Line(edgeGeometry, edgeMaterial);
                     edge.userData = { id: `${edgeData.source}_${edgeData.target}_${edgeData.relation}`, originalData: edgeData };
                     scene.add(edge);
+                    edges.push(edge); // Store edge for easy access
                     if (edgeData.relation) {
                         const midpoint = new THREE.Vector3().addVectors(sourceNodeMesh.position, targetNodeMesh.position).multiplyScalar(0.5);
                         const relationLabelDiv = document.createElement('div');
@@ -431,6 +293,8 @@
                         relationLabelDiv.textContent = edgeData.relation.replace(/_/g, ' ');
                         relationLabelDiv.addEventListener('click', (event) => {
                             event.stopPropagation(); 
+                            clearHighlights(); // Clear previous before applying new
+                            applyEdgeHighlight(edgeData);
                             hideNodeInspector(); 
                             if (edgeData.definition) {
                                 edgeDefinitionText.innerHTML = edgeData.definition.replace(/\n/g, '<br>');
@@ -441,37 +305,89 @@
                             }
                         });
                         const relationLabel = new THREE.CSS2DObject(relationLabelDiv);
-                        relationLabel.position.copy(midpoint);
-                        scene.add(relationLabel);
-                        edge.userData.label = relationLabel; 
+                        relationLabel.position.copy(midpoint); scene.add(relationLabel); edge.userData.label = relationLabel; 
                     }
                 }
             });
-            renderer.domElement.addEventListener('click', onNodeClick, false);
-            labelRenderer.domElement.addEventListener('click', (event) => {
-                if (event.target === labelRenderer.domElement || event.target === renderer.domElement) {
-                    const intersects = raycaster.intersectObjects(Array.from(nodes.values()));
-                    if (intersects.length === 0) { hideEdgeDefinition(); hideNodeInspector(); }
+            renderer.domElement.addEventListener('click', onCanvasClick, false); // Changed from onNodeClick to a general canvas click
+            labelRenderer.domElement.addEventListener('click', (event) => { // This handles clicks on empty space for labels
+                if (event.target === labelRenderer.domElement) { // Click on background of label renderer
+                    clearHighlights(); hideEdgeDefinition(); hideNodeInspector();
                 }
             }, false);
             window.addEventListener('resize', onWindowResize, false);
         }
         
-        function hideEdgeDefinition() { edgeDefinitionDisplay.style.display = 'none'; }
-        function hideNodeInspector() { nodeInspectorDisplay.style.display = 'none'; }
+        function clearHighlights() {
+            if (!isHighlightActive) return;
+            isHighlightActive = false;
 
-        function onNodeClick(event) { 
-            event.preventDefault();
+            nodes.forEach(nodeMesh => {
+                const nodeData = nodeMesh.userData.originalData;
+                nodeMesh.material.color.setHex(nodeData.originalColor);
+                nodeMesh.material.opacity = NORMAL_NODE_OPACITY;
+                if (nodeMesh.material.emissive) nodeMesh.material.emissive.setHex(0x000000);
+                nodeMesh.material.needsUpdate = true;
+            });
+
+            edges.forEach(edgeLine => {
+                const edgeData = edgeLine.userData.originalData;
+                edgeLine.material.color.setHex(edgeData.originalColor);
+                edgeLine.material.opacity = NORMAL_EDGE_OPACITY;
+                edgeLine.material.needsUpdate = true;
+            });
+        }
+
+        function applyEdgeHighlight(clickedEdgeData) {
+            isHighlightActive = true;
+            const sourceId = clickedEdgeData.source;
+            const targetId = clickedEdgeData.target;
+
+            nodes.forEach((nodeMesh, nodeId) => {
+                if (nodeId === sourceId || nodeId === targetId) {
+                    nodeMesh.material.color.setHex(HIGHLIGHT_NODE_COLOR);
+                    if(nodeMesh.material.emissive) nodeMesh.material.emissive.setHex(HIGHLIGHT_NODE_COLOR); // Make it glow
+                    nodeMesh.material.opacity = HIGHLIGHT_OPACITY;
+                } else {
+                    nodeMesh.material.color.setHex(nodeMesh.userData.originalData.originalColor); // Keep original color
+                    nodeMesh.material.opacity = FAINT_OPACITY;
+                }
+                nodeMesh.material.needsUpdate = true;
+            });
+
+            edges.forEach(edgeLine => {
+                const edge = edgeLine.userData.originalData;
+                const isClickedEdge = edge.source === sourceId && edge.target === targetId && edge.relation === clickedEdgeData.relation;
+                const isRelatedToHighlightedNodes = edge.source === sourceId || edge.target === sourceId || edge.source === targetId || edge.target === targetId;
+
+                if (isClickedEdge) {
+                    edgeLine.material.color.setHex(HIGHLIGHT_EDGE_COLOR);
+                    edgeLine.material.opacity = HIGHLIGHT_OPACITY;
+                } else if (isRelatedToHighlightedNodes) {
+                    edgeLine.material.color.setHex(HIGHLIGHT_EDGE_COLOR); 
+                    edgeLine.material.opacity = HIGHLIGHT_OPACITY * 0.75; // Slightly less prominent than the clicked edge
+                } else {
+                    edgeLine.material.color.setHex(edge.originalColor); // Keep original color
+                    edgeLine.material.opacity = FAINT_OPACITY * 0.7; 
+                }
+                edgeLine.material.needsUpdate = true;
+            });
+        }
+        
+        function onCanvasClick(event) { // Handles both node clicks and background clicks on the main renderer
             const rect = renderer.domElement.getBoundingClientRect();
             mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
             mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
             raycaster.setFromCamera(mouse, camera);
             const intersects = raycaster.intersectObjects(Array.from(nodes.values())); 
-            if (intersects.length > 0) {
+
+            if (intersects.length > 0) { // Clicked on a node
+                clearHighlights(); // Clear edge highlights when a node is clicked
+                hideEdgeDefinition();
                 const clickedNodeMesh = intersects[0].object;
                 const nodeData = clickedNodeMesh.userData.originalData;
                 const nodeCategory = clickedNodeMesh.userData.category;
-                hideEdgeDefinition(); 
+                
                 nodeIdText.textContent = (nodeData.displayText || nodeData.id).replace(/_/g, ' ');
                 nodeTypeText.textContent = nodeData.type.replace(/_/g, ' ');
                 nodeCategoryText.textContent = nodeCategory || 'N/A';
@@ -491,46 +407,37 @@
                 });
                 nodeConnectionsDetails.style.display = hasConnections ? 'block' : 'none';
                 nodeInspectorDisplay.style.display = 'block';
+            } else { // Clicked on empty canvas space
+                clearHighlights();
+                hideEdgeDefinition();
+                hideNodeInspector();
             }
         }
 
+        function hideEdgeDefinition() { edgeDefinitionDisplay.style.display = 'none'; }
+        function hideNodeInspector() { nodeInspectorDisplay.style.display = 'none'; }
         function onWindowResize() { 
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            labelRenderer.setSize(window.innerWidth, window.innerHeight);
+            camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight); labelRenderer.setSize(window.innerWidth, window.innerHeight);
         }
-
         function animate() { 
-            requestAnimationFrame(animate);
-            controls.update();
+            requestAnimationFrame(animate); controls.update();
             nodes.forEach((nodeMesh) => {
-                if (nodeMesh.userData.label) {
-                    nodeMesh.userData.label.position.copy(nodeMesh.position);
-                    nodeMesh.userData.label.position.y += 3.0; 
-                }
+                if (nodeMesh.userData.label) { nodeMesh.userData.label.position.copy(nodeMesh.position); nodeMesh.userData.label.position.y += 3.0; }
             });
-             scene.children.forEach(child => {
-                if (child.type === 'Line' && child.userData.label && child.userData.originalData) {
-                    const edgeData = child.userData.originalData;
-                    const sourceNodeMesh = nodes.get(edgeData.source);
-                    const targetNodeMesh = nodes.get(edgeData.target);
-                    if (sourceNodeMesh && targetNodeMesh) {
-                        child.geometry.setFromPoints([sourceNodeMesh.position, targetNodeMesh.position]);
-                        child.geometry.attributes.position.needsUpdate = true; 
+            edges.forEach(edgeLine => { // Update edge label positions if edges were dynamic (not strictly needed here but good practice)
+                 if (edgeLine.userData.label) {
+                    const sourceNodeMesh = nodes.get(edgeLine.userData.originalData.source);
+                    const targetNodeMesh = nodes.get(edgeLine.userData.originalData.target);
+                    if (sourceNodeMesh && targetNodeMesh) { // Ensure nodes still exist
                         const midpoint = new THREE.Vector3().addVectors(sourceNodeMesh.position, targetNodeMesh.position).multiplyScalar(0.5);
-                        child.userData.label.position.copy(midpoint);
+                        edgeLine.userData.label.position.copy(midpoint);
                     }
-                }
+                 }
             });
-            renderer.render(scene, camera);
-            labelRenderer.render(scene, camera);
+            renderer.render(scene, camera); labelRenderer.render(scene, camera);
         }
-
-        window.onload = function() {
-            init();
-            animate();
-        };
+        window.onload = function() { init(); animate(); };
     </script>
 </body>
 </html>

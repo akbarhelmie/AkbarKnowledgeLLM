@@ -64,6 +64,8 @@
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/renderers/CSS2DRenderer.js"></script>
 
     <script>
+        console.log("Script started.");
+
         const graphData = {
             "nodes": [
                 { "id": "Akbar", "type": "Person" }, { "id": "Legal_Entrepreneurship", "type": "Domain" }, { "id": "Legal_Tech", "type": "Domain" }, { "id": "Venture_Capital", "type": "Financial_Concept" }, { "id": "Legal_Tech_Innovation", "type": "Domain" }, { "id": "Human_Rights_Law", "type": "Domain" }, { "id": "Sovereign_Wealth_Funds", "type": "Financial_Vehicle" }, { "id": "High_Net_Worth_Client_Strategies", "type": "Strategy" }, { "id": "Dividend_Staking_Lifestyle", "type": "Lifestyle" }, { "id": "Dividends_Income", "type": "Income_Stream" }, { "id": "Crypto_Investing", "type": "Financial_Activity" }, { "id": "Staking_Rewards", "type": "Income_Stream" }, { "id": "Sovereign_Wealth_Strategies", "type": "Strategy" }, { "id": "Hedge_Funds", "type": "Financial_Vehicle" }, { "id": "Investment_Capital", "type": "Financial_Concept" }, { "id": "Global_Strategies", "type": "Strategy" }, { "id": "Legal_Reformation", "type": "Ideology" }, { "id": "Adaptability", "type": "Value" }, { "id": "Creativity", "type": "Value" }, { "id": "Proactiveness", "type": "Value" }, { "id": "Progressivism", "type": "Ideology" }, { "id": "Unbiased_Politics", "type": "Ideology" }, { "id": "Nation's_Best", "type": "Aspirational" }, { "id": "World_Government", "type": "Aspirational" }, { "id": "Pacifist_Philanthropist", "type": "Ideology" }, { "id": "Crab_Mentality", "type": "Challenge" }, { "id": "Inferiority_Complex", "type": "Challenge" }, { "id": "Equal_Access", "type": "Goal" }, { "id": "Global_Citizenship", "type": "Goal" }, { "id": "Progressive_Citizenship_Foundation", "type": "Foundation" }, { "id": "Financial_Literacy", "type": "Value" }, { "id": "Dividend_Staking", "type": "Finance_Value" }, { "id": "Sustainable_Economy", "type": "Goal" }, { "id": "Sustainable_Agriculture", "type": "Goal" }, { "id": "Welfare_Priority", "type": "Policy" }, { "id": "No_Tax_Policy", "type": "Policy" }, { "id": "Financial_Independence", "type": "Finance_Value" }, { "id": "Universal_Prosperity", "type": "Goal" }, { "id": "Bureaucratic_Stagnation", "type": "Challenge" }, { "id": "MBTI_ENFJ", "type": "Personality_Trait", "displayText": "ENFJ (51%/49%)" },
@@ -84,13 +86,6 @@
             "Personality_Trait": 0x87CEEB,
             "Responsibility": 0xDA70D6, "FocusArea": 0x48D1CC, "Method": 0xFA8072
         };
-
-        // ... rest of the JavaScript code from the previous response ...
-        // (Including init, animate, getNodeCategory, relationToColor, clearHighlights, 
-        // applyEdgeHighlight, updateAllDNAStrands, onCanvasClick, etc.)
-        // The CRITICAL CHANGE is ensuring the updateAllDNAStrands function has:
-        // dna.strand1.geometry.attributes.position.needsUpdate = true;
-        // dna.strand2.geometry.attributes.position.needsUpdate = true;
 
         let scene, camera, renderer, labelRenderer, controls, raycaster, mouse;
         let graphGroup; 
@@ -149,6 +144,7 @@
         }
 
         function init() {
+            console.log("init started");
             scene = new THREE.Scene();
             scene.background = new THREE.Color(0x1a202c);
             graphGroup = new THREE.Group(); scene.add(graphGroup);
@@ -174,8 +170,13 @@
             const ambientLight = new THREE.AmbientLight(0xdddddd, 0.8); graphGroup.add(ambientLight);
             const directionalLight = new THREE.DirectionalLight(0xffffff, 1.0); 
             directionalLight.position.set(SPREAD_DISTANCE, SPREAD_DISTANCE, SPREAD_DISTANCE); graphGroup.add(directionalLight);
+            console.log("Basic scene setup complete.");
 
             const nodeGeometry = new THREE.SphereGeometry(1.8, 32, 32); 
+            if (!graphData || !graphData.nodes) {
+                console.error("graphData.nodes is undefined!");
+                return;
+            }
             graphData.nodes.forEach(nd => {
                 nodeDataMap.set(nd.id, nd); 
                 const category = getNodeCategory(nd); nd.category = category; 
@@ -195,7 +196,12 @@
                 const label = new THREE.CSS2DObject(labelDiv); label.position.copy(nodeMesh.position); label.position.y += 3.0; 
                 graphGroup.add(label); nodeMesh.userData.label = label;
             });
+            console.log("Nodes created: " + nodes.size);
 
+            if (!graphData || !graphData.edges) {
+                console.error("graphData.edges is undefined!");
+                return;
+            }
             graphData.edges.forEach(edgeData => {
                 const sourceNodeMesh = nodes.get(edgeData.source); const targetNodeMesh = nodes.get(edgeData.target);
                 if (sourceNodeMesh && targetNodeMesh) {
@@ -225,6 +231,7 @@
                             currentRadius: DNA_NORMAL_RADIUS, normalRadius: DNA_NORMAL_RADIUS, highlightRadius: DNA_HIGHLIGHT_RADIUS,
                             numTurns: DNA_NUM_TURNS, numSegments: DNA_NUM_SEGMENTS,
                             originalColor1: strandColor1, originalColor2: strandColor2
+                            // p1 and p2 will be updated in animate from node positions
                         },
                         label: null 
                     };
@@ -246,8 +253,12 @@
                         relationLabel.position.copy(midpoint); graphGroup.add(relationLabel); 
                         edgeWrapper.label = relationLabel;
                     }
+                } else {
+                    console.warn("Could not find source or target node for edge: ", edgeData);
                 }
             });
+            console.log("Edges created: " + edges.length);
+
             renderer.domElement.addEventListener('click', onCanvasClick, false); 
             labelRenderer.domElement.addEventListener('click', (event) => { 
                 if (event.target === labelRenderer.domElement) { 
@@ -256,6 +267,7 @@
                 }
             }, false);
             window.addEventListener('resize', onWindowResize, false);
+            console.log("init finished.");
         }
         
         function clearHighlights() { 
@@ -322,13 +334,18 @@
                 const sourceNode = nodes.get(edgeWrapper.originalData.source);
                 const targetNode = nodes.get(edgeWrapper.originalData.target);
 
-                if (!sourceNode || !targetNode) return; 
+                if (!sourceNode || !targetNode) {
+                    // console.warn("DNA update: Missing source or target node for edge", edgeWrapper.originalData);
+                    dna.strand1.visible = false; dna.strand2.visible = false; return;
+                }
 
-                dna.p1.copy(sourceNode.position); dna.p2.copy(targetNode.position);
+                const p1 = sourceNode.position; // Use live positions
+                const p2 = targetNode.position;
+                
                 dna.phase += 0.035; 
 
                 const points1 = []; const points2 = [];
-                const direction = new THREE.Vector3().subVectors(dna.p2, dna.p1);
+                const direction = new THREE.Vector3().subVectors(p2, p1);
                 const edgeLength = direction.length();
 
                 if (edgeLength < 0.01) { 
@@ -344,7 +361,7 @@
 
                 for (let i = 0; i <= dna.numSegments; i++) {
                     const t = i / dna.numSegments;
-                    const currentPointOnEdge = new THREE.Vector3().copy(dna.p1).addScaledVector(direction, t * edgeLength);
+                    const currentPointOnEdge = new THREE.Vector3().copy(p1).addScaledVector(direction, t * edgeLength);
                     const angle = t * dna.numTurns * 2 * Math.PI + dna.phase;
                     const radius = dna.currentRadius; 
                     
@@ -354,9 +371,9 @@
                     points2.push(currentPointOnEdge.clone().add(offset2));
                 }
                 dna.strand1.geometry.setFromPoints(points1); 
-                dna.strand1.geometry.attributes.position.needsUpdate = true; // <<< CRITICAL FIX
+                dna.strand1.geometry.attributes.position.needsUpdate = true;
                 dna.strand2.geometry.setFromPoints(points2);
-                dna.strand2.geometry.attributes.position.needsUpdate = true; // <<< CRITICAL FIX
+                dna.strand2.geometry.attributes.position.needsUpdate = true;
             });
         }
 
@@ -377,6 +394,7 @@
         function hideNodeInspector() { nodeInspectorDisplay.style.display = 'none'; }
         function onWindowResize() { camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight); labelRenderer.setSize(window.innerWidth, window.innerHeight); }
         
+        let frameCount = 0;
         function animate() { 
             requestAnimationFrame(animate); 
             const currentTime = Date.now();
@@ -402,8 +420,31 @@
                  }
             });
             renderer.render(scene, camera); labelRenderer.render(scene, camera);
+            // if (frameCount % 60 === 0) console.log("Animate frame running: " + frameCount) ; // Log every 60 frames
+            // frameCount++;
         }
-        window.onload = function() { init(); animate(); };
+        window.onload = function() { 
+            console.log("Window loaded.");
+            try {
+                init(); 
+                animate();
+                console.log("Three.js setup and animation loop started.");
+            } catch (e) {
+                console.error("Error during init or animate setup:", e);
+                // Display error to user on the page itself if console not open
+                const errDiv = document.createElement('div');
+                errDiv.style.position = 'absolute';
+                errDiv.style.top = '0';
+                errDiv.style.left = '0';
+                errDiv.style.width = '100%';
+                errDiv.style.padding = '20px';
+                errDiv.style.backgroundColor = 'red';
+                errDiv.style.color = 'white';
+                errDiv.style.zIndex = '1000';
+                errDiv.innerText = 'An error occurred: ' + e.message + '\nCheck console for details.';
+                document.body.appendChild(errDiv);
+            }
+        };
     </script>
 </body>
 </html>

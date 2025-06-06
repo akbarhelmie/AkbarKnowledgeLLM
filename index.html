@@ -5,9 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LLM Knowledge Graph - Evolved</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     <style>
-        body { margin: 0; overflow: hidden; font-family: 'Inter', sans-serif; background-color: #0c101a; color: #f0f0f0; }
+        body { margin: 0; overflow: hidden; font-family: 'Nunito', sans-serif; background-color: #0c101a; color: #f0f0f0; }
         canvas { display: block; }
         #info {
             position: absolute; top: 10px; left: 10px; background: rgba(12, 16, 26, 0.8);
@@ -32,19 +34,35 @@
             border-radius: 6px;
             max-height: 200px;
             overflow-y: auto;
+            position: absolute;
+            width: 100%;
+            z-index: 101;
         }
-        .suggestion-item {
-            padding: 8px 12px;
+        .suggestion-item { padding: 8px 12px; cursor: pointer; }
+        .suggestion-item:hover { background-color: rgba(71, 85, 105, 0.8); }
+        .node-label {
+            background: transparent;
+            color: #f0f8ff; /* AliceBlue - a soft, bright white */
+            text-shadow: 0 0 5px rgba(0,0,0,1);
+            pointer-events: all; /* Make labels clickable */
             cursor: pointer;
+            font-size: 11px;
+            font-weight: 700;
         }
-        .suggestion-item:hover, .suggestion-item.active {
-            background-color: rgba(71, 85, 105, 0.8);
+        .edge-relation-label {
+            background: transparent;
+            color: #a0aec0; /* Soft grey */
+            text-shadow: 0 0 5px rgba(0,0,0,1);
+            pointer-events: all; /* Make labels clickable */
+            cursor: pointer;
+            font-size: 9px;
+            font-style: italic;
         }
-        #node-inspector-display { border-top: 1px solid #5A6578; margin-top: 0.75rem; padding-top: 0.75rem; }
-        #node-inspector-display h2 { color: #87CEFA; font-weight: bold; }
+        #node-inspector-display { border-top: 1px solid #4A5568; margin-top: 1rem; padding-top: 1rem; }
+        #node-inspector-display h2 { color: #90cdf4; font-weight: 700; }
         #node-inspector-display p, #node-inspector-display ul { font-size: 0.875rem; }
         #node-inspector-display ul { list-style-type: disc; padding-left: 1.5rem; }
-        #node-inspector-display strong { color: #E0E0E0; }
+        #node-inspector-display strong { color: #E2E8F0; }
     </style>
 </head>
 <body>
@@ -72,9 +90,11 @@
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/renderers/CSS2DRenderer.js"></script>
 
     <script>
+        // --- Data Definitions (Populated at the end) ---
         const graphDataFull = { "nodes": [], "edges": [] };
         const nodeColorsFull = {};
         
+        // --- Global Variables & Constants ---
         let scene, camera, renderer, labelRenderer, controls, raycaster, mouse, clock;
         let graphGroup;
         const nodes = new Map();
@@ -85,9 +105,10 @@
         const HIGHLIGHT_COLOR = new THREE.Color(0xffff00);
         const FAINT_OPACITY = 0.05;
         const NORMAL_NODE_OPACITY = 0.8;
-        const NORMAL_EDGE_OPACITY = 0.25; // More transparent for blood flow
+        const NORMAL_EDGE_OPACITY = 0.35;
         const DEFAULT_RING_OPACITY = 0.4;
-        const AKBAR_RING_OPACITY = DEFAULT_RING_OPACITY * 0.25; // 75% more transparent
+        const AKBAR_RING_COLOR = new THREE.Color(0xe0e0e0);
+        const AKBAR_RING_OPACITY = DEFAULT_RING_OPACITY * 0.25;
         const HIGHLIGHT_OPACITY = 1.0;
         
         let autoRotationSpeed = 0.0003;
@@ -97,8 +118,9 @@
         const DNA_STRAND_RADIUS = 0.04;
         const DNA_HELIX_RADIUS = 0.25;
 
+        // DOM Elements
         let nodeInspectorDisplay, nodeIdText, nodeTypeText, nodeCategoryText,
-            nodeConnectionsDetails, nodeConnectionsList, searchBox, searchSuggestions, infoPanel;
+            nodeConnectionsDetails, nodeConnectionsList, searchBox, searchSuggestions;
 
         // --- Custom Shader for Blood Flow ---
         const flowVertexShader = `
@@ -112,16 +134,22 @@
             uniform vec3 uColor;
             uniform float uTime;
             uniform float uFlowSpeed;
+            uniform float uIsHighlighted;
             varying vec2 vUv;
 
             void main() {
                 // Creates a moving sine wave pattern for the flow
                 float flow = sin(vUv.x * 25.0 - uTime * uFlowSpeed) * 0.5 + 0.5;
-                // Clamp to create sharper pulses
-                flow = pow(flow, 3.0);
+                // Clamp to create sharper, more defined pulses
+                flow = pow(flow, 5.0);
                 
-                vec3 finalColor = uColor * (0.5 + flow); // Base color plus the flow highlight
-                gl_FragColor = vec4(finalColor, 1.0);
+                vec3 baseColor = uColor;
+                float baseAlpha = uIsHighlighted > 0.5 ? 0.9 : 0.35;
+                
+                // Additive glow for the flow effect. Make it very bright.
+                vec3 finalColor = baseColor + baseColor * flow * 3.0;
+                
+                gl_FragColor = vec4(finalColor, baseAlpha);
             }
         `;
 
@@ -192,7 +220,7 @@
             raycaster = new THREE.Raycaster();
             mouse = new THREE.Vector2();
 
-            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
             renderer.setPixelRatio(window.devicePixelRatio);
             renderer.setSize(window.innerWidth, window.innerHeight);
             document.body.appendChild(renderer.domElement);
@@ -200,10 +228,11 @@
             labelRenderer = new THREE.CSS2DRenderer();
             labelRenderer.domElement.style.position = 'absolute';
             labelRenderer.domElement.style.top = '0px';
+            labelRenderer.domElement.style.pointerEvents = 'none'; // Pass clicks through to the canvas
             document.body.appendChild(labelRenderer.domElement);
             labelRenderer.setSize(window.innerWidth, window.innerHeight);
 
-            controls = new THREE.OrbitControls(camera, labelRenderer.domElement);
+            controls = new THREE.OrbitControls(camera, renderer.domElement);
             controls.enableDamping = true;
             controls.minDistance = 5;
             controls.maxDistance = 150;
@@ -284,7 +313,7 @@
                         const ring = new THREE.Mesh(
                              new THREE.RingGeometry(ringRadius, ringRadius + 0.05, 64),
                              new THREE.MeshBasicMaterial({ 
-                                color: nodeData.originalColor, 
+                                color: isAkbar ? AKBAR_RING_COLOR : nodeData.originalColor, 
                                 side: THREE.DoubleSide, 
                                 transparent: true, 
                                 opacity: isAkbar ? AKBAR_RING_OPACITY : DEFAULT_RING_OPACITY 
@@ -297,9 +326,11 @@
                     nodeGroup.add(ringsGroup);
                     nodeGroup.userData.ringsGroup = ringsGroup;
                     
-                    const label = new THREE.CSS2DObject(document.createElement('div'));
-                    label.element.className = 'node-label';
-                    label.element.textContent = nodeData.displayText || nodeData.id;
+                    const labelDiv = document.createElement('div');
+                    labelDiv.className = 'node-label';
+                    labelDiv.textContent = nodeData.displayText || nodeData.id;
+                    labelDiv.addEventListener('click', () => applyHighlight(nodeData));
+                    const label = new THREE.CSS2DObject(labelDiv);
                     label.position.set(0, size * 1.5, 0);
                     nodeGroup.add(label);
                     
@@ -322,18 +353,20 @@
                 
                 const midPoint = new THREE.Vector3().addVectors(startVec, endVec).multiplyScalar(0.5);
                 const distance = startVec.distanceTo(endVec);
-                const controlPoint = midPoint.clone().normalize().multiplyScalar(midPoint.length() + distance * 0.7);
+                const controlPoint = midPoint.clone().normalize().multiplyScalar(midPoint.length() + distance * 0.8);
                 const mainCurve = new THREE.QuadraticBezierCurve3(startVec, controlPoint, endVec);
 
                 const color = relationToColor(edgeData.relation);
                 const originalColor = new THREE.Color(color);
                 
-                const dnaGroup = createDnaStrands(mainCurve, originalColor, edgeData.target === 'Akbar');
+                const dnaGroup = createDnaStrands(mainCurve, originalColor, edgeData.source === 'Akbar');
                 graphGroup.add(dnaGroup);
 
-                const label = new THREE.CSS2DObject(document.createElement('div'));
-                label.element.className = 'edge-relation-label';
-                label.element.textContent = edgeData.relation;
+                const labelDiv = document.createElement('div');
+                labelDiv.className = 'edge-relation-label';
+                labelDiv.textContent = edgeData.relation;
+                labelDiv.addEventListener('click', () => applyEdgeHighlight(edgeData));
+                const label = new THREE.CSS2DObject(labelDiv);
                 label.position.copy(mainCurve.getPoint(0.5));
                 graphGroup.add(label);
                 
@@ -341,7 +374,7 @@
             });
         }
         
-        function createDnaStrands(mainCurve, color, flowsToAkbar) {
+        function createDnaStrands(mainCurve, color, flowsFromAkbar) {
             const numTurns = Math.max(2, mainCurve.getLength() / 4);
             const pointsPerStrand = 64;
             
@@ -360,17 +393,17 @@
                 strandPoints2.push(pointOnCurve.clone().add(offset.clone().negate()));
             }
 
-            // Using the custom shader for the blood flow effect
             const material = new THREE.ShaderMaterial({
                 uniforms: {
                     uColor: { value: color },
                     uTime: { value: 0 },
-                    uFlowSpeed: { value: flowsToAkbar ? -5.0 : 5.0 } // Negative speed reverses flow direction
+                    uFlowSpeed: { value: flowsFromAkbar ? 4.0 : -4.0 },
+                    uIsHighlighted: { value: 0.0 }
                 },
                 vertexShader: flowVertexShader,
                 fragmentShader: flowFragmentShader,
                 transparent: true,
-                opacity: NORMAL_EDGE_OPACITY,
+                depthWrite: false,
             });
             
             const tubeGeo1 = new THREE.TubeGeometry(new THREE.CatmullRomCurve3(strandPoints1), pointsPerStrand, DNA_STRAND_RADIUS, 8, false);
@@ -404,7 +437,10 @@
         }
 
         function onCanvasClick(event) {
-            event.preventDefault();
+            if (event.target.closest('.node-label, .edge-relation-label')) {
+                return;
+            }
+
             mouse.x = (event.clientX / renderer.domElement.clientWidth) * 2 - 1;
             mouse.y = -(event.clientY / renderer.domElement.clientHeight) * 2 + 1;
 
@@ -422,11 +458,7 @@
             }
             
             if (clickedNodeData) {
-                if (highlightedElements && highlightedElements.clickedNode.id === clickedNodeData.id) {
-                    clearHighlights();
-                } else {
-                    applyHighlight(clickedNodeData);
-                }
+                applyHighlight(clickedNodeData);
             } else {
                 clearHighlights();
             }
@@ -441,7 +473,6 @@
             });
         }
         
-        // Update the uTime uniform for all edge shaders
         function updateEdgeAnimation(time) {
             edges.forEach(edge => {
                 edge.mesh.children.forEach(strand => {
@@ -459,7 +490,7 @@
                 const nodeGroup = nodes.get(nodeData.id);
                 if (nodeGroup) {
                     const sphere = nodeGroup.getObjectByProperty('isNodeSphere', true);
-                    const baseColor = nodeData.id === highlightedElements.clickedNode.id ? HIGHLIGHT_COLOR : nodeData.originalColor;
+                    const baseColor = nodeData.id === highlightedElements.clickedNode?.id ? HIGHLIGHT_COLOR : nodeData.originalColor;
                     sphere.material.emissive.copy(baseColor).multiplyScalar(pulseValue * 0.8);
                 }
             });
@@ -477,8 +508,8 @@
 
             edges.forEach(edge => {
                 edge.mesh.children.forEach(child => {
-                    if (child.material) {
-                        child.material.opacity = NORMAL_EDGE_OPACITY;
+                    if (child.material.uniforms) {
+                        child.material.uniforms.uIsHighlighted.value = 0.0;
                     }
                 });
                 edge.label.element.style.opacity = 1;
@@ -517,14 +548,48 @@
             edges.forEach(edge => {
                 const isHighlighted = highlightedElements.edges.has(edge);
                 edge.mesh.children.forEach(child => {
-                     if (child.material) {
-                        child.material.opacity = isHighlighted ? 1.0 : FAINT_OPACITY * 0.5;
+                     if (child.material.uniforms) {
+                        child.material.uniforms.uIsHighlighted.value = isHighlighted ? 1.0 : 0.0;
                      }
                 });
                 edge.label.element.style.opacity = isHighlighted ? 1 : FAINT_OPACITY;
             });
 
             displayNodeInfo(clickedNodeData, connectedEdges);
+        }
+
+        function applyEdgeHighlight(edgeData) {
+            if (!edgeData) return;
+            clearHighlights();
+
+            const sourceNodeData = graphDataFull.nodes.find(n => n.id === edgeData.source);
+            const targetNodeData = graphDataFull.nodes.find(n => n.id === edgeData.target);
+            const thisEdge = edges.find(e => e.source === edgeData.source && e.target === edgeData.target && e.relation === edgeData.relation);
+
+            highlightedElements = {
+                clickedNode: null, // No central node for edge clicks
+                nodes: new Set([sourceNodeData, targetNodeData]),
+                edges: new Set([thisEdge])
+            };
+
+            nodes.forEach((nodeGroup) => {
+                const isHighlighted = nodeGroup.userData.nodeData.id === sourceNodeData.id || nodeGroup.userData.nodeData.id === targetNodeData.id;
+                const sphere = nodeGroup.getObjectByProperty('isNodeSphere', true);
+                sphere.material.opacity = isHighlighted ? HIGHLIGHT_OPACITY : FAINT_OPACITY;
+                nodeGroup.userData.label.element.style.opacity = isHighlighted ? 1 : FAINT_OPACITY;
+            });
+
+            edges.forEach(edge => {
+                const isHighlighted = edge === thisEdge;
+                edge.mesh.children.forEach(child => {
+                     if (child.material.uniforms) {
+                        child.material.uniforms.uIsHighlighted.value = isHighlighted ? 1.0 : 0.0;
+                     }
+                });
+                edge.label.element.style.opacity = isHighlighted ? 1 : FAINT_OPACITY;
+            });
+
+             displayNodeInfo(sourceNodeData, [thisEdge]);
         }
         
         function fetchDOMElements() {
@@ -544,11 +609,16 @@
                     if(firstSuggestion) {
                         const nodeData = searchIndex.find(n => n.id === firstSuggestion.dataset.id);
                         applyHighlight(nodeData);
-                        searchBox.value = nodeData.displayText || nodeData.id;
+                        searchBox.value = nodeData.displayText;
                         clearSuggestions();
                     }
                 }
             });
+            document.addEventListener('click', (e) => {
+                if (!document.getElementById('search-container').contains(e.target)) {
+                    clearSuggestions();
+                }
+            }, true);
         }
         
         function handleSearchInput(e) {
@@ -557,19 +627,19 @@
             if (searchTerm.length < 2) return;
 
             const results = searchIndex
-                .map(node => ({ node, score: similarity(searchTerm, node.name) }))
-                .filter(item => item.score > 0.3)
-                .sort((a, b) => b.score - a.score)
+                .filter(node => node.name.includes(searchTerm))
                 .slice(0, 5);
             
-            results.forEach(({node}) => {
+            results.forEach(node => {
                 const div = document.createElement('div');
-                div.textContent = node.displayText || node.id;
+                div.textContent = node.displayText;
                 div.className = 'suggestion-item';
                 div.dataset.id = node.id;
-                div.addEventListener('click', () => {
-                    applyHighlight(node);
-                    searchBox.value = node.displayText || node.id;
+                div.addEventListener('click', (event) => {
+                    event.stopPropagation();
+                    const nodeToHighlight = searchIndex.find(n => n.id === event.target.dataset.id);
+                    applyHighlight(nodeToHighlight);
+                    searchBox.value = nodeToHighlight.displayText;
                     clearSuggestions();
                 });
                 searchSuggestions.appendChild(div);
@@ -589,47 +659,6 @@
                     ...node
                 });
             });
-        }
-
-        function similarity(s1, s2) {
-            let longer = s1;
-            let shorter = s2;
-            if (s1.length < s2.length) {
-                longer = s2;
-                shorter = s1;
-            }
-            let longerLength = longer.length;
-            if (longerLength === 0) {
-                return 1.0;
-            }
-            return (longerLength - editDistance(longer, shorter)) / parseFloat(longerLength);
-        }
-
-        function editDistance(s1, s2) {
-            s1 = s1.toLowerCase();
-            s2 = s2.toLowerCase();
-
-            let costs = new Array();
-            for (let i = 0; i <= s1.length; i++) {
-                let lastValue = i;
-                for (let j = 0; j <= s2.length; j++) {
-                    if (i == 0) {
-                        costs[j] = j;
-                    } else {
-                        if (j > 0) {
-                            let newValue = costs[j - 1];
-                            if (s1.charAt(i - 1) != s2.charAt(j - 1))
-                                newValue = Math.min(Math.min(newValue, lastValue),
-                                    costs[j]) + 1;
-                            costs[j - 1] = lastValue;
-                            lastValue = newValue;
-                        }
-                    }
-                }
-                if (i > 0)
-                    costs[s2.length] = lastValue;
-            }
-            return costs[s2.length];
         }
         
         function displayNodeInfo(nodeData, connectedEdges) {

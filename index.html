@@ -146,7 +146,7 @@
                 vec3 baseColor = uColor;
                 float baseAlpha = 0.35; // Default transparency
                 
-                // When highlighted, use the bright yellow color and make it more opaque
+                // When highlighted, use the bright yellow color
                 if (uIsHighlighted > 0.5) {
                     baseColor = vec3(1.0, 1.0, 0.0);
                     baseAlpha = 0.9;
@@ -514,9 +514,9 @@
                     const nodeGroup = nodes.get(nodeData.id);
                     if (nodeGroup) {
                         const sphere = nodeGroup.getObjectByProperty('isNodeSphere', true);
-                        if (sphere) {
-                            const baseColor = nodeData.id === highlightedElements.clickedNode?.id ? HIGHLIGHT_COLOR : nodeData.originalColor;
-                            sphere.material.emissive.copy(baseColor).multiplyScalar(pulseValue * 0.8);
+                        if(sphere){
+                           const baseColor = nodeData.id === highlightedElements.clickedNode?.id ? HIGHLIGHT_COLOR : nodeData.originalColor;
+                           sphere.material.emissive.copy(baseColor).multiplyScalar(pulseValue * 0.8);
                         }
                     }
                 });
@@ -528,9 +528,11 @@
 
             nodes.forEach((nodeGroup) => {
                  const sphere = nodeGroup.getObjectByProperty('isNodeSphere', true);
-                 sphere.material.opacity = NORMAL_NODE_OPACITY;
-                 sphere.material.emissive.setHex(0x000000);
-                 nodeGroup.userData.label.element.style.opacity = 1;
+                 if(sphere) {
+                    sphere.material.opacity = NORMAL_NODE_OPACITY;
+                    sphere.material.emissive.setHex(0x000000);
+                 }
+                 if(nodeGroup.userData.label) nodeGroup.userData.label.element.style.opacity = 1;
             });
 
             edges.forEach(edge => {
@@ -539,7 +541,7 @@
                         child.material.uniforms.uIsHighlighted.value = 0.0;
                     }
                 });
-                edge.label.element.style.opacity = 1;
+                if(edge.label) edge.label.element.style.opacity = 1;
             });
             
             highlightedElements = null;
@@ -568,8 +570,8 @@
             nodes.forEach((nodeGroup) => {
                 const isHighlighted = Array.from(connectedNodes).some(n => n.id === nodeGroup.userData.nodeData.id);
                 const sphere = nodeGroup.getObjectByProperty('isNodeSphere', true);
-                sphere.material.opacity = isHighlighted ? HIGHLIGHT_OPACITY : FAINT_OPACITY;
-                nodeGroup.userData.label.element.style.opacity = isHighlighted ? 1 : FAINT_OPACITY;
+                if (sphere) sphere.material.opacity = isHighlighted ? HIGHLIGHT_OPACITY : FAINT_OPACITY;
+                if(nodeGroup.userData.label) nodeGroup.userData.label.element.style.opacity = isHighlighted ? 1 : FAINT_OPACITY;
             });
 
             edges.forEach(edge => {
@@ -579,7 +581,7 @@
                         child.material.uniforms.uIsHighlighted.value = isHighlighted ? 1.0 : 0.0;
                      }
                 });
-                edge.label.element.style.opacity = isHighlighted ? 1 : FAINT_OPACITY;
+                if(edge.label) edge.label.element.style.opacity = isHighlighted ? 1 : FAINT_OPACITY;
             });
 
             displayNodeInfo(clickedNodeData, connectedEdges);
@@ -604,8 +606,8 @@
             nodes.forEach((nodeGroup) => {
                 const isHighlighted = nodeGroup.userData.nodeData.id === sourceNodeData.id || nodeGroup.userData.nodeData.id === targetNodeData.id;
                 const sphere = nodeGroup.getObjectByProperty('isNodeSphere', true);
-                sphere.material.opacity = isHighlighted ? HIGHLIGHT_OPACITY : FAINT_OPACITY;
-                nodeGroup.userData.label.element.style.opacity = isHighlighted ? 1 : FAINT_OPACITY;
+                if (sphere) sphere.material.opacity = isHighlighted ? HIGHLIGHT_OPACITY : FAINT_OPACITY;
+                if(nodeGroup.userData.label) nodeGroup.userData.label.element.style.opacity = isHighlighted ? 1 : FAINT_OPACITY;
             });
 
             edges.forEach(edge => {
@@ -615,7 +617,7 @@
                         child.material.uniforms.uIsHighlighted.value = isHighlighted ? 1.0 : 0.0;
                      }
                 });
-                edge.label.element.style.opacity = isHighlighted ? 1 : FAINT_OPACITY;
+                if(edge.label) edge.label.element.style.opacity = isHighlighted ? 1 : FAINT_OPACITY;
             });
 
              displayNodeInfo(sourceNodeData, [thisEdge]);

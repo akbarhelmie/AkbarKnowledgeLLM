@@ -139,14 +139,20 @@
 
             void main() {
                 // Creates a moving sine wave pattern for the flow
-                float flow = sin(vUv.x * 25.0 - uTime * uFlowSpeed) * 0.5 + 0.5;
-                // Clamp to create sharper, more defined pulses
-                flow = pow(flow, 5.0);
+                float flow = sin(vUv.x * 30.0 + uTime * uFlowSpeed) * 0.5 + 0.5;
+                // Clamp to create sharper, brighter pulses
+                flow = pow(flow, 4.0);
                 
                 vec3 baseColor = uColor;
-                float baseAlpha = uIsHighlighted > 0.5 ? 0.9 : 0.35;
+                float baseAlpha = 0.35; // Default transparency
                 
-                // Additive glow for the flow effect. Make it very bright.
+                // When highlighted, use the bright yellow color and make it more opaque
+                if (uIsHighlighted > 0.5) {
+                    baseColor = vec3(1.0, 1.0, 0.0);
+                    baseAlpha = 0.9;
+                }
+                
+                // Additive glow for the flow effect. Significantly increased brightness.
                 vec3 finalColor = baseColor + baseColor * flow * 3.0;
                 
                 gl_FragColor = vec4(finalColor, baseAlpha);
@@ -228,7 +234,7 @@
             labelRenderer = new THREE.CSS2DRenderer();
             labelRenderer.domElement.style.position = 'absolute';
             labelRenderer.domElement.style.top = '0px';
-            labelRenderer.domElement.style.pointerEvents = 'none'; // Pass clicks through to the canvas
+            labelRenderer.domElement.style.pointerEvents = 'none';
             document.body.appendChild(labelRenderer.domElement);
             labelRenderer.setSize(window.innerWidth, window.innerHeight);
 
@@ -261,7 +267,7 @@
             createEdges();
 
             window.addEventListener('resize', onWindowResize);
-            renderer.domElement.addEventListener('click', onCanvasClick);
+            document.addEventListener('click', onDocumentClick, false);
             
             animate();
         }
@@ -329,7 +335,7 @@
                     const labelDiv = document.createElement('div');
                     labelDiv.className = 'node-label';
                     labelDiv.textContent = nodeData.displayText || nodeData.id;
-                    labelDiv.addEventListener('click', () => applyHighlight(nodeData));
+                    labelDiv.setAttribute('data-id', nodeData.id);
                     const label = new THREE.CSS2DObject(labelDiv);
                     label.position.set(0, size * 1.5, 0);
                     nodeGroup.add(label);
@@ -365,7 +371,9 @@
                 const labelDiv = document.createElement('div');
                 labelDiv.className = 'edge-relation-label';
                 labelDiv.textContent = edgeData.relation;
-                labelDiv.addEventListener('click', () => applyEdgeHighlight(edgeData));
+                labelDiv.setAttribute('data-source', edgeData.source);
+                labelDiv.setAttribute('data-target', edgeData.target);
+                labelDiv.setAttribute('data-relation', edgeData.relation);
                 const label = new THREE.CSS2DObject(labelDiv);
                 label.position.copy(mainCurve.getPoint(0.5));
                 graphGroup.add(label);
@@ -436,11 +444,24 @@
             labelRenderer.render(scene, camera);
         }
 
-        function onCanvasClick(event) {
-            if (event.target.closest('.node-label, .edge-relation-label')) {
+        function onDocumentClick(event) {
+            // Handle clicks on HTML label elements first
+            if (event.target.classList.contains('node-label')) {
+                const nodeId = event.target.getAttribute('data-id');
+                const nodeData = graphDataFull.nodes.find(n => n.id === nodeId);
+                if (nodeData) applyHighlight(nodeData);
+                return;
+            }
+            if (event.target.classList.contains('edge-relation-label')) {
+                const sourceId = event.target.getAttribute('data-source');
+                const targetId = event.target.getAttribute('data-target');
+                const relation = event.target.getAttribute('data-relation');
+                const edgeData = graphDataFull.edges.find(e => e.source === sourceId && e.target === targetId && e.relation === relation);
+                if (edgeData) applyEdgeHighlight(edgeData);
                 return;
             }
 
+            // If not a label, check for clicks on 3D objects
             mouse.x = (event.clientX / renderer.domElement.clientWidth) * 2 - 1;
             mouse.y = -(event.clientY / renderer.domElement.clientHeight) * 2 + 1;
 
@@ -460,7 +481,9 @@
             if (clickedNodeData) {
                 applyHighlight(clickedNodeData);
             } else {
-                clearHighlights();
+                if (!document.getElementById('info').contains(event.target)) {
+                    clearHighlights();
+                }
             }
         }
         
@@ -486,14 +509,18 @@
         function updateHighlightEffect(time) {
             const pulseValue = (Math.sin(time * 5) + 1) / 2;
 
-            highlightedElements.nodes.forEach(nodeData => {
-                const nodeGroup = nodes.get(nodeData.id);
-                if (nodeGroup) {
-                    const sphere = nodeGroup.getObjectByProperty('isNodeSphere', true);
-                    const baseColor = nodeData.id === highlightedElements.clickedNode?.id ? HIGHLIGHT_COLOR : nodeData.originalColor;
-                    sphere.material.emissive.copy(baseColor).multiplyScalar(pulseValue * 0.8);
-                }
-            });
+            if (highlightedElements.nodes) {
+                highlightedElements.nodes.forEach(nodeData => {
+                    const nodeGroup = nodes.get(nodeData.id);
+                    if (nodeGroup) {
+                        const sphere = nodeGroup.getObjectByProperty('isNodeSphere', true);
+                        if (sphere) {
+                            const baseColor = nodeData.id === highlightedElements.clickedNode?.id ? HIGHLIGHT_COLOR : nodeData.originalColor;
+                            sphere.material.emissive.copy(baseColor).multiplyScalar(pulseValue * 0.8);
+                        }
+                    }
+                });
+            }
         }
 
         function clearHighlights() {
@@ -565,9 +592,11 @@
             const sourceNodeData = graphDataFull.nodes.find(n => n.id === edgeData.source);
             const targetNodeData = graphDataFull.nodes.find(n => n.id === edgeData.target);
             const thisEdge = edges.find(e => e.source === edgeData.source && e.target === edgeData.target && e.relation === edgeData.relation);
+            
+            if(!sourceNodeData || !targetNodeData || !thisEdge) return;
 
             highlightedElements = {
-                clickedNode: null, // No central node for edge clicks
+                clickedNode: null, 
                 nodes: new Set([sourceNodeData, targetNodeData]),
                 edges: new Set([thisEdge])
             };
@@ -608,17 +637,12 @@
                     const firstSuggestion = searchSuggestions.querySelector('.suggestion-item');
                     if(firstSuggestion) {
                         const nodeData = searchIndex.find(n => n.id === firstSuggestion.dataset.id);
-                        applyHighlight(nodeData);
+                        if(nodeData) applyHighlight(nodeData);
                         searchBox.value = nodeData.displayText;
                         clearSuggestions();
                     }
                 }
             });
-            document.addEventListener('click', (e) => {
-                if (!document.getElementById('search-container').contains(e.target)) {
-                    clearSuggestions();
-                }
-            }, true);
         }
         
         function handleSearchInput(e) {
@@ -638,7 +662,7 @@
                 div.addEventListener('click', (event) => {
                     event.stopPropagation();
                     const nodeToHighlight = searchIndex.find(n => n.id === event.target.dataset.id);
-                    applyHighlight(nodeToHighlight);
+                    if (nodeToHighlight) applyHighlight(nodeToHighlight);
                     searchBox.value = nodeToHighlight.displayText;
                     clearSuggestions();
                 });
@@ -647,7 +671,7 @@
         }
 
         function clearSuggestions() {
-             searchSuggestions.innerHTML = '';
+             if(searchSuggestions) searchSuggestions.innerHTML = '';
         }
 
         function buildSearchIndex() {

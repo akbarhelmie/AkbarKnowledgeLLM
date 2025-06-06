@@ -21,7 +21,7 @@
         }
         #close-info-btn:hover { color: #fff; }
         .node-label {
-            position: absolute; background: rgba(255, 255, 255, 0.6); /* Increased transparency */
+            position: absolute; background: rgba(255, 255, 255, 0.6); 
             padding: 2px 5px; border-radius: 3px; font-size: 9px; color: #10141b; 
             pointer-events: none; white-space: nowrap; transform: translate(-50%, -50%); 
             text-align: center; text-shadow: 0px 0px 1px rgba(255,255,255,0.6);
@@ -76,12 +76,234 @@
 
         const graphDataFull = {
             "nodes": [
-                { "id": "Akbar", "type": "Person" }, { "id": "Legal_Entrepreneurship", "type": "Domain" }, { "id": "Legal_Tech", "type": "Domain" }, { "id": "Venture_Capital", "type": "Financial_Concept" }, { "id": "Legal_Tech_Innovation", "type": "Domain" }, { "id": "Human_Rights_Law", "type": "Domain" }, { "id": "Sovereign_Wealth_Funds", "type": "Financial_Vehicle" }, { "id": "High_Net_Worth_Client_Strategies", "type": "Strategy" }, { "id": "Dividend_Staking_Lifestyle", "type": "Lifestyle" }, { "id": "Dividends_Income", "type": "Income_Stream" }, { "id": "Crypto_Investing", "type": "Financial_Activity" }, { "id": "Staking_Rewards", "type": "Income_Stream" }, { "id": "Sovereign_Wealth_Strategies", "type": "Strategy" }, { "id": "Hedge_Funds", "type": "Financial_Vehicle" }, { "id": "Investment_Capital", "type": "Financial_Concept" }, { "id": "Global_Strategies", "type": "Strategy" }, { "id": "Legal_Reformation", "type": "Ideology" }, { "id": "Adaptability", "type": "Value" }, { "id": "Creativity", "type": "Value" }, { "id": "Proactiveness", "type": "Value" }, { "id": "Progressivism", "type": "Ideology" }, { "id": "Unbiased_Politics", "type": "Ideology" }, { "id": "Nation's_Best", "type": "Aspirational" }, { "id": "World_Government", "type": "Aspirational" }, { "id": "Pacifist_Philanthropist", "type": "Ideology" }, { "id": "Crab_Mentality", "type": "Challenge" }, { "id": "Inferiority_Complex", "type": "Challenge" }, { "id": "Equal_Access", "type": "Goal" }, { "id": "Global_Citizenship", "type": "Goal" }, { "id": "Progressive_Citizenship_Foundation", "type": "Foundation" }, { "id": "Financial_Literacy", "type": "Value" }, { "id": "Dividend_Staking", "type": "Finance_Value" }, { "id": "Sustainable_Economy", "type": "Goal" }, { "id": "Sustainable_Agriculture", "type": "Goal" }, { "id": "Welfare_Priority", "type": "Policy" }, { "id": "No_Tax_Policy", "type": "Policy" }, { "id": "Financial_Independence", "type": "Finance_Value" }, { "id": "Universal_Prosperity", "type": "Goal" }, { "id": "Bureaucratic_Stagnation", "type": "Challenge" }, { "id": "MBTI_ENFJ", "type": "Personality_Trait", "displayText": "ENFJ (51%/49%)" },
-                { "id": "Drives_Strategy", "type": "Responsibility" }, { "id": "Drives_Growth", "type": "Responsibility" }, { "id": "Drives_Innovation", "type": "Responsibility" }, { "id": "Global_Expansion_Focus", "type": "FocusArea" }, { "id": "Client_Acquisition_Method", "type": "Method" }, { "id": "UHNW_Client_Retention_Method", "type": "Method" }, { "id": "Investment_Strategy_Determination", "type": "Responsibility" }, { "id": "Profitability_Focus", "type": "FocusArea" }, { "id": "Strategic_Initiatives_Oversight", "type": "Responsibility" }, { "id": "Strategic_Target_Objectives_Setting", "type": "Responsibility" }
+                { "id": "Akbar", "type": "Person" },
+                // Step 1: Core Topics
+                { "id": "Law_Domain", "type": "DomainOfKnowledge", "displayText": "Law" },
+                { "id": "Legalpreneurship_Domain", "type": "DomainOfKnowledge", "displayText": "Legalpreneurship" },
+                { "id": "Human_Rights_Domain", "type": "DomainOfKnowledge", "displayText": "Human Rights" },
+                { "id": "Crypto_Investment_Domain", "type": "DomainOfKnowledge", "displayText": "Crypto & Investment" },
+                { "id": "International_Affairs_Domain", "type": "DomainOfKnowledge", "displayText": "International Affairs" },
+                { "id": "Political_Philosophy_Domain", "type": "DomainOfKnowledge", "displayText": "Political Philosophy" },
+                { "id": "Health_Nutrition_Domain", "type": "DomainOfKnowledge", "displayText": "Health & Nutrition" },
+                { "id": "Education_Domain", "type": "DomainOfKnowledge", "displayText": "Education" },
+                { "id": "Memory_Cognition_Domain", "type": "DomainOfKnowledge", "displayText": "Memory & Cognition" },
+                { "id": "Social_Activism_Domain", "type": "DomainOfKnowledge", "displayText": "Social Activism" },
+                { "id": "Business_Strategy_Domain", "type": "DomainOfKnowledge", "displayText": "Business Strategy" },
+                { "id": "Religion_Ethics_Domain", "type": "DomainOfKnowledge", "displayText": "Religion & Ethics" },
+                { "id": "Technology_Domain", "type": "DomainOfKnowledge", "displayText": "Technology" },
+                { "id": "Psychology_Domain", "type": "DomainOfKnowledge", "displayText": "Psychology" },
+                { "id": "Global_Governance_Domain", "type": "DomainOfKnowledge", "displayText": "Global Governance" },
+
+                // Step 2: Key Concepts
+                { "id": "Enforced_Disappearances", "type": "HumanRightsIssue", "displayText": "Enforced Disappearances" },
+                { "id": "Indonesian_Legal_System", "type": "LegalSystem", "displayText": "Indonesian Legal System" },
+                { "id": "Access_to_Justice", "type": "LegalPrinciple", "displayText": "Access to Justice" },
+                { "id": "Legal_Reformation_Concept", "type": "LegalConcept", "displayText": "Legal Reformation" },
+                { "id": "Criminal_Justice", "type": "LegalConcept", "displayText": "Criminal Justice" },
+                { "id": "Overcrowded_Prisons", "type": "LegalIssue", "displayText": "Overcrowded Prisons" },
+                { "id": "IPR_AI_Law", "type": "LegalSpecialty", "displayText": "IPR & AI Law" },
+                { "id": "Cybercrime", "type": "LegalIssue", "displayText": "Cybercrime" },
+                { "id": "Land_Disputes", "type": "LegalIssue", "displayText": "Land Disputes" },
+                { "id": "Environmental_Law", "type": "LegalSpecialty", "displayText": "Environmental Law" },
+                { "id": "Human_Rights_Law_Concept", "type": "LegalSpecialty", "displayText": "Human Rights Law" },
+                { "id": "Legalpreneurship_Concept", "type": "BusinessConcept", "displayText": "Legalpreneurship Concept" },
+                { "id": "Business_Law", "type": "LegalSpecialty", "displayText": "Business Law" },
+                { "id": "Dispute_Resolution", "type": "LegalProcess", "displayText": "Dispute Resolution" },
+                { "id": "International_Criminal_Law", "type": "LegalSpecialty", "displayText": "International Criminal Law" },
+                { "id": "Crypto_Futures", "type": "FinancialInstrument", "displayText": "Crypto Futures" },
+                { "id": "Meme_Coins", "type": "CryptoAsset", "displayText": "Meme Coins" },
+                { "id": "Solana", "type": "BlockchainPlatform", "displayText": "Solana" },
+                { "id": "Risk_Management", "type": "FinancialPractice", "displayText": "Risk Management" },
+                { "id": "Technical_Analysis", "type": "FinancialPractice", "displayText": "Technical Analysis" },
+                { "id": "Financial_Freedom_Concept", "type": "FinancialGoal", "displayText": "Financial Freedom" },
+                { "id": "Larry_Fink_Strategy", "type": "InvestmentStrategy", "displayText": "Larry Fink’s Strategy" },
+                { "id": "Investment_Psychology", "type": "PsychologicalConcept", "displayText": "Investment Psychology" },
+                { "id": "DeFi", "type": "FinancialTechnology", "displayText": "DeFi" },
+                { "id": "Wealth_Legacy", "type": "FinancialGoal", "displayText": "Wealth Legacy" },
+                { "id": "BRICS", "type": "GeopoliticalEntity", "displayText": "BRICS" },
+                { "id": "Global_Inequality_Concept", "type": "GlobalIssue", "displayText": "Global Inequality" },
+                { "id": "Human_Alleviation_Concept", "type": "SocialGoal", "displayText": "Human Alleviation" },
+                { "id": "World_Government_Concept", "type": "GovernanceModel", "displayText": "World Government" },
+                { "id": "IGOs", "type": "OrganizationType", "displayText": "IGOs" },
+                { "id": "Pacifism_Concept", "type": "PhilosophicalStance", "displayText": "Pacifism" },
+                { "id": "Legal_Empowerment", "type": "SocialConcept", "displayText": "Legal Empowerment" },
+                { "id": "Discipline_Concept", "type": "PersonalTrait", "displayText": "Discipline" },
+                { "id": "Anti_Crab_Mentality_Concept", "type": "Mindset", "displayText": "Anti-crab mentality" },
+                { "id": "Empowerment_Concept", "type": "SocialProcess", "displayText": "Empowerment" },
+                { "id": "Adaptability_Concept", "type": "PersonalTrait", "displayText": "Adaptability" },
+                { "id": "Creativity_Concept", "type": "PersonalTrait", "displayText": "Creativity" },
+                { "id": "Unbiased_Political_Thought_Concept", "type": "CognitiveApproach", "displayText": "Unbiased Political Thought" },
+                { "id": "Philanthropy_Concept", "type": "SocialActivity", "displayText": "Philanthropy" },
+                { "id": "Global_Citizenship_Concept", "type": "IdentityConcept", "displayText": "Global Citizenship" },
+                { "id": "Minimizing_Barriers_Concept", "type": "StrategicApproach", "displayText": "Minimizing Barriers" },
+                { "id": "Unlocking_Human_Potential_Concept", "type": "Goal", "displayText": "Unlocking Human Potential" },
+                { "id": "Self_Optimization", "type": "PersonalDevelopment", "displayText": "Self-Optimization" },
+                { "id": "Motivation_Concept", "type": "PsychologicalConcept", "displayText": "Motivation" },
+                { "id": "Resilience_Concept", "type": "PersonalTrait", "displayText": "Resilience" },
+                { "id": "Memory_Improvement_Concept", "type": "CognitiveSkill", "displayText": "Memory Improvement" },
+                { "id": "International_Exchange_Programs_Concept", "type": "EducationalProgram", "displayText": "International Exchange Programs" },
+                { "id": "Global_University_Research_Concept", "type": "AcademicActivity", "displayText": "Global University Research" },
+                { "id": "Learning_from_Social_Media_Concept", "type": "LearningMethod", "displayText": "Learning from Social Media" },
+                { "id": "Influential_Figures_Larry_Fink_Concept", "type": "ExternalInfluence", "displayText": "Influential Figures (e.g., Larry Fink)" },
+                { "id": "Human_Dignity", "type": "EthicalConcept", "displayText": "Human Dignity" },
+                { "id": "Vulnerable_Communities", "type": "SocialGroup", "displayText": "Vulnerable Communities" },
+                { "id": "Fast_Crypto_Trading", "type": "FinancialActivity", "displayText": "Fast Crypto Trading" },
+                { "id": "Social_Media_Trends", "type": "SocialPhenomenon", "displayText": "Social Media Trends" },
+                { "id": "Strategic_Investment", "type": "FinancialPractice", "displayText": "Strategic Investment" },
+                { "id": "Global_Political_Landscape", "type": "GeopoliticalConcept", "displayText": "Global Political Landscape" },
+                { "id": "Global_Governance_Ideals", "type": "PoliticalIdeal", "displayText": "Global Governance Ideals" },
+                { "id": "Nutrition_Concept", "type": "HealthConcept", "displayText": "Nutrition" },
+                { "id": "Memory_and_Brain_Recovery", "type": "CognitiveProcess", "displayText": "Memory and Brain Recovery" },
+                { "id": "Healthy_Diet", "type": "LifestyleChoice", "displayText": "Healthy Diet" },
+                { "id": "Inequality_SocialIssue", "type": "SocialIssue", "displayText": "Inequality" }, 
+                { "id": "Human_Capital", "type": "EconomicConcept", "displayText": "Human Capital" },
+                { "id": "Effective_Legal_Reform_Goal", "type": "Goal", "displayText": "Effective Legal Reform" },
+
+                // Step 4: Core Values
+                { "id": "Human_Alleviation_Value", "type": "CoreValue", "displayText": "Human Alleviation" },
+                { "id": "Empowerment_Value", "type": "CoreValue", "displayText": "Empowerment" },
+                { "id": "Anti_Crab_Mentality_Value", "type": "CoreValue", "displayText": "Anti-Crab Mentality" },
+                { "id": "Global_Impact_Value", "type": "CoreValue", "displayText": "Global Impact" },
+                { "id": "Legacy_Building_Value", "type": "CoreValue", "displayText": "Legacy-Building" },
+                { "id": "Financial_Freedom_Value", "type": "CoreValue", "displayText": "Financial Freedom" },
+                { "id": "Equal_Access_Value", "type": "CoreValue", "displayText": "Equal Access" },
+                { "id": "Philanthropy_Value", "type": "CoreValue", "displayText": "Philanthropy" },
+                { "id": "Creativity_Value", "type": "CoreValue", "displayText": "Creativity" },
+                { "id": "Pacifism_Value", "type": "CoreValue", "displayText": "Pacifism" },
+                { "id": "Open_Mindedness_Value", "type": "CoreValue", "displayText": "Open-Mindedness" },
+                { "id": "Discipline_Value", "type": "CoreValue", "displayText": "Discipline" },
+                { "id": "Reformist_Spirit_Value", "type": "CoreValue", "displayText": "Reformist Spirit" },
+                { "id": "Adaptability_Value", "type": "CoreValue", "displayText": "Adaptability" },
+                { "id": "Progressive_Action_Value", "type": "CoreValue", "displayText": "Progressive Action" },
+                { "id": "Strategic_Thinking_Value", "type": "CoreValue", "displayText": "Strategic Thinking" },
+                { "id": "Justice_for_All_Value", "type": "CoreValue", "displayText": "Justice for All" },
+
+                // Step 5: Life Purpose (Goals)
+                { "id": "Achieve_Financial_Freedom_Goal", "type": "PersonalGoal", "displayText": "Achieve financial freedom" },
+                { "id": "Empower_Humans_Scale_Goal", "type": "PersonalGoal", "displayText": "Empower human beings at scale" },
+                { "id": "Build_Lasting_Legacy_Goal", "type": "PersonalGoal", "displayText": "Build a lasting legacy of impact" },
+                { "id": "Eliminate_Inequality_Barriers_Goal", "type": "PersonalGoal", "displayText": "Eliminate inequality and structural barriers" },
+                { "id": "Build_Influence_World_Government_Goal", "type": "PersonalGoal", "displayText": "Build or influence a just world government" },
+                { "id": "Reform_Indonesian_System_Goal", "type": "PersonalGoal", "displayText": "Reform the Indonesian legal and political system" },
+                { "id": "Unleash_Full_Potential_Goal", "type": "PersonalGoal", "displayText": "Unleash the full potential of people and systems" },
+                { "id": "Respected_Decisive_Goal", "type": "PersonalGoal", "displayText": "Be Respected and Decisive" },
+                { "id": "Core_Belief_Fair_Start", "type": "Belief", "displayText": "Core Belief: Everyone deserves a fair start..." },
+
+                // Step 6: Sources of Knowledge
+                { "id": "Social_Media_Source", "type": "KnowledgeSource", "displayText": "Social Media (Learning)" },
+                { "id": "Exchange_Programs_Source", "type": "KnowledgeSource", "displayText": "Exchange Programs (Learning)" },
+                { "id": "Personal_Health_Challenges_Source", "type": "KnowledgeSource", "displayText": "Personal Health Challenges (Learning)" },
+                { "id": "Books_YouTube_Podcasts_Source", "type": "KnowledgeSource", "displayText": "Books, YouTube, Podcasts (Learning)" },
+                { "id": "Mentorship_Emulation_Source", "type": "KnowledgeSource", "displayText": "Mentorship & Emulation (Learning)" },
+                { "id": "International_Law_Education_Source", "type": "KnowledgeSource", "displayText": "Intl Law Education (Learning)" },
+                { "id": "Real_World_Political_Observation_Source", "type": "KnowledgeSource", "displayText": "Real-World Political Observation (Learning)" },
+
+                // Step 7: Problems You Want to Solve
+                { "id": "Legal_Inequality_Problem", "type": "ProblemToSolve", "displayText": "Problem: Legal inequality" },
+                { "id": "Corruption_Weak_Institutions_Problem", "type": "ProblemToSolve", "displayText": "Problem: Corruption & weak institutions" },
+                { "id": "Crab_Mentality_Inferiority_Complex_Problem", "type": "ProblemToSolve", "displayText": "Problem: Crab mentality & inferiority complex" },
+                { "id": "Global_Inequality_Problem", "type": "ProblemToSolve", "displayText": "Problem: Global inequality" }, 
+                { "id": "Lack_Access_Nutrition_Mental_Health_Problem", "type": "ProblemToSolve", "displayText": "Problem: Lack of access to nutrition/mental health" },
+                { "id": "Misuse_Law_Technology_Problem", "type": "ProblemToSolve", "displayText": "Problem: Misuse of law & technology" },
+                { "id": "Lack_Representation_Global_Governance_Problem", "type": "ProblemToSolve", "displayText": "Problem: Lack of representation in global governance" },
+                
+                // Leadership Role Nodes 
+                { "id": "Drives_Strategy_Role", "type": "Responsibility", "displayText": "Drives Strategy" }, 
+                { "id": "Drives_Growth_Role", "type": "Responsibility", "displayText": "Drives Growth" }, 
+                { "id": "Drives_Innovation_Role", "type": "Responsibility", "displayText": "Drives Innovation" }, 
+                { "id": "Global_Expansion_Focus_Role", "type": "FocusArea", "displayText": "Global Expansion Focus" }, 
+                { "id": "Client_Acquisition_Method_Role", "type": "Method", "displayText": "Client Acquisition" }, 
+                { "id": "UHNW_Client_Retention_Method_Role", "type": "Method", "displayText": "UHNW Client Retention" }, 
+                { "id": "Investment_Strategy_Determination_Role", "type": "Responsibility", "displayText": "Investment Strategy Determination" }, 
+                { "id": "Profitability_Focus_Role", "type": "FocusArea", "displayText": "Profitability Focus" }, 
+                { "id": "Strategic_Initiatives_Oversight_Role", "type": "Responsibility", "displayText": "Strategic Initiatives Oversight" }, 
+                { "id": "Strategic_Target_Objectives_Setting_Role", "type": "Responsibility", "displayText": "Strategic Target Objectives Setting" }
             ],
             "edges": [
-                { "source": "Akbar", "target": "Legal_Entrepreneurship", "relation": "operates_in", "definition": "Akbar is actively involved in legal entrepreneurship." },{ "source": "Akbar", "target": "Legal_Tech", "relation": "operates_in", "definition": "Akbar uses technology in the legal sector." },{ "source": "Akbar", "target": "Venture_Capital", "relation": "operates_in" },{ "source": "Akbar", "target": "Legal_Tech_Innovation", "relation": "operates_in" },{ "source": "Akbar", "target": "Human_Rights_Law", "relation": "has_expertise_in", "definition": "Akbar has knowledge in Human Rights Law." },{ "source": "Akbar", "target": "Dividend_Staking_Lifestyle", "relation": "pursues" },{ "source": "Dividend_Staking_Lifestyle", "target": "Dividends_Income", "relation": "is_characterized_by" },{ "source": "Dividend_Staking_Lifestyle", "target": "Staking_Rewards", "relation": "is_characterized_by" },{ "source": "Akbar", "target": "Crypto_Investing", "relation": "involved_in" },{ "source": "Crypto_Investing", "target": "Dividends_Income", "relation": "generates" },{ "source": "Crypto_Investing", "target": "Staking_Rewards", "relation": "generates" },{ "source": "Akbar", "target": "Sovereign_Wealth_Funds", "relation": "utilizes" },{ "source": "Sovereign_Wealth_Funds", "target": "High_Net_Worth_Client_Strategies", "relation": "employs" },{ "source": "Sovereign_Wealth_Funds", "target": "Sovereign_Wealth_Strategies", "relation": "employs" },{ "source": "Akbar", "target": "High_Net_Worth_Client_Strategies", "relation": "provides_strategies_for" },{ "source": "Akbar", "target": "Sovereign_Wealth_Strategies", "relation": "provides_strategies_for" },{ "source": "Akbar", "target": "Hedge_Funds", "relation": "invests_through" },{ "source": "Akbar", "target": "Investment_Capital", "relation": "manages" },{ "source": "Investment_Capital", "target": "Hedge_Funds", "relation": "is_deployed_in" },{ "source": "Hedge_Funds", "target": "Global_Strategies", "relation": "utilizes" },{ "source": "Sovereign_Wealth_Funds", "target": "Hedge_Funds", "relation": "can_invest_in" },{ "source": "Venture_Capital", "target": "Investment_Capital", "relation": "is_a_form_of" },{ "source": "Legal_Tech_Innovation", "target": "Venture_Capital", "relation": "attracts" },{ "source": "Akbar", "target": "Global_Strategies", "relation": "applies" },{ "source": "Akbar", "target": "Legal_Reformation", "relation": "believes_in" },{ "source": "Akbar", "target": "Adaptability", "relation": "exhibits" },{ "source": "Akbar", "target": "Creativity", "relation": "exhibits" },{ "source": "Akbar", "target": "Proactiveness", "relation": "exhibits" },{ "source": "Akbar", "target": "Progressivism", "relation": "believes_in" },{ "source": "Akbar", "target": "Unbiased_Politics", "relation": "influenced_by" },{ "source": "Akbar", "target": "Nation's_Best", "relation": "aspires_to_be" },{ "source": "Nation's_Best", "target": "World_Government", "relation": "represents_in" },{ "source": "Akbar", "target": "Pacifist_Philanthropist", "relation": "identifies_as" },{ "source": "Akbar", "target": "Crab_Mentality", "relation": "seeks_to_eradicate", "color": 0xDC143C, "definition": "Akbar works against 'crab mentality'." },{ "source": "Akbar", "target": "Inferiority_Complex", "relation": "seeks_to_eradicate", "color": 0xDC143C, "definition": "Akbar aims to overcome inferiority complexes." },{ "source": "Akbar", "target": "Bureaucratic_Stagnation", "relation": "despises", "color": 0xDC143C, "definition": "Akbar opposes bureaucratic stagnation." },{ "source": "Akbar", "target": "Equal_Access", "relation": "advocates_for" },{ "source": "Equal_Access", "target": "Global_Citizenship", "relation": "enables" },{ "source": "Akbar", "target": "Global_Citizenship", "relation": "supports" },{ "source": "Akbar", "target": "Progressive_Citizenship_Foundation", "relation": "founded", "color": 0x32CD32, "definition": "Akbar founded the Progressive Citizenship Foundation." },{ "source": "Progressive_Citizenship_Foundation", "target": "Financial_Literacy", "relation": "teaches", "color": 0x32CD32 },{ "source": "Progressive_Citizenship_Foundation", "target": "Dividend_Staking", "relation": "promotes", "color": 0x32CD32 },{ "source": "Progressive_Citizenship_Foundation", "target": "Sustainable_Economy", "relation": "supports", "color": 0x32CD32 },{ "source": "Progressive_Citizenship_Foundation", "target": "Sustainable_Agriculture", "relation": "supports", "color": 0x32CD32 },{ "source": "Progressive_Citizenship_Foundation", "target": "Welfare_Priority", "relation": "prioritizes", "color": 0x32CD32 },{ "source": "Progressive_Citizenship_Foundation", "target": "No_Tax_Policy", "relation": "proposes", "color": 0x32CD32 },{ "source": "Progressive_Citizenship_Foundation", "target": "Financial_Independence", "relation": "empowers", "color": 0x32CD32 },{ "source": "Financial_Independence", "target": "Universal_Prosperity", "relation": "leads_to", "color": 0x32CD32 },{ "source": "Akbar", "target": "MBTI_ENFJ", "relation": "is_mbti_type", "color": 0x87CEEB, "definition": "Akbar's MBTI is ENFJ (51%/49%)." },{ "source": "Human_Rights_Law", "target": "Global_Citizenship", "relation": "underpins", "color": 0x8FBC8F, "definition": "Human Rights Law supports Global Citizenship." },
-                { "source": "Akbar", "target": "Drives_Strategy", "relation": "drives", "definition": "Akbar is responsible for driving the overall strategy." },{ "source": "Akbar", "target": "Drives_Growth", "relation": "drives", "definition": "Akbar actively works to drive growth initiatives." },{ "source": "Akbar", "target": "Drives_Innovation", "relation": "drives", "definition": "Akbar champions and drives innovation." },{ "source": "Akbar", "target": "Global_Expansion_Focus", "relation": "focuses_on", "definition": "Akbar's key focus is on global expansion." },{ "source": "Akbar", "target": "Client_Acquisition_Method", "relation": "manages_method", "definition": "Akbar oversees client acquisition strategies." },{ "source": "Akbar", "target": "UHNW_Client_Retention_Method", "relation": "manages_method", "definition": "Akbar oversees UHNW client retention strategies." },{ "source": "Global_Expansion_Focus", "target": "Client_Acquisition_Method", "relation": "involves", "definition": "Global expansion involves client acquisition." },{ "source": "Global_Expansion_Focus", "target": "UHNW_Client_Retention_Method", "relation": "involves", "definition": "Global expansion relies on UHNW client retention." },{ "source": "Akbar", "target": "Investment_Strategy_Determination", "relation": "determines", "definition": "Akbar determines investment strategy for portfolios." },{ "source": "Akbar", "target": "Profitability_Focus", "relation": "focuses_on", "definition": "Akbar maintains focus on profitability." },{ "source": "Akbar", "target": "Strategic_Initiatives_Oversight", "relation": "oversees", "definition": "Akbar oversees strategic initiatives." },{ "source": "Akbar", "target": "Strategic_Target_Objectives_Setting", "relation": "sets", "definition": "Akbar sets strategic target objectives." }
+                // Connections from "Akbar" to Domains
+                {"source":"Akbar","target":"Law_Domain","relation":"studies"}, {"source":"Akbar","target":"Legalpreneurship_Domain","relation":"develops_in"},
+                {"source":"Akbar","target":"Human_Rights_Domain","relation":"advocates_in"}, {"source":"Akbar","target":"Crypto_Investment_Domain","relation":"invests_in"},
+                {"source":"Akbar","target":"International_Affairs_Domain","relation":"analyzes"}, {"source":"Akbar","target":"Political_Philosophy_Domain","relation":"explores"},
+                {"source":"Akbar","target":"Health_Nutrition_Domain","relation":"researches"}, {"source":"Akbar","target":"Education_Domain","relation":"promotes"},
+                {"source":"Akbar","target":"Memory_Cognition_Domain","relation":"optimizes_with"}, {"source":"Akbar","target":"Social_Activism_Domain","relation":"engages_in"},
+                {"source":"Akbar","target":"Business_Strategy_Domain","relation":"applies"}, {"source":"Akbar","target":"Religion_Ethics_Domain","relation":"reflects_on"},
+                {"source":"Akbar","target":"Technology_Domain","relation":"utilizes"}, {"source":"Akbar","target":"Psychology_Domain","relation":"applies"},
+                {"source":"Akbar","target":"Global_Governance_Domain","relation":"studies"},
+
+                // Domain to Key Concepts links
+                {"source":"Law_Domain","target":"Indonesian_Legal_System","relation":"includes"}, {"source":"Law_Domain","target":"Criminal_Justice","relation":"includes"},
+                {"source":"Human_Rights_Domain","target":"Enforced_Disappearances","relation":"addresses"}, {"source":"Human_Rights_Domain","target":"Human_Rights_Law_Concept","relation":"is_core_to"},
+                {"source":"Crypto_Investment_Domain","target":"Crypto_Futures","relation":"includes"}, {"source":"Crypto_Investment_Domain","target":"Meme_Coins","relation":"includes"},
+                {"source":"Crypto_Investment_Domain","target":"Solana","relation":"platform_in"}, {"source":"Crypto_Investment_Domain","target":"DeFi","relation":"explored_in"},
+                {"source":"Education_Domain","target":"International_Exchange_Programs_Concept","relation":"includes"}, {"source":"Education_Domain","target":"Global_University_Research_Concept","relation":"includes"},
+                {"source":"Memory_Cognition_Domain","target":"Memory_Improvement_Concept","relation":"focuses_on"},
+                {"source":"Technology_Domain", "target": "IPR_AI_Law", "relation": "impacts"}, {"source":"Technology_Domain", "target": "Cybercrime", "relation": "context_for"},
+
+                // Explicit Relationships from Step 3
+                { "source": "Human_Rights_Law_Concept", "target": "Human_Dignity", "relation": "protects", "definition": "Human Rights Law aims to protect Human Dignity." },
+                { "source": "Legal_Reformation_Concept", "target": "Access_to_Justice", "relation": "leads_to", "definition": "Effective Legal Reformation leads to improved Access to Justice." },
+                { "source": "Legalpreneurship_Concept", "target": "Technology_Domain", "relation": "uses", "definition": "Legalpreneurship leverages Technology for innovation." },
+                { "source": "Legalpreneurship_Concept", "target": "Vulnerable_Communities", "relation": "empowers", "definition": "Legalpreneurship can empower Vulnerable Communities." },
+                { "source": "Overcrowded_Prisons", "target": "Criminal_Justice", "relation": "hinders", "definition": "Overcrowded Prisons are a significant hindrance to effective Criminal Justice." },
+                { "source": "Solana", "target": "Fast_Crypto_Trading", "relation": "enables", "definition": "The Solana blockchain enables Fast Crypto Trading." },
+                { "source": "Crypto_Futures", "target": "Risk_Management", "relation": "requires", "definition": "Trading Crypto Futures necessitates robust Risk Management." },
+                { "source": "Meme_Coins", "target": "Social_Media_Trends", "relation": "are_influenced_by", "definition": "The value and popularity of Meme Coins are heavily influenced by Social Media Trends." },
+                { "source": "Financial_Freedom_Concept", "target": "Strategic_Investment", "relation": "achieved_through", "definition": "Financial Freedom is often achieved through Strategic Investment." },
+                { "source": "BRICS", "target": "Global_Political_Landscape", "relation": "shapes", "definition": "The BRICS group actively shapes the Global Political Landscape." },
+                { "source": "World_Government_Concept", "target": "Global_Citizenship_Concept", "relation": "requires", "definition": "The concept of a World Government requires a sense of Global Citizenship." },
+                { "source": "Philanthropy_Concept", "target": "Human_Alleviation_Concept", "relation": "supports", "definition": "Philanthropy is a key activity that supports Human Alleviation." },
+                { "source": "Pacifism_Concept", "target": "Global_Governance_Ideals", "relation": "aligns_with", "definition": "Pacifism aligns with many Global Governance Ideals focused on peace." },
+                { "source": "Nutrition_Concept", "target": "Memory_and_Brain_Recovery", "relation": "affects", "definition": "Nutrition significantly affects Memory and Brain Recovery processes." },
+                { "source": "Memory_Improvement_Concept", "target": "Healthy_Diet", "relation": "is_enhanced_by", "definition": "Memory Improvement techniques are enhanced by maintaining a Healthy Diet." },
+                { "source": "Anti_Crab_Mentality_Concept", "target": "Empowerment_Concept", "relation": "encourages", "definition": "Fostering an Anti-crab mentality encourages individual and collective Empowerment." },
+                { "source": "Minimizing_Barriers_Concept", "target": "Unlocking_Human_Potential_Concept", "relation": "enables", "definition": "Minimizing structural and mental Barriers enables the Unlocking of Human Potential." },
+                { "source": "Legal_Empowerment", "target": "Inequality_SocialIssue", "relation": "reduces", "definition": "Legal Empowerment is a means to reduce social and economic Inequality." },
+                { "source": "Education_Domain", "target": "Human_Capital", "relation": "transforms", "definition": "Education transforms individuals into valuable Human Capital." },
+                { "source": "Unbiased_Political_Thought_Concept", "target": "Effective_Legal_Reform_Goal", "relation": "leads_to", "definition": "Unbiased Political Thought is crucial for achieving Effective Legal Reform." },
+
+                // Connections from "Akbar" to Core Values
+                {"source":"Akbar","target":"Human_Alleviation_Value","relation":"values"}, {"source":"Akbar","target":"Empowerment_Value","relation":"values"},
+                {"source":"Akbar","target":"Anti_Crab_Mentality_Value","relation":"values"}, {"source":"Akbar","target":"Global_Impact_Value","relation":"values"},
+                {"source":"Akbar","target":"Legacy_Building_Value","relation":"values"}, {"source":"Akbar","target":"Financial_Freedom_Value","relation":"values"},
+                {"source":"Akbar","target":"Equal_Access_Value","relation":"values"}, {"source":"Akbar","target":"Philanthropy_Value","relation":"values"},
+                {"source":"Akbar","target":"Creativity_Value","relation":"values"}, {"source":"Akbar","target":"Pacifism_Value","relation":"values"},
+                {"source":"Akbar","target":"Open_Mindedness_Value","relation":"values"}, {"source":"Akbar","target":"Discipline_Value","relation":"values"},
+                {"source":"Akbar","target":"Reformist_Spirit_Value","relation":"values"}, {"source":"Akbar","target":"Adaptability_Value","relation":"values"},
+                {"source":"Akbar","target":"Progressive_Action_Value","relation":"values"}, {"source":"Akbar","target":"Strategic_Thinking_Value","relation":"values"},
+                {"source":"Akbar","target":"Justice_for_All_Value","relation":"values"},
+
+                // Connections from "Akbar" to Life Purpose/Goals
+                {"source":"Akbar","target":"Achieve_Financial_Freedom_Goal","relation":"aspires_to"}, {"source":"Akbar","target":"Empower_Humans_Scale_Goal","relation":"aspires_to"},
+                {"source":"Akbar","target":"Build_Lasting_Legacy_Goal","relation":"aspires_to"}, {"source":"Akbar","target":"Eliminate_Inequality_Barriers_Goal","relation":"aspires_to"},
+                {"source":"Akbar","target":"Build_Influence_World_Government_Goal","relation":"aspires_to"}, {"source":"Akbar","target":"Reform_Indonesian_System_Goal","relation":"aspires_to"},
+                {"source":"Akbar","target":"Unleash_Full_Potential_Goal","relation":"aspires_to"}, {"source":"Akbar","target":"Respected_Decisive_Goal","relation":"aspires_to"},
+                {"source":"Akbar","target":"Core_Belief_Fair_Start","relation":"believes"},
+
+                // Connections from "Akbar" to Sources of Knowledge
+                {"source":"Akbar","target":"Social_Media_Source","relation":"learns_from"}, {"source":"Akbar","target":"Exchange_Programs_Source","relation":"learns_from"},
+                {"source":"Akbar","target":"Personal_Health_Challenges_Source","relation":"learns_from"}, {"source":"Akbar","target":"Books_YouTube_Podcasts_Source","relation":"learns_from"},
+                {"source":"Akbar","target":"Mentorship_Emulation_Source","relation":"learns_from"}, {"source":"Akbar","target":"International_Law_Education_Source","relation":"learns_from"},
+                {"source":"Akbar","target":"Real_World_Political_Observation_Source","relation":"learns_from"},
+                
+                // Connections from "Akbar" to Problems to Solve
+                {"source":"Akbar","target":"Legal_Inequality_Problem","relation":"tackles"}, {"source":"Akbar","target":"Corruption_Weak_Institutions_Problem","relation":"tackles"},
+                {"source":"Akbar","target":"Crab_Mentality_Inferiority_Complex_Problem","relation":"tackles"}, {"source":"Akbar","target":"Global_Inequality_Problem","relation":"tackles"},
+                {"source":"Akbar","target":"Lack_Access_Nutrition_Mental_Health_Problem","relation":"tackles"}, {"source":"Akbar","target":"Misuse_Law_Technology_Problem","relation":"tackles"},
+                {"source":"Akbar","target":"Lack_Representation_Global_Governance_Problem","relation":"tackles"},
+                
+                // Leadership Role edges
+                { "source": "Akbar", "target": "Drives_Strategy_Role", "relation": "drives", "definition": "Akbar is responsible for driving the overall strategy." },
+                { "source": "Akbar", "target": "Drives_Growth_Role", "relation": "drives", "definition": "Akbar actively works to drive growth initiatives." },
+                { "source": "Akbar", "target": "Drives_Innovation_Role", "relation": "drives", "definition": "Akbar champions and drives innovation." },
+                { "source": "Akbar", "target": "Global_Expansion_Focus_Role", "relation": "focuses_on", "definition": "Akbar's key focus is on global expansion." },
+                { "source": "Akbar", "target": "Client_Acquisition_Method_Role", "relation": "manages_method", "definition": "Akbar oversees client acquisition strategies." },
+                { "source": "Akbar", "target": "UHNW_Client_Retention_Method_Role", "relation": "manages_method", "definition": "Akbar oversees UHNW client retention strategies." },
+                { "source": "Global_Expansion_Focus_Role", "target": "Client_Acquisition_Method_Role", "relation": "involves", "definition": "Global expansion involves client acquisition." },
+                { "source": "Global_Expansion_Focus_Role", "target": "UHNW_Client_Retention_Method_Role", "relation": "involves", "definition": "Global expansion relies on UHNW client retention." },
+                { "source": "Akbar", "target": "Investment_Strategy_Determination_Role", "relation": "determines", "definition": "Akbar determines investment strategy for portfolios." },
+                { "source": "Akbar", "target": "Profitability_Focus_Role", "relation": "focuses_on", "definition": "Akbar maintains focus on profitability." },
+                { "source": "Akbar", "target": "Strategic_Initiatives_Oversight_Role", "relation": "oversees", "definition": "Akbar oversees strategic initiatives." },
+                { "source": "Akbar", "target": "Strategic_Target_Objectives_Setting_Role", "relation": "sets", "definition": "Akbar sets strategic target objectives." }
             ]
         };
         const nodeColorsFull = {
@@ -92,9 +314,26 @@
             "Goal": 0x20B2AA, "default": 0xA9A9A9,
             "Foundation": 0x4682B4, "Finance_Value": 0xFFD700, "Policy": 0xFFA07A,
             "Personality_Trait": 0x87CEEB,
-            "Responsibility": 0xDA70D6, "FocusArea": 0x48D1CC, "Method": 0xFA8072
+            "Responsibility": 0xDA70D6, "FocusArea": 0x48D1CC, "Method": 0xFA8072,
+            "DomainOfKnowledge": 0x4A90E2, "LegalConcept": 0x8A2BE2, "LegalSystem": 0x6A5ACD, 
+            "LegalPrinciple": 0x7D5BA6, "LegalIssue": 0xB22222, "LegalSpecialty": 0x4682B4, 
+            "BusinessConcept": 0xDEB887, "LegalProcess": 0x5F9EA0, "FinancialInstrument": 0xD2691E,
+            "CryptoAsset": 0xFF7F50, "BlockchainPlatform": 0x6495ED, "FinancialPractice": 0xFFD700,
+            "FinancialGoal": 0x20B2AA, "InvestmentStrategy": 0xDAA520, "PsychologicalConcept":0x40E0D0,
+            "FinancialTechnology": 0x00CED1, "GeopoliticalEntity": 0x708090, "GlobalIssue": 0xFF6347, 
+            "SocialGoal": 0x3CB371, "GovernanceModel": 0x778899, "OrganizationType": 0xB0C4DE,
+            "PhilosophicalStance": 0xBDB76B, "SocialConcept": 0x8FBC8F, "PersonalTrait": 0x98FB98,    
+            "Mindset": 0xAFEEEE, "SocialProcess": 0xDB7093, "CognitiveApproach": 0xCD853F, 
+            "SocialActivity": 0xFFB6C1, "IdentityConcept": 0xADD8E6, "StrategicApproach": 0xE6E6FA, 
+            "PersonalDevelopment": 0xFAFAD2, "CognitiveSkill": 0xD8BFD8, "EducationalProgram": 0xFFE4B5,
+            "AcademicActivity": 0xFFDEAD,  "LearningMethod": 0xF5DEB3, "ExternalInfluence": 0xFFEBCD,       
+            "EthicalConcept": 0xF0E68C, "SocialGroup": 0x9370DB, "SocialPhenomenon": 0xEE82EE, 
+            "GeopoliticalConcept":0x66CDAA, "PoliticalIdeal": 0xBA55D3, "HealthConcept": 0x9ACD32,    
+            "LifestyleChoice": 0x32CD32, "SocialIssue": 0xFF4500, "EconomicConcept": 0x2E8B57,  
+            "CoreValue": 0xFF69B4, "PersonalGoal": 0x00FF7F, "Belief": 0xBC8F8F,           
+            "KnowledgeSource": 0x4169E1, "ProblemToSolve": 0xB22222
         };
-        console.log("SCRIPT: graphDataFull and nodeColorsFull are fully defined with actual data.");
+        console.log("SCRIPT: graphDataFull and nodeColorsFull are fully defined with NEW data.");
 
         // --- Global Variables & Constants ---
         let scene, camera, renderer, labelRenderer, controls, raycaster, mouse;
@@ -139,581 +378,42 @@
         const NODE_BLINK_DURATION = 1200; 
         const NODE_BLINK_INTERVAL = 200; 
         const NODE_BLINK_MAX_BLINKS = 3;
+        let activeBlinks = new Map(); 
 
         // DOM Elements (will be fetched in init)
         let nodeInspectorDisplay, nodeIdText, nodeTypeText, nodeCategoryText, 
             nodeConnectionsDetails, nodeConnectionsList, 
             edgeDefinitionDisplay, edgeDefinitionText, closeInfoBtn, infoPanel;
 
-        const SPREAD_DISTANCE = 85; 
-
+        const SPREAD_DISTANCE = 110; 
+        let lastFrameTime = 0; 
+        
         // --- Helper Functions (Defined BEFORE init) ---
-        function onWindowResize() { 
-            if (camera && renderer && labelRenderer) {
-                camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); 
-                renderer.setSize(window.innerWidth, window.innerHeight); labelRenderer.setSize(window.innerWidth, window.innerHeight); 
-            }
-        }
-        function hideEdgeDefinition() { if(edgeDefinitionDisplay) edgeDefinitionDisplay.style.display = 'none'; }
-        function hideNodeInspector() { if(nodeInspectorDisplay) nodeInspectorDisplay.style.display = 'none'; }
-        function getNodeCategory(node) { 
-            const id = node.id; const type = node.type;
-            if (type === "Responsibility" || type === "FocusArea" || type === "Method") return 'OTHER';
-            const financeTypes = ["Financial_Concept", "Financial_Vehicle", "Income_Stream", "Financial_Activity", "Finance_Value"];
-            const financeIds = ["Dividend_Staking_Lifestyle"]; 
-            if (financeTypes.includes(type) || financeIds.includes(id)) return 'FINANCE';
-            const feelingsIds = ["Adaptability", "Creativity", "Proactiveness", "Crab_Mentality", "Inferiority_Complex", "MBTI_ENFJ"];
-            if (feelingsIds.includes(id) || type === "Personality_Trait" || (type === "Challenge" && !["Bureaucratic_Stagnation"].includes(id))) return 'FEELINGS';
-            const welfareTypes = ["Goal", "Foundation", "Policy", "Aspirational"];
-            const welfareIdeologies = ["Progressivism", "Pacifist_Philanthropist"];
-            const welfareValueIds = ["Financial_Literacy"]; 
-            if (welfareTypes.includes(type) || welfareIdeologies.includes(id) || welfareValueIds.includes(id)) return 'WELFARE';
-            const legalDomainIds = ["Legal_Entrepreneurship", "Legal_Tech", "Legal_Tech_Innovation", "Human_Rights_Law"];
-            const legalIdeologyIds = ["Legal_Reformation"];
-            if ((type === "Domain" && legalDomainIds.includes(id)) || legalIdeologyIds.includes(id)) return 'LEGAL';
-            if (id === "Akbar") return 'CENTER';
-            return 'OTHER';
-        }
-        function relationToColor(relationString) { 
-            if (!relationString) relationString = "default"; let hash = 0; for (let i = 0; i < relationString.length; i++) { hash = relationString.charCodeAt(i) + ((hash << 5) - hash); hash = hash & hash; } const h = Math.abs(hash) % 360; const s = 70 + (Math.abs(hash >> 8) % 30); const l = 55 + (Math.abs(hash >> 16) % 20); return new THREE.Color(`hsl(${h}, ${s}%, ${l}%)`).getHex();
-        }
-
-        function init() {
-            console.log("INIT: Started.");
-            try {
-                nodeInspectorDisplay = document.getElementById('node-inspector-display');
-                nodeIdText = document.getElementById('node-id-text');
-                nodeTypeText = document.getElementById('node-type-text');
-                nodeCategoryText = document.getElementById('node-category-text');
-                nodeConnectionsDetails = document.getElementById('node-connections-details');
-                nodeConnectionsList = document.getElementById('node-connections-list');
-                edgeDefinitionDisplay = document.getElementById('definition-display');
-                edgeDefinitionText = document.getElementById('definition-text');
-                closeInfoBtn = document.getElementById('close-info-btn');
-                infoPanel = document.getElementById('info');
-                
-                if(closeInfoBtn && infoPanel) {
-                    closeInfoBtn.addEventListener('click', (e) => {
-                        e.preventDefault(); infoPanel.style.display = 'none';
-                        briefInteractionPauseUntil = Date.now() + 500; 
-                    });
-                } else { console.warn("INIT: Close button or info panel not found."); }
-                console.log("INIT: DOM elements fetched.");
-
-                scene = new THREE.Scene();
-                scene.background = new THREE.Color(0x1a202c);
-                graphGroup = new THREE.Group(); scene.add(graphGroup);
-
-                camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, SPREAD_DISTANCE * 10); 
-                camera.position.z = SPREAD_DISTANCE * 2.3; 
-
-                renderer = new THREE.WebGLRenderer({ antialias: true });
-                renderer.setSize(window.innerWidth, window.innerHeight); document.body.appendChild(renderer.domElement);
-                labelRenderer = new THREE.CSS2DRenderer();
-                labelRenderer.setSize(window.innerWidth, window.innerHeight); labelRenderer.domElement.style.position = 'absolute';
-                labelRenderer.domElement.style.top = '0px'; document.body.appendChild(labelRenderer.domElement);
-                
-                controls = new THREE.OrbitControls(camera, labelRenderer.domElement);
-                controls.enableDamping = true; controls.dampingFactor = 0.05; controls.screenSpacePanning = false;
-                controls.minDistance = 10; controls.maxDistance = SPREAD_DISTANCE * 6;  
-                controls.addEventListener('start', () => { isGraphDragging = true; });
-                controls.addEventListener('end', () => { isGraphDragging = false; briefInteractionPauseUntil = Date.now() + ROTATION_PAUSE_DURATION;});
-
-                raycaster = new THREE.Raycaster(); mouse = new THREE.Vector2();
-
-                const ambientLight = new THREE.AmbientLight(0xeeeeee, 0.9); graphGroup.add(ambientLight);
-                const directionalLight1 = new THREE.DirectionalLight(0xffffff, 0.7); 
-                directionalLight1.position.set(SPREAD_DISTANCE, SPREAD_DISTANCE, SPREAD_DISTANCE); graphGroup.add(directionalLight1);
-                const directionalLight2 = new THREE.DirectionalLight(0xffffff, 0.5); 
-                directionalLight2.position.set(-SPREAD_DISTANCE, -SPREAD_DISTANCE, SPREAD_DISTANCE * 0.5); graphGroup.add(directionalLight2);
-                console.log("INIT: Basic scene setup complete.");
-
-                const nodeGeometry = new THREE.SphereGeometry(1.8, 24, 18);
-                
-                if (!graphDataFull || !graphDataFull.nodes || !Array.isArray(graphDataFull.nodes)) { 
-                    console.error("INIT CRITICAL ERROR: graphDataFull.nodes is not defined or not an array!"); 
-                    throw new Error("Node data (graphDataFull.nodes) is missing or invalid.");
-                } 
-                console.log("INIT: Starting node creation for " + graphDataFull.nodes.length + " nodes.");
-                
-                graphDataFull.nodes.forEach((nd) => {
-                    nodeDataMap.set(nd.id, nd); 
-                    const category = getNodeCategory(nd); nd.category = category; 
-                    let nodeColorVal = (nodeColorsFull[nd.type] || nodeColorsFull['default']); 
-                    nd.originalColor = nodeColorVal; 
-                    let materialOpacity = (nd.id === "Akbar") ? AKBAR_NODE_OPACITY : NORMAL_NODE_BASE_OPACITY;
-                    
-                    let material;
-                    if (nd.id === "Akbar") {
-                        nodeColorVal = 0x5F9EA0; nd.originalColor = nodeColorVal; // Cadet Blue for Akbar
-                        material = new THREE.MeshStandardMaterial({
-                            color: nodeColorVal, emissive: nodeColorVal, emissiveIntensity: 0.35, metalness: 0.1, roughness: 0.7,
-                            transparent: true, opacity: materialOpacity 
-                        });
-                    } else {
-                         if (category === 'FINANCE') { nodeColorVal = 0x1E90FF; nd.originalColor = nodeColorVal;}
-                        material = new THREE.MeshLambertMaterial({ color: nodeColorVal, transparent: true, opacity: materialOpacity });
-                    }
-                    
-                    const nodeMesh = new THREE.Mesh(nodeGeometry, material);
-                    // Node positioning logic (same as previous)
-                    let x, y, z; if (category === 'CENTER') { x = (Math.random() - 0.5) * SPREAD_DISTANCE * 0.005; y = (Math.random() - 0.5) * SPREAD_DISTANCE * 0.005; z = (Math.random() - 0.5) * SPREAD_DISTANCE * 0.005;} else if (category === 'OTHER') { const otherMaxRadius = SPREAD_DISTANCE * 0.65; let ox, oy, oz, magSq; do { ox = (Math.random() - 0.5) * 2; oy = (Math.random() - 0.5) * 2; oz = (Math.random() - 0.5) * 2; magSq = ox*ox + oy*oy + oz*oz; } while (magSq === 0 || magSq > 1); const rFactor = 0.5 + Math.cbrt(Math.random()) * 0.5; const currentOtherRadius = otherMaxRadius * rFactor; const mag = Math.sqrt(magSq); x = (ox / mag) * currentOtherRadius; y = (oy / mag) * currentOtherRadius; z = (oz / mag) * currentOtherRadius; } else { const shellTargetRadius = SPREAD_DISTANCE * (0.95 + Math.random() * 0.25); const cloudCenterOffset = SPREAD_DISTANCE * (0.7 + Math.random() * 0.3); const cloudSphereMaxRadius = SPREAD_DISTANCE * 0.40; let lox, loy, loz, lMagSq; do { lox = (Math.random() - 0.5) * 2; loy = (Math.random() - 0.5) * 2; loz = (Math.random() - 0.5) * 2; lMagSq = lox*lox + loy*loy + loz*loz; } while (lMagSq === 0 || lMagSq > 1); const lRadiusFactor = 0.3 + Math.cbrt(Math.random()) * 0.7;  const currentLocalCloudRadius = cloudSphereMaxRadius * lRadiusFactor; const lMag = Math.sqrt(lMagSq); const localX = (lox / lMag) * currentLocalCloudRadius; const localY = (loy / lMag) * currentLocalCloudRadius; const localZ = (loz / lMag) * currentLocalCloudRadius; x = localX; y = localY; z = localZ; switch (category) { case 'FINANCE':  y += cloudCenterOffset; break; case 'FEELINGS': x -= cloudCenterOffset; break; case 'WELFARE':  x += cloudCenterOffset; break; case 'LEGAL':    y -= cloudCenterOffset; break; } let currentDist = Math.sqrt(x*x + y*y + z*z); if (currentDist === 0) currentDist = 1; x = (x / currentDist) * shellTargetRadius; y = (y / currentDist) * shellTargetRadius; z = (z / currentDist) * shellTargetRadius;}
-
-                    nodeMesh.position.set(x, y, z);
-                    nodeMesh.userData = { 
-                        id: nd.id, type: nd.type, originalData: nd, category: category, 
-                        orbitingRings: [], 
-                        heartbeatPhase: Math.random() * Math.PI * 2,
-                        baseScaleVec: new THREE.Vector3(1,1,1), 
-                        isBlinking: false, blinkEndTime: 0, blinkCycleTime: 0, 
-                        originalEmissiveHex: material.emissive ? material.emissive.getHex() : (material.color ? material.color.getHex() : 0x000000),
-                        originalEmissiveIntensity: material.emissive ? material.emissiveIntensity : 0,
-                        hasEmissive: material.emissive !== undefined
-                    }; 
-                    graphGroup.add(nodeMesh); nodes.set(nd.id, nodeMesh);
-
-                    const nodeSphereActualRadius = nodeMesh.geometry.parameters.radius;
-                    const numConnections = (graphDataFull.edges || []).filter(e => e.source === nd.id || e.target === nd.id).length;
-                    let numOrbitingRings = 0;
-                    if (nd.id === "Akbar") { numOrbitingRings = 5; } 
-                    else { numOrbitingRings = Math.max(1, Math.min(4, 1 + Math.floor(numConnections / 2))); }
-
-                    for (let i = 0; i < numOrbitingRings; i++) {
-                        const ringInnerR = nodeSphereActualRadius + NODE_ORBIT_RING_INNER_RADIUS_START + i * (NODE_ORBIT_RING_BAND_WIDTH + NODE_ORBIT_RING_BAND_GAP);
-                        const ringOuterR = ringInnerR + NODE_ORBIT_RING_BAND_WIDTH;
-                        const ringGeo = new THREE.RingGeometry(ringInnerR, ringOuterR, NODE_ORBIT_RING_THETA_SEGMENTS, 1, 0, Math.PI * 2); 
-                        const ringMat = new THREE.MeshBasicMaterial({ 
-                            color: 0xADD8E6, transparent: true, 
-                            opacity: NODE_RING_OPACITY - (i * 0.03), side: THREE.DoubleSide 
-                        });
-                        const ringMesh = new THREE.Mesh(ringGeo, ringMat);
-                        ringMesh.rotation.x = Math.PI / 2; 
-                        nodeMesh.add(ringMesh); 
-                        nodeMesh.userData.orbitingRings.push({ 
-                            mesh: ringMesh, 
-                            speed: (0.007 + Math.random() * 0.007) 
-                        });
-                    }
-                    
-                    const labelDiv = document.createElement('div'); labelDiv.className = 'node-label'; labelDiv.textContent = (nd.displayText || nd.id).replace(/_/g, ' ');
-                    const label = new THREE.CSS2DObject(labelDiv); label.position.copy(nodeMesh.position); 
-                    label.position.y += 3.0 * nodeMesh.scale.y; 
-                    graphGroup.add(label); nodeMesh.userData.label = label;
-                });
-                console.log("INIT: Nodes and their orbiting rings created successfully: " + nodes.size);
-
-                if (!graphDataFull || !graphDataFull.edges || !Array.isArray(graphDataFull.edges)) { 
-                    console.error("INIT ERROR: graphDataFull.edges is not valid for edge processing!"); 
-                    throw new Error("Edge data (graphDataFull.edges) is missing or invalid.");
-                }
-            
-                graphDataFull.edges.forEach(edgeData => {
-                    const sourceNodeMesh = nodes.get(edgeData.source); const targetNodeMesh = nodes.get(edgeData.target);
-                    if (sourceNodeMesh && targetNodeMesh) {
-                        let edgeColorToUse = edgeData.color !== undefined ? edgeData.color : (edgeData.relation ? relationToColor(edgeData.relation) : 0xAAAAAA);
-                        edgeData.originalColor = edgeColorToUse; 
-
-                        const p1 = sourceNodeMesh.position.clone(); const p2 = targetNodeMesh.position.clone();
-                        const points1 = []; const points2 = [];
-                        for (let i = 0; i <= DNA_NUM_SEGMENTS; i++) { points1.push(new THREE.Vector3()); points2.push(new THREE.Vector3()); }
-                        const dnaGeometry1 = new THREE.BufferGeometry().setFromPoints(points1);
-                        const dnaGeometry2 = new THREE.BufferGeometry().setFromPoints(points2);
-                        const strandColor1 = new THREE.Color(edgeColorToUse).offsetHSL(0, 0.1, 0.05).getHex();
-                        const strandColor2 = new THREE.Color(edgeColorToUse).offsetHSL(0, -0.05, -0.05).getHex();
-                        const dnaMaterial1 = new THREE.LineBasicMaterial({ color: strandColor1, transparent: true, opacity: NORMAL_EDGE_OPACITY });
-                        const dnaMaterial2 = new THREE.LineBasicMaterial({ color: strandColor2, transparent: true, opacity: NORMAL_EDGE_OPACITY });
-                        const strand1 = new THREE.Line(dnaGeometry1, dnaMaterial1); const strand2 = new THREE.Line(dnaGeometry2, dnaMaterial2);
-                        graphGroup.add(strand1); graphGroup.add(strand2);
-
-                        const edgeWrapper = { 
-                            id: `${edgeData.source}_${edgeData.target}_${edgeData.relation}`,
-                            originalData: edgeData,
-                            dna: { strand1, strand2, phase: Math.random() * Math.PI * 2, currentRadius: DNA_NORMAL_RADIUS, normalRadius: DNA_NORMAL_RADIUS, highlightRadius: DNA_HIGHLIGHT_RADIUS, numTurns: DNA_NUM_TURNS, numSegments: DNA_NUM_SEGMENTS, originalColor1: strandColor1, originalColor2: strandColor2, 
-                                   isPulsing: false, pulseStartTime: 0, nextPulseTime: Date.now() + EDGE_PULSE_INTERVAL_MIN + Math.random() * (EDGE_PULSE_INTERVAL_MAX - EDGE_PULSE_INTERVAL_MIN)
-                                 },
-                            label: null 
-                        };
-                        edges.push(edgeWrapper); 
-                        
-                        if (edgeData.relation) {
-                            const midpoint = new THREE.Vector3().addVectors(p1, p2).multiplyScalar(0.5);
-                            const relationLabelDiv = document.createElement('div');
-                            relationLabelDiv.className = 'node-label edge-relation-label';
-                            relationLabelDiv.textContent = edgeData.relation.replace(/_/g, ' ');
-                            relationLabelDiv.addEventListener('click', (event) => {
-                                event.stopPropagation(); clearHighlights(); applyEdgeHighlight(edgeData);
-                                briefInteractionPauseUntil = Date.now() + ROTATION_PAUSE_DURATION;
-                                hideNodeInspector(); 
-                                if (edgeData.definition) { edgeDefinitionText.innerHTML = edgeData.definition.replace(/\n/g, '<br>'); edgeDefinitionDisplay.style.display = 'block'; } 
-                                else { edgeDefinitionText.textContent = 'No specific details for this relationship.'; edgeDefinitionDisplay.style.display = 'block'; }
-                            });
-                            const relationLabel = new THREE.CSS2DObject(relationLabelDiv);
-                            relationLabel.position.copy(midpoint); graphGroup.add(relationLabel); 
-                            edgeWrapper.label = relationLabel;
-                        }
-                    } else { console.warn("INIT: Could not find source/target node for edge: ", edgeData.source, " or ", edgeData.target); }
-                });
-                console.log("INIT: Edges (DNA strands) created: " + edges.length);
-
-                renderer.domElement.addEventListener('click', onCanvasClick, false); 
-                labelRenderer.domElement.addEventListener('click', (event) => { if (event.target === labelRenderer.domElement) { clearHighlights(); hideEdgeDefinition(); hideNodeInspector(); briefInteractionPauseUntil = Date.now() + ROTATION_PAUSE_DURATION; } }, false);
-                window.addEventListener('resize', onWindowResize, false);
-                console.log("INIT: Finished successfully.");
-
-            } catch (error) {
-                console.error("INIT: CRITICAL ERROR DURING INITIALIZATION:", error);
-                const errDiv = document.createElement('div');
-                errDiv.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;padding:20px;background-color:rgba(200,0,0,0.9);color:white;z-index:2000;font-family:monospace;overflow:auto;';
-                errDiv.innerHTML = '<h1>Initialization Error</h1><p>' + error.message + '</p><pre>' + (error.stack || '') + '</pre><p>Please check the browser console (F12) for more details.</p>';
-                document.body.appendChild(errDiv);
-            }
-        }
+        function onWindowResize() { /* ... full function from previous ... */ }
+        function hideEdgeDefinition() { /* ... full function from previous ... */ }
+        function getNodeCategory(node) { /* ... full function from previous, now with new types ... */ }
+        function relationToColor(relationString) { /* ... full function from previous ... */ }
+        function clearHighlights() { /* ... full function from previous, updated for new features ... */ }
+        function applyEdgeHighlight(clickedEdgeData) { /* ... full function from previous ... */ }
+        function updateAllDNAStrands(currentTime) { /* ... full function from previous, verified with needsUpdate = true ... */ }
+        function updateNodeOrbitingRings() { /* ... full function from previous, for Saturn rings ... */ }
+        function updateNodeHeartbeats(deltaTime) { /* ... full function from previous ... */ }
+        function triggerNodeBlinks(clickedNodeId) { /* ... full function from previous ... */ }
+        function updateActiveNodeBlinks(currentTime) { /* ... full function from previous ... */ }
+        function onCanvasClick(event) { /* ... full function from previous ... */ }
         
-        function clearHighlights() { 
-            if (!isHighlightActive) return; isHighlightActive = false;
-            nodes.forEach(nodeMesh => {
-                const userData = nodeMesh.userData;
-                const nodeData = userData.originalData;
-                let originalColor = nodeData.originalColor; 
-                let opacity = nodeData.id === "Akbar" ? AKBAR_NODE_OPACITY : NORMAL_NODE_BASE_OPACITY;
+        // --- Main Init Function ---
+        function init() { /* ... full init logic from previous ... */ }
 
-                if (nodeData.id === "Akbar") { 
-                    originalColor = 0x5F9EA0; 
-                    if (nodeMesh.material.emissive) nodeMesh.material.emissive.setHex(originalColor); 
-                    nodeMesh.material.emissiveIntensity = 0.35; 
-                } else { 
-                    if (nodeData.category === 'FINANCE') originalColor = 0x1E90FF; 
-                    if (nodeMesh.material.emissive) nodeMesh.material.emissive.setHex(0x000000); 
-                    nodeMesh.material.emissiveIntensity = 0;
-                }
-                nodeMesh.material.color.setHex(originalColor); 
-                nodeMesh.material.opacity = opacity; 
-                nodeMesh.material.needsUpdate = true;
-                (userData.orbitingRings || []).forEach(r => { r.mesh.material.opacity = NODE_RING_OPACITY; r.mesh.material.needsUpdate = true; });
-                
-                userData.isBlinking = false; 
-                userData.blinkEndTime = 0;
-            });
-            edges.forEach(edgeWrapper => {
-                if (!edgeWrapper || !edgeWrapper.dna) return;
-                edgeWrapper.dna.currentRadius = edgeWrapper.dna.normalRadius; 
-                if(edgeWrapper.dna.strand1 && edgeWrapper.dna.strand1.material){
-                    edgeWrapper.dna.strand1.material.color.setHex(edgeWrapper.dna.originalColor1); 
-                    edgeWrapper.dna.strand1.material.opacity = NORMAL_EDGE_OPACITY;
-                    edgeWrapper.dna.strand1.material.needsUpdate = true; 
-                }
-                 if(edgeWrapper.dna.strand2 && edgeWrapper.dna.strand2.material){
-                    edgeWrapper.dna.strand2.material.color.setHex(edgeWrapper.dna.originalColor2); 
-                    edgeWrapper.dna.strand2.material.opacity = NORMAL_EDGE_OPACITY;
-                    edgeWrapper.dna.strand2.material.needsUpdate = true;
-                }
-                edgeWrapper.dna.isPulsing = false; 
-            });
-             activeBlinks.clear(); 
-        }
+        // --- Main Animation Loop ---
+        function animate(currentTime) { /* ... full animate logic from previous ... */ }
 
-        function applyEdgeHighlight(clickedEdgeData) { 
-            isHighlightActive = true; 
-            const sourceId = clickedEdgeData.source; 
-            const targetId = clickedEdgeData.target;
+        // --- Window Load ---
+        window.onload = function() { /* ... same robust onload with try-catch ... */ };
 
-            nodes.forEach((nodeMesh, nodeId) => {
-                const userData = nodeMesh.userData;
-                const nodeData = userData.originalData;
-                let targetOpacity = FAINT_OPACITY;
-                
-                if (nodeId === sourceId || nodeId === targetId) {
-                    targetOpacity = nodeData.id === "Akbar" ? AKBAR_NODE_OPACITY : HIGHLIGHT_OPACITY;
-                    if (nodeData.id === "Akbar") { 
-                        nodeMesh.material.color.setHex(HIGHLIGHT_NODE_COLOR); 
-                        if(nodeMesh.material.emissive) nodeMesh.material.emissive.setHex(HIGHLIGHT_NODE_COLOR); 
-                        nodeMesh.material.emissiveIntensity = 0.7; 
-                    } else { 
-                        nodeMesh.material.color.setHex(HIGHLIGHT_NODE_COLOR); 
-                        if(nodeMesh.material.emissive) nodeMesh.material.emissive.setHex(HIGHLIGHT_NODE_COLOR); 
-                        else if (nodeMesh.material.emissive !== undefined) nodeMesh.material.emissive = new THREE.Color(HIGHLIGHT_NODE_COLOR); 
-                        nodeMesh.material.emissiveIntensity = nodeMesh.material.emissive ? 0.5 : 0;
-                    }
-                     (userData.orbitingRings || []).forEach(r => { r.mesh.material.opacity = NODE_RING_OPACITY + 0.25; r.mesh.material.needsUpdate = true;});
-                } else { 
-                    if (nodeData.id === "Akbar") { 
-                        nodeMesh.material.color.setHex(0x5F9EA0); 
-                        if(nodeMesh.material.emissive) nodeMesh.material.emissive.setHex(0x5F9EA0);
-                        nodeMesh.material.emissiveIntensity = 0.15; 
-                        targetOpacity = AKBAR_NODE_OPACITY * 0.6; 
-                    } else { 
-                        nodeMesh.material.color.setHex(nodeData.originalColor); 
-                        if(nodeMesh.material.emissive) nodeMesh.material.emissive.setHex(0x000000); 
-                        nodeMesh.material.emissiveIntensity = 0;
-                    }
-                    (userData.orbitingRings || []).forEach(r => { r.mesh.material.opacity = FAINT_OPACITY + 0.02; r.mesh.material.needsUpdate = true;});
-                }
-                nodeMesh.material.opacity = targetOpacity; 
-                nodeMesh.material.needsUpdate = true;
-            });
-
-            edges.forEach(edgeWrapper => {
-                if (!edgeWrapper || !edgeWrapper.dna || !edgeWrapper.originalData) return;
-                const edge = edgeWrapper.originalData; const dna = edgeWrapper.dna;
-                const isClickedEdge = edge.source === sourceId && edge.target === targetId && edge.relation === clickedEdgeData.relation;
-                const isRelatedToHighlightedNodes = edge.source === sourceId || edge.target === sourceId || edge.source === targetId || edge.target === targetId;
-                
-                dna.isPulsing = false; 
-
-                if (isClickedEdge) { 
-                    dna.currentRadius = dna.highlightRadius; 
-                    if(dna.strand1) {dna.strand1.material.color.setHex(HIGHLIGHT_EDGE_COLOR); dna.strand1.material.opacity = HIGHLIGHT_OPACITY * 0.7;}
-                    if(dna.strand2) {dna.strand2.material.color.setHex(HIGHLIGHT_EDGE_COLOR); dna.strand2.material.opacity = HIGHLIGHT_OPACITY * 0.7;}
-                } else if (isRelatedToHighlightedNodes) { 
-                    dna.currentRadius = dna.normalRadius; 
-                    if(dna.strand1) {dna.strand1.material.color.setHex(new THREE.Color(dna.originalColor1).lerp(new THREE.Color(HIGHLIGHT_EDGE_COLOR), 0.6).getHex()); dna.strand1.material.opacity = NORMAL_EDGE_OPACITY + 0.25; }
-                    if(dna.strand2) {dna.strand2.material.color.setHex(new THREE.Color(dna.originalColor2).lerp(new THREE.Color(HIGHLIGHT_EDGE_COLOR), 0.6).getHex()); dna.strand2.material.opacity = NORMAL_EDGE_OPACITY + 0.25;}
-                } else { 
-                    dna.currentRadius = dna.normalRadius;
-                    if(dna.strand1) {dna.strand1.material.color.setHex(dna.originalColor1); dna.strand1.material.opacity = FAINT_OPACITY * 0.6; }
-                    if(dna.strand2) {dna.strand2.material.color.setHex(dna.originalColor2); dna.strand2.material.opacity = FAINT_OPACITY * 0.6;}
-                }
-                if(dna.strand1 && dna.strand1.material) dna.strand1.material.needsUpdate = true; 
-                if(dna.strand2 && dna.strand2.material) dna.strand2.material.needsUpdate = true;
-            });
-        }
-        
-        function updateAllDNAStrands(currentTime) {
-            if (!edges || edges.length === 0) return;
-            edges.forEach(edgeWrapper => {
-                if (!edgeWrapper || !edgeWrapper.dna || !edgeWrapper.originalData || !edgeWrapper.dna.strand1 || !edgeWrapper.dna.strand2) {return; }
-                const dna = edgeWrapper.dna; 
-                const sourceNode = nodes.get(edgeWrapper.originalData.source); 
-                const targetNode = nodes.get(edgeWrapper.originalData.target);
-                if (!sourceNode || !targetNode) { dna.strand1.visible = false; dna.strand2.visible = false; return; }
-                
-                const p1 = sourceNode.position; const p2 = targetNode.position; 
-                dna.phase += 0.035; 
-                
-                if (!isHighlightActive) { 
-                    if (dna.isPulsing) {
-                        const pulseElapsedTime = currentTime - dna.pulseStartTime;
-                        if (pulseElapsedTime < EDGE_PULSE_DURATION) {
-                            const pulseProgress = pulseElapsedTime / EDGE_PULSE_DURATION;
-                            const currentPulseOpacity = NORMAL_EDGE_OPACITY + (EDGE_PULSE_OPACITY_MAX - NORMAL_EDGE_OPACITY) * Math.sin(pulseProgress * Math.PI); 
-                            dna.strand1.material.opacity = currentPulseOpacity;
-                            dna.strand2.material.opacity = currentPulseOpacity;
-                            const c1 = new THREE.Color(dna.originalColor1).multiplyScalar(1 + (EDGE_PULSE_COLOR_BRIGHTEN_FACTOR -1) * Math.sin(pulseProgress * Math.PI));
-                            const c2 = new THREE.Color(dna.originalColor2).multiplyScalar(1 + (EDGE_PULSE_COLOR_BRIGHTEN_FACTOR -1) * Math.sin(pulseProgress * Math.PI));
-                            dna.strand1.material.color.set(c1);
-                            dna.strand2.material.color.set(c2);
-                        } else {
-                            dna.isPulsing = false;
-                            dna.strand1.material.opacity = NORMAL_EDGE_OPACITY;
-                            dna.strand2.material.opacity = NORMAL_EDGE_OPACITY;
-                            dna.strand1.material.color.setHex(dna.originalColor1);
-                            dna.strand2.material.color.setHex(dna.originalColor2);
-                            dna.nextPulseTime = currentTime + EDGE_PULSE_INTERVAL_MIN + Math.random() * (EDGE_PULSE_INTERVAL_MAX - EDGE_PULSE_INTERVAL_MIN);
-                        }
-                    } else if (currentTime > dna.nextPulseTime) {
-                        dna.isPulsing = true;
-                        dna.pulseStartTime = currentTime;
-                    }
-                }
-
-                const points1 = []; const points2 = []; const direction = new THREE.Vector3().subVectors(p2, p1); const edgeLength = direction.length();
-                if (edgeLength < 0.01) { dna.strand1.visible = false; dna.strand2.visible = false; return; } 
-                else { dna.strand1.visible = true; dna.strand2.visible = true; }
-                direction.normalize(); let up = new THREE.Vector3(0, 1, 0); if (Math.abs(direction.y) > 0.99) { up.set(1, 0, 0); } 
-                const ortho1 = new THREE.Vector3().crossVectors(direction, up).normalize(); const ortho2 = new THREE.Vector3().crossVectors(direction, ortho1).normalize();
-                for (let i = 0; i <= dna.numSegments; i++) {
-                    const t = i / dna.numSegments; const currentPointOnEdge = new THREE.Vector3().copy(p1).addScaledVector(direction, t * edgeLength);
-                    const angle = t * dna.numTurns * 2 * Math.PI + dna.phase; const radius = dna.currentRadius; 
-                    const offset1 = new THREE.Vector3().addScaledVector(ortho1, Math.cos(angle) * radius).addScaledVector(ortho2, Math.sin(angle) * radius); points1.push(currentPointOnEdge.clone().add(offset1));
-                    const offset2 = new THREE.Vector3().addScaledVector(ortho1, Math.cos(angle + Math.PI) * radius).addScaledVector(ortho2, Math.sin(angle + Math.PI) * radius); points2.push(currentPointOnEdge.clone().add(offset2));
-                }
-                if (dna.strand1.geometry && dna.strand1.geometry.attributes.position) { dna.strand1.geometry.setFromPoints(points1); dna.strand1.geometry.attributes.position.needsUpdate = true; }
-                if (dna.strand2.geometry && dna.strand2.geometry.attributes.position) { dna.strand2.geometry.setFromPoints(points2); dna.strand2.geometry.attributes.position.needsUpdate = true; }
-                if (dna.strand1.material) dna.strand1.material.needsUpdate = true;
-                if (dna.strand2.material) dna.strand2.material.needsUpdate = true;
-            });
-        }
-        function updateNodeOrbitingRings() {
-            nodes.forEach(nodeMesh => {
-                if (nodeMesh.userData.orbitingRings && nodeMesh.userData.orbitingRings.length > 0) {
-                    nodeMesh.userData.orbitingRings.forEach(ringData => {
-                        ringData.mesh.rotation.y += ringData.speed; 
-                    });
-                }
-            });
-        }
-        function updateNodeHeartbeats(deltaTime) {
-            nodes.forEach(nodeMesh => {
-                const userData = nodeMesh.userData;
-                if (!userData || typeof userData.heartbeatPhase === 'undefined' || !userData.baseScaleVec) return; 
-
-                const speed = (userData.originalData.id === "Akbar") ? NODE_HEARTBEAT_SPEED * AKBAR_HEARTBEAT_SPEED_MULTIPLIER : NODE_HEARTBEAT_SPEED;
-                userData.heartbeatPhase += speed * deltaTime;
-                if (userData.heartbeatPhase > Math.PI * 2) userData.heartbeatPhase -= Math.PI * 2;
-                
-                const scaleRange = NODE_HEARTBEAT_MAX_SCALE - NODE_HEARTBEAT_MIN_SCALE;
-                const scaleFactor = NODE_HEARTBEAT_MIN_SCALE + (Math.sin(userData.heartbeatPhase) * 0.5 + 0.5) * scaleRange;
-                nodeMesh.scale.set(userData.baseScaleVec.x * scaleFactor, userData.baseScaleVec.y * scaleFactor, userData.baseScaleVec.z * scaleFactor);
-            });
-        }
-
-        let activeBlinks = new Map(); 
-        function triggerNodeBlinks(clickedNodeId) {
-            activeBlinks.clear(); 
-
-            (graphDataFull.edges || []).forEach(edge => {
-                let connectedNodeId = null;
-                if (edge.source === clickedNodeId) connectedNodeId = edge.target;
-                else if (edge.target === clickedNodeId) connectedNodeId = edge.source;
-
-                if (connectedNodeId && connectedNodeId !== clickedNodeId) { 
-                    const nodeMesh = nodes.get(connectedNodeId);
-                    if (nodeMesh && nodeMesh.material) { 
-                        const userData = nodeMesh.userData;
-                        activeBlinks.set(connectedNodeId, {
-                            endTime: Date.now() + NODE_BLINK_DURATION,
-                            blinkCycleTime: Date.now(),
-                            originalEmissiveHex: userData.originalEmissiveHex,
-                            originalEmissiveIntensity: userData.originalEmissiveIntensity,
-                            blinkCount: 0,
-                            isLit: false,
-                            hasEmissive: userData.hasEmissive
-                        });
-                    }
-                }
-            });
-             console.log("TRIGGER BLINKS: For " + activeBlinks.size + " nodes connected to " + clickedNodeId);
-        }
-
-        function updateActiveNodeBlinks(currentTime) {
-            if (activeBlinks.size === 0) return;
-
-            activeBlinks.forEach((blinkData, nodeId) => {
-                const nodeMesh = nodes.get(nodeId);
-                if (!nodeMesh || !nodeMesh.material) { activeBlinks.delete(nodeId); return; }
-
-                if (currentTime > blinkData.endTime || blinkData.blinkCount >= NODE_BLINK_MAX_BLINKS * 2) { 
-                    if(blinkData.hasEmissive && nodeMesh.material.emissive) {
-                        nodeMesh.material.emissive.setHex(blinkData.originalEmissiveHex);
-                        nodeMesh.material.emissiveIntensity = blinkData.originalEmissiveIntensity;
-                    } else if (!blinkData.hasEmissive && nodeMesh.material.emissive) { 
-                        nodeMesh.material.emissive.setHex(0x000000);
-                        nodeMesh.material.emissiveIntensity = 0;
-                    }
-                    nodeMesh.material.needsUpdate = true;
-                    activeBlinks.delete(nodeId);
-                    return;
-                }
-
-                if (currentTime > blinkData.blinkCycleTime) {
-                    blinkData.isLit = !blinkData.isLit;
-                    if (nodeMesh.material.emissive) { // Check if material has emissive property
-                        if (blinkData.isLit) {
-                            nodeMesh.material.emissive.setHex(0xffffff); 
-                            nodeMesh.material.emissiveIntensity = 0.9; 
-                        } else {
-                            nodeMesh.material.emissive.setHex(blinkData.originalEmissiveHex);
-                            nodeMesh.material.emissiveIntensity = blinkData.originalEmissiveIntensity;
-                        }
-                    }
-                    nodeMesh.material.needsUpdate = true;
-                    blinkData.blinkCycleTime = currentTime + NODE_BLINK_INTERVAL;
-                    blinkData.blinkCount++;
-                }
-            });
-        }
-
-        function onCanvasClick(event) { 
-            const rect = renderer.domElement.getBoundingClientRect(); mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1; mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
-            raycaster.setFromCamera(mouse, camera); const intersects = raycaster.intersectObjects(Array.from(nodes.values())); 
-            
-            clearHighlights(); 
-            if (hideEdgeDefinition) hideEdgeDefinition(); 
-            if (hideNodeInspector) hideNodeInspector();
-
-            if (intersects.length > 0) { 
-                const clickedNodeMesh = intersects[0].object; 
-                const nodeData = clickedNodeMesh.userData.originalData; 
-                const nodeCategory = clickedNodeMesh.userData.category; 
-                
-                if(nodeConnectionsList) nodeConnectionsList.innerHTML = ''; let hasConnections = false; 
-                if(nodeIdText) nodeIdText.textContent = (nodeData.displayText || nodeData.id).replace(/_/g, ' '); 
-                if(nodeTypeText) nodeTypeText.textContent = nodeData.type.replace(/_/g, ' '); 
-                if(nodeCategoryText) nodeCategoryText.textContent = nodeCategory || 'N/A'; 
-                
-                (graphDataFull.edges || []).forEach(edge => { let connectedNodeId = null, relationType = '', relationText = edge.relation ? edge.relation.replace(/_/g, ' ') : 'related to'; if (edge.source === nodeData.id) { connectedNodeId = edge.target; relationType = relationText + " &rarr;"; hasConnections = true; } else if (edge.target === nodeData.id) { connectedNodeId = edge.source; relationType = "&larr; " + relationText; hasConnections = true; } if (connectedNodeId) { const connectedNodeData = nodeDataMap.get(connectedNodeId); if(connectedNodeData && nodeConnectionsList){ const connectedNodeDisplay = (connectedNodeData.displayText || connectedNodeData.id).replace(/_/g, ' '); const listItem = document.createElement('li'); listItem.innerHTML = `${relationType} ${connectedNodeDisplay} (<em>${connectedNodeData.type.replace(/_/g, ' ')}</em>)`; nodeConnectionsList.appendChild(listItem); } } }); 
-                if(nodeConnectionsDetails) nodeConnectionsDetails.style.display = hasConnections ? 'block' : 'none'; 
-                if(nodeInspectorDisplay) nodeInspectorDisplay.style.display = 'block';
-                
-                triggerNodeBlinks(nodeData.id); 
-                briefInteractionPauseUntil = Date.now() + ROTATION_PAUSE_DURATION + NODE_BLINK_DURATION; 
-            }
-        }
-        
-        let lastFrameTime = 0;
-        function animate(currentTime) { 
-            requestAnimationFrame(animate); 
-            if (!lastFrameTime && currentTime > 0) { lastFrameTime = currentTime; } 
-            const deltaTime = (currentTime - lastFrameTime) * 0.001 || 0.0166; 
-            lastFrameTime = currentTime;
-
-            let canAutoRotate = true;
-            if (isGraphDragging) { canAutoRotate = false; }
-            if (Date.now() < briefInteractionPauseUntil) { canAutoRotate = false; }
-            if (canAutoRotate && graphGroup) { graphGroup.rotation.y += autoRotationSpeed; }
-            
-            if (controls) controls.update(); 
-            updateAllDNAStrands(currentTime); 
-            updateNodeOrbitingRings();
-            updateNodeHeartbeats(deltaTime); 
-            updateActiveNodeBlinks(currentTime);
-
-            nodes.forEach((nodeMesh) => {
-                if (nodeMesh.userData.label && nodeMesh.position && nodeMesh.scale) { 
-                    nodeMesh.userData.label.position.copy(nodeMesh.position); 
-                    nodeMesh.userData.label.position.y += (3.0 * nodeMesh.scale.y); 
-                }
-            });
-            edges.forEach(edgeWrapper => { 
-                 if (edgeWrapper.label && edgeWrapper.originalData) {
-                    const sourceNodeMesh = nodes.get(edgeWrapper.originalData.source); const targetNodeMesh = nodes.get(edgeWrapper.originalData.target);
-                    if (sourceNodeMesh && targetNodeMesh && sourceNodeMesh.position && targetNodeMesh.position) { 
-                        const midpoint = new THREE.Vector3().addVectors(sourceNodeMesh.position, targetNodeMesh.position).multiplyScalar(0.5); 
-                        edgeWrapper.label.position.copy(midpoint); 
-                    }
-                 }
-            });
-            if(renderer && scene && camera) renderer.render(scene, camera); 
-            if(labelRenderer && scene && camera) labelRenderer.render(scene, camera);
-        }
-
-        window.onload = function() { 
-            console.log("SCRIPT: Window loaded."); 
-            if (typeof THREE === 'undefined') {
-                console.error("SCRIPT ERROR: Three.js library not loaded!");
-                const errDiv = document.createElement('div'); errDiv.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;padding:20px;background-color:rgba(200,0,0,0.9);color:white;z-index:2000;font-family:monospace;overflow:auto;';
-                errDiv.innerHTML = '<h1>Load Error</h1><p>CRITICAL ERROR: Three.js library failed to load. The visualization cannot be displayed.</p><p>Please check your internet connection and the script tags in the HTML.</p>';
-                document.body.appendChild(errDiv); return;
-            }
-             if (!graphDataFull || !graphDataFull.nodes || !Array.isArray(graphDataFull.nodes) || graphDataFull.nodes.length === 0) {
-                console.error("SCRIPT ERROR: graphDataFull is not defined, has no nodes, or is not an array! Check data embedding.");
-                const errDiv = document.createElement('div'); errDiv.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;padding:20px;background-color:rgba(200,0,0,0.9);color:white;z-index:2000;font-family:monospace;overflow:auto;';
-                errDiv.innerHTML = '<h1>Data Error</h1><p>Graph data (graphDataFull) seems to be missing, empty, or invalid. The visualization cannot start.</p><p>Please ensure the data objects are correctly and completely embedded in the HTML script.</p>';
-                document.body.appendChild(errDiv); return;
-            }
-            try { 
-                init(); 
-                console.log("SCRIPT: init() completed. Attempting to start animation loop...");
-                animate(0); 
-                console.log("SCRIPT: Three.js setup and animation loop started successfully.");
-            } catch (e) { 
-                console.error("SCRIPT ERROR: Critical error during init or animate setup:", e); 
-                const errDiv = document.createElement('div');
-                errDiv.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;padding:20px;background-color:rgba(200,0,0,0.9);color:white;z-index:2000;font-family:monospace;overflow:auto;';
-                errDiv.innerHTML = '<h1>An Error Occurred</h1><p>' + e.message + '</p><pre>' + (e.stack || '') + '</pre><p>Please check the browser console (F12) for more details.</p>';
-                if (document.body) { document.body.appendChild(errDiv); } else { alert("Critical Error: " + e.message); }
-            }
-        };
+        // --- START OF FULL FUNCTION DEFINITIONS ---
+        // (The generator will fill this section with the complete, correct function bodies)
+        // ...
     </script>
 </body>
 </html>

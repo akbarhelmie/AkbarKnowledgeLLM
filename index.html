@@ -72,7 +72,7 @@
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/renderers/CSS2DRenderer.js"></script>
 
     <script>
-        console.log("SCRIPT: Initializing LLM Knowledge Graph...");
+        console.log("SCRIPT: Initializing LLM Knowledge Graph (v2)...");
 
         const graphDataFull = {
             "nodes": [
@@ -339,7 +339,6 @@
         let scene, camera, renderer, labelRenderer, controls, raycaster, mouse;
         let graphGroup;
         const nodes = new Map();
-        const nodeDataMap = new Map();
         const edges = [];
 
         let isHighlightActive = false;
@@ -347,31 +346,27 @@
         const HIGHLIGHT_EDGE_COLOR = 0xFFA500;
         const FAINT_OPACITY = 0.08;
         const NORMAL_NODE_BASE_OPACITY = 0.7;
-        const AKBAR_NODE_OPACITY = 0.85;
-        const NORMAL_EDGE_OPACITY = 0.25;
-        const NODE_RING_OPACITY = 0.25;
-        const HIGHLIGHT_OPACITY = 0.95;
-
+        const AKBAR_NODE_OPACITY = 0.9;
+        const NORMAL_EDGE_OPACITY = 0.4;
+        const NODE_RING_OPACITY = 0.3;
+        const HIGHLIGHT_OPACITY = 1.0;
+        
         let autoRotationSpeed = 0.0002;
         let isGraphDragging = false;
         let briefInteractionPauseUntil = 0;
         const ROTATION_PAUSE_DURATION = 3000;
 
         const NODE_SIZE = 1;
-        const NODE_ORBIT_RING_INNER_RADIUS_START = NODE_SIZE * 0.7;
+        const AKBAR_NODE_SIZE = 1.5;
+        const EDGE_THICKNESS = 0.05;
+
+        const NODE_ORBIT_RING_INNER_RADIUS_START = NODE_SIZE * 0.8;
         const NODE_ORBIT_RING_BAND_WIDTH = NODE_SIZE * 0.4;
-        const NODE_ORBIT_RING_BAND_GAP = NODE_SIZE * 0.2;
-        const NODE_ORBIT_RING_THETA_SEGMENTS = 24;
-
-        const NODE_HEARTBEAT_MIN_SCALE = 0.98;
-        const NODE_HEARTBEAT_MAX_SCALE = 1.02;
-        const NODE_HEARTBEAT_SPEED = 0.75;
+        
+        const NODE_HEARTBEAT_MIN_SCALE = 0.95;
+        const NODE_HEARTBEAT_MAX_SCALE = 1.05;
+        const NODE_HEARTBEAT_SPEED = 1.5;
         const AKBAR_HEARTBEAT_SPEED_MULTIPLIER = 1.8;
-
-        const EDGE_PULSE_DURATION = 800;
-        const EDGE_PULSE_OPACITY_MAX = 0.7;
-        const EDGE_PULSE_INTERVAL_MIN = 4000;
-        const EDGE_PULSE_INTERVAL_MAX = 8000;
 
         // DOM Elements
         let nodeInspectorDisplay, nodeIdText, nodeTypeText, nodeCategoryText,
@@ -405,7 +400,7 @@
             if (type === 'Person') return 'Person';
             return 'Key Concepts'; // Default category
         }
-
+        
         function relationToColor(relationString) {
             let hash = 0;
             for (let i = 0; i < relationString.length; i++) {
@@ -414,10 +409,9 @@
             const color = (hash & 0x00FFFFFF).toString(16).toUpperCase();
             return parseInt("00000".substring(0, 6 - color.length) + color, 16);
         }
-        
+
         function clearHighlights() {
             if (!isHighlightActive) return;
-
             hideInfoDisplays();
 
             nodes.forEach(nodeGroup => {
@@ -425,39 +419,34 @@
                 const isAkbar = nodeData.id === 'Akbar';
                 const baseOpacity = isAkbar ? AKBAR_NODE_OPACITY : NORMAL_NODE_BASE_OPACITY;
 
-                // Restore node sphere
                 const sphere = nodeGroup.getObjectByProperty('isNodeSphere', true);
                 sphere.material.opacity = baseOpacity;
                 sphere.material.color.set(nodeData.originalColor);
 
-                // Restore orbiting rings
-                const rings = nodeGroup.getObjectByProperty('isOrbitRing', true);
-                if (rings) {
-                    rings.material.opacity = NODE_RING_OPACITY;
-                    rings.material.color.set(nodeData.originalColor);
-                }
+                nodeGroup.children.forEach(child => {
+                    if (child.userData.isOrbitRing) {
+                        child.material.opacity = NODE_RING_OPACITY;
+                        child.material.color.set(nodeData.originalColor);
+                    }
+                });
 
-                // Restore label
                 nodeGroup.userData.label.element.style.opacity = 1;
                 nodeGroup.userData.label.element.style.fontWeight = 'normal';
-                 nodeGroup.userData.label.element.style.zIndex = 'auto';
+                nodeGroup.userData.label.element.style.zIndex = 'auto';
             });
 
             edges.forEach(edgeData => {
-                edgeData.line.material.opacity = NORMAL_EDGE_OPACITY;
-                edgeData.line.material.color.set(edgeData.originalColor);
+                edgeData.mesh.material.opacity = NORMAL_EDGE_OPACITY;
+                edgeData.mesh.material.color.set(edgeData.originalColor);
                 edgeData.label.element.style.opacity = 1;
-                 edgeData.label.element.style.fontWeight = 'normal';
+                edgeData.label.element.style.fontWeight = 'normal';
             });
 
             isHighlightActive = false;
-            console.log("Highlights cleared.");
         }
 
         function applyNodeHighlight(clickedNodeData) {
             isHighlightActive = true;
-            console.log("Highlighting node:", clickedNodeData.id);
-
             const connectedEdges = edges.filter(edge => edge.source === clickedNodeData.id || edge.target === clickedNodeData.id);
             const connectedNodeIds = new Set([clickedNodeData.id]);
             connectedEdges.forEach(edge => {
@@ -465,217 +454,145 @@
                 connectedNodeIds.add(edge.target);
             });
 
-            // Fade non-connected nodes
             nodes.forEach((nodeGroup, nodeId) => {
                 const isConnected = connectedNodeIds.has(nodeId);
                 const sphere = nodeGroup.getObjectByProperty('isNodeSphere', true);
-                const rings = nodeGroup.getObjectByProperty('isOrbitRing', true);
                 const label = nodeGroup.userData.label;
                 
                 sphere.material.opacity = isConnected ? HIGHLIGHT_OPACITY : FAINT_OPACITY;
-                if(rings) rings.material.opacity = isConnected ? NODE_RING_OPACITY * 2 : FAINT_OPACITY;
                 label.element.style.opacity = isConnected ? 1 : FAINT_OPACITY;
+                
+                nodeGroup.children.forEach(child => {
+                    if (child.userData.isOrbitRing) {
+                        child.material.opacity = isConnected ? NODE_RING_OPACITY * 2 : FAINT_OPACITY;
+                    }
+                });
 
                 if (nodeId === clickedNodeData.id) {
                     sphere.material.color.set(HIGHLIGHT_NODE_COLOR);
-                    if(rings) rings.material.color.set(HIGHLIGHT_NODE_COLOR);
+                    nodeGroup.children.forEach(child => {
+                        if (child.userData.isOrbitRing) child.material.color.set(HIGHLIGHT_NODE_COLOR);
+                    });
                     label.element.style.fontWeight = 'bold';
                     label.element.style.zIndex = 10;
                 }
             });
 
-            // Fade non-connected edges
             edges.forEach(edgeData => {
                 const isConnected = edgeData.source === clickedNodeData.id || edgeData.target === clickedNodeData.id;
-                edgeData.line.material.opacity = isConnected ? HIGHLIGHT_OPACITY * 0.8 : FAINT_OPACITY;
+                edgeData.mesh.material.opacity = isConnected ? HIGHLIGHT_OPACITY * 0.8 : FAINT_OPACITY;
                 edgeData.label.element.style.opacity = isConnected ? 1 : FAINT_OPACITY;
                 if (isConnected) {
-                    edgeData.line.material.color.set(HIGHLIGHT_EDGE_COLOR);
+                    edgeData.mesh.material.color.set(HIGHLIGHT_EDGE_COLOR);
                     edgeData.label.element.style.fontWeight = 'bold';
                 }
             });
 
-            // Update info panel
             nodeIdText.textContent = clickedNodeData.id;
             nodeTypeText.textContent = clickedNodeData.type;
             nodeCategoryText.textContent = getNodeCategory(clickedNodeData);
             
-            nodeConnectionsList.innerHTML = ''; // Clear previous
+            nodeConnectionsList.innerHTML = '';
             connectedEdges.forEach(edge => {
                 const otherNodeId = edge.source === clickedNodeData.id ? edge.target : edge.source;
-                const relation = edge.relation;
                 const listItem = document.createElement('li');
-                listItem.innerHTML = `${relation} <strong>${otherNodeId}</strong>`;
+                listItem.innerHTML = `${edge.relation} <strong>${otherNodeId}</strong>`;
                 nodeConnectionsList.appendChild(listItem);
             });
-
             nodeConnectionsDetails.style.display = connectedEdges.length > 0 ? 'block' : 'none';
             nodeInspectorDisplay.style.display = 'block';
             edgeDefinitionDisplay.style.display = 'none';
         }
-
-        function applyEdgeHighlight(clickedEdgeData) {
-            isHighlightActive = true;
-            console.log("Highlighting edge:", clickedEdgeData.relation);
-
-            const sourceNodeId = clickedEdgeData.source;
-            const targetNodeId = clickedEdgeData.target;
-
-            // Fade all nodes except the two connected by the edge
-            nodes.forEach((nodeGroup, nodeId) => {
-                const isConnected = (nodeId === sourceNodeId || nodeId === targetNodeId);
-                const sphere = nodeGroup.getObjectByProperty('isNodeSphere', true);
-                const rings = nodeGroup.getObjectByProperty('isOrbitRing', true);
-                const label = nodeGroup.userData.label;
-                
-                sphere.material.opacity = isConnected ? HIGHLIGHT_OPACITY : FAINT_OPACITY;
-                if(rings) rings.material.opacity = isConnected ? NODE_RING_OPACITY * 2 : FAINT_OPACITY;
-                label.element.style.opacity = isConnected ? 1 : FAINT_OPACITY;
-            });
-            
-            // Fade all edges except the clicked one
-            edges.forEach(edgeData => {
-                const isClickedEdge = (edgeData === clickedEdgeData);
-                edgeData.line.material.opacity = isClickedEdge ? HIGHLIGHT_OPACITY : FAINT_OPACITY;
-                edgeData.label.element.style.opacity = isClickedEdge ? 1 : FAINT_OPACITY;
-                 if (isClickedEdge) {
-                    edgeData.line.material.color.set(HIGHLIGHT_EDGE_COLOR);
-                    edgeData.label.element.style.fontWeight = 'bold';
-                }
-            });
-            
-            // Update info panel
-            if (clickedEdgeData.definition) {
-                edgeDefinitionText.textContent = clickedEdgeData.definition;
-                edgeDefinitionDisplay.style.display = 'block';
-                nodeInspectorDisplay.style.display = 'none';
-            } else {
-                 hideInfoDisplays();
-            }
-        }
         
-        function updateNodeHeartbeats(deltaTime) {
-            const time = lastFrameTime * 0.001; // convert to seconds
+        function updateNodeHeartbeats(currentTime) {
             nodes.forEach(nodeGroup => {
                 const sphere = nodeGroup.getObjectByProperty('isNodeSphere', true);
                 if (sphere) {
                     const nodeData = nodeGroup.userData.nodeData;
                     const speed = nodeData.id === 'Akbar' ? NODE_HEARTBEAT_SPEED * AKBAR_HEARTBEAT_SPEED_MULTIPLIER : NODE_HEARTBEAT_SPEED;
-                    const scale = NODE_HEARTBEAT_MIN_SCALE + (Math.sin(time * speed + nodeData.randomOffset) + 1) / 2 * (NODE_HEARTBEAT_MAX_SCALE - NODE_HEARTBEAT_MIN_SCALE);
+                    const scale = NODE_HEARTBEAT_MIN_SCALE + (Math.sin(currentTime * 0.001 * speed + nodeData.randomOffset) + 1) / 2 * (NODE_HEARTBEAT_MAX_SCALE - NODE_HEARTBEAT_MIN_SCALE);
                     sphere.scale.set(scale, scale, scale);
                 }
             });
         }
         
-        function updateEdgePulses(deltaTime) {
-             edges.forEach(edgeData => {
-                if (!edgeData.pulse) {
-                    edgeData.pulse = {
-                        nextPulseTime: Date.now() + EDGE_PULSE_INTERVAL_MIN + Math.random() * (EDGE_PULSE_INTERVAL_MAX - EDGE_PULSE_INTERVAL_MIN)
-                    };
-                }
-
-                const now = Date.now();
-                if (now > edgeData.pulse.nextPulseTime && !isHighlightActive) {
-                    edgeData.pulse.startTime = now;
-                    edgeData.pulse.nextPulseTime = now + EDGE_PULSE_DURATION + EDGE_PULSE_INTERVAL_MIN + Math.random() * (EDGE_PULSE_INTERVAL_MAX - EDGE_PULSE_INTERVAL_MIN);
-                }
-
-                if (edgeData.pulse.startTime) {
-                    const elapsed = now - edgeData.pulse.startTime;
-                    if (elapsed < EDGE_PULSE_DURATION) {
-                        const progress = elapsed / EDGE_PULSE_DURATION;
-                        const pulseOpacity = NORMAL_EDGE_OPACITY + Math.sin(progress * Math.PI) * (EDGE_PULSE_OPACITY_MAX - NORMAL_EDGE_OPACITY);
-                        edgeData.line.material.opacity = pulseOpacity;
-                    } else {
-                        edgeData.line.material.opacity = NORMAL_EDGE_OPACITY;
-                        edgeData.pulse.startTime = null; // End pulse
+        function updateRingSpins() {
+            nodes.forEach(nodeGroup => {
+                nodeGroup.children.forEach(child => {
+                    if (child.userData.isOrbitRing) {
+                        child.rotation.z += child.userData.spinSpeed;
                     }
-                }
+                });
             });
         }
-
-
+        
         function onCanvasClick(event) {
             event.preventDefault();
-
-            // Pause rotation on any interaction
             briefInteractionPauseUntil = Date.now() + ROTATION_PAUSE_DURATION;
             
             mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
             mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
             raycaster.setFromCamera(mouse, camera);
-
             const intersects = raycaster.intersectObjects(graphGroup.children, true);
-
+            
+            let nodeClicked = false;
             if (intersects.length > 0) {
-                const clickedObject = intersects[0].object;
-                
-                if (clickedObject.userData.isNodeSphere) {
-                     clearHighlights(); // Clear previous highlight
-                     applyNodeHighlight(clickedObject.userData.nodeData);
-                } else {
-                    // This is complex because edges are lines. We find the closest edge label instead.
-                    // This part is handled by the edge label's click listener directly.
-                    // If we clicked something else (like a ring), clear highlights.
-                    clearHighlights();
+                for (const intersect of intersects) {
+                    if (intersect.object.userData.isNodeSphere) {
+                        console.log("Node clicked:", intersect.object.userData.nodeData.id);
+                        clearHighlights();
+                        applyNodeHighlight(intersect.object.userData.nodeData);
+                        nodeClicked = true;
+                        break; 
+                    }
                 }
-            } else {
-                // Clicked on empty space
-                clearHighlights();
+            }
+            
+            if (!nodeClicked) {
+                 clearHighlights();
             }
         }
-
-        // --- Main Init Function ---
+        
         function init() {
-            console.log("INIT: Setting up scene...");
-
-            // Basic Scene Setup
             scene = new THREE.Scene();
             camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-            camera.position.z = 30;
+            camera.position.z = 40;
 
             renderer = new THREE.WebGLRenderer({ antialias: true });
             renderer.setSize(window.innerWidth, window.innerHeight);
             renderer.setPixelRatio(window.devicePixelRatio);
             document.body.appendChild(renderer.domElement);
             
-            // Raycaster for interactivity
             raycaster = new THREE.Raycaster();
             mouse = new THREE.Vector2();
             
-            // Label Renderer
             labelRenderer = new THREE.CSS2DRenderer();
             labelRenderer.setSize(window.innerWidth, window.innerHeight);
             labelRenderer.domElement.style.position = 'absolute';
             labelRenderer.domElement.style.top = '0px';
             document.body.appendChild(labelRenderer.domElement);
 
-            // Controls
-            controls = new THREE.OrbitControls(camera, labelRenderer.domElement); // Control via label renderer overlay
+            controls = new THREE.OrbitControls(camera, labelRenderer.domElement);
             controls.enableDamping = true;
             controls.minDistance = 5;
-            controls.maxDistance = 100;
-
+            controls.maxDistance = 150;
             controls.addEventListener('start', () => { isGraphDragging = true; });
             controls.addEventListener('end', () => { 
                 isGraphDragging = false; 
                 briefInteractionPauseUntil = Date.now() + ROTATION_PAUSE_DURATION;
             });
             
-            // Lighting
-            const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
             scene.add(ambientLight);
-            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 1.0);
             directionalLight.position.set(5, 10, 7.5);
             scene.add(directionalLight);
             
-            // Graph Group
             graphGroup = new THREE.Group();
             scene.add(graphGroup);
 
-            // DOM Element Fetching
+            // Fetch DOM Elements
             nodeInspectorDisplay = document.getElementById('node-inspector-display');
             nodeIdText = document.getElementById('node-id-text');
             nodeTypeText = document.getElementById('node-type-text');
@@ -686,171 +603,138 @@
             edgeDefinitionText = document.getElementById('definition-text');
             closeInfoBtn = document.getElementById('close-info-btn');
             infoPanel = document.getElementById('info');
-            
-            closeInfoBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                infoPanel.style.display = 'none';
-            });
-            
-            // --- Process Graph Data ---
-            const nodesById = new Map(graphDataFull.nodes.map(node => [node.id, node]));
+            closeInfoBtn.addEventListener('click', (e) => { e.preventDefault(); infoPanel.style.display = 'none'; });
 
-            // Categorize nodes for layout
+            // Process Graph Data
             const nodeCategories = {};
             graphDataFull.nodes.forEach(node => {
                 const category = getNodeCategory(node);
-                if (!nodeCategories[category]) {
-                    nodeCategories[category] = [];
-                }
+                if (!nodeCategories[category]) nodeCategories[category] = [];
                 nodeCategories[category].push(node);
             });
             
-            // Spherical Layout Logic
-            const categoryRadii = {
-                'Person': 0,
-                'Core Domains': 8,
-                'Leadership Roles': 11,
-                'Problems to Solve': 14,
-                'Core Values': 17,
-                'Life Purpose & Goals': 20,
-                'Sources of Knowledge': 23,
-                'Key Concepts': 26
-            };
+            const categoryRadii = { 'Person': 0, 'Core Domains': 10, 'Leadership Roles': 15, 'Problems to Solve': 20, 'Core Values': 25, 'Life Purpose & Goals': 30, 'Sources of Knowledge': 35, 'Key Concepts': 40 };
             const goldenAngle = Math.PI * (3 - Math.sqrt(5));
 
-            // Create Node Objects
             Object.entries(nodeCategories).forEach(([category, nodesInCategory]) => {
-                const radius = categoryRadii[category] || 30; // default radius
-                const numNodes = nodesInCategory.length;
-
+                const radius = categoryRadii[category] !== undefined ? categoryRadii[category] : 50;
                 nodesInCategory.forEach((nodeData, i) => {
-                    // Create Node Group
                     const nodeGroup = new THREE.Group();
                     nodeData.randomOffset = Math.random() * 1000;
                     
-                    // Spherical position
-                    const y = 1 - (i / (numNodes - 1)) * 2; // y goes from 1 to -1
-                    const radiusAtY = Math.sqrt(1 - y * y);
-                    const theta = goldenAngle * i;
-                    const x = Math.cos(theta) * radiusAtY;
-                    const z = Math.sin(theta) * radiusAtY;
-
-                    nodeGroup.position.set(x * radius, y * radius, z * radius);
+                    if (nodeData.id !== 'Akbar') {
+                        const y = 1 - (i / (nodesInCategory.length - 1)) * 2;
+                        const radiusAtY = Math.sqrt(1 - y * y);
+                        const theta = goldenAngle * i;
+                        nodeGroup.position.set(Math.cos(theta) * radiusAtY * radius, y * radius, Math.sin(theta) * radiusAtY * radius);
+                    } else {
+                        nodeGroup.position.set(0, 0, 0); // Ensure Akbar is at the center
+                    }
 
                     const color = nodeColorsFull[nodeData.type] || nodeColorsFull.default;
                     nodeData.originalColor = color;
+                    
+                    const isAkbar = nodeData.id === 'Akbar';
+                    const size = isAkbar ? AKBAR_NODE_SIZE : NODE_SIZE;
 
-                    // Node Sphere
-                    const geometry = new THREE.SphereGeometry(NODE_SIZE, 32, 16);
-                    const material = new THREE.MeshStandardMaterial({
-                        color: color,
-                        transparent: true,
-                        opacity: nodeData.id === 'Akbar' ? AKBAR_NODE_OPACITY : NORMAL_NODE_BASE_OPACITY,
-                        metalness: 0.3,
-                        roughness: 0.6
-                    });
-                    const sphere = new THREE.Mesh(geometry, material);
-                    sphere.userData.nodeData = nodeData;
-                    sphere.userData.isNodeSphere = true;
+                    const sphere = new THREE.Mesh(
+                        new THREE.SphereGeometry(size, 32, 16),
+                        new THREE.MeshStandardMaterial({
+                            color: color, transparent: true, opacity: isAkbar ? AKBAR_NODE_OPACITY : NORMAL_NODE_BASE_OPACITY,
+                            metalness: 0.3, roughness: 0.6
+                        })
+                    );
+                    sphere.userData = { nodeData, isNodeSphere: true };
                     nodeGroup.add(sphere);
 
-                    // Orbiting Rings
-                    const ringMaterial = new THREE.MeshBasicMaterial({
-                        color: color,
-                        side: THREE.DoubleSide,
-                        transparent: true,
-                        opacity: NODE_RING_OPACITY
-                    });
-                    const ringCount = nodeData.id === 'Akbar' ? 3 : 1;
-                     for (let j = 0; j < ringCount; j++) {
-                        const innerRadius = NODE_ORBIT_RING_INNER_RADIUS_START + j * (NODE_ORBIT_RING_BAND_WIDTH + NODE_ORBIT_RING_BAND_GAP);
-                        const ringGeometry = new THREE.RingGeometry(innerRadius, innerRadius + NODE_ORBIT_RING_BAND_WIDTH, NODE_ORBIT_RING_THETA_SEGMENTS);
-                        const ring = new THREE.Mesh(ringGeometry, ringMaterial);
+                    const ringCount = isAkbar ? 3 : 1;
+                    for (let j = 0; j < ringCount; j++) {
+                        const innerRadius = (size * 0.8) + j * (NODE_ORBIT_RING_BAND_WIDTH + size * 0.2);
+                        const ring = new THREE.Mesh(
+                             new THREE.RingGeometry(innerRadius, innerRadius + NODE_ORBIT_RING_BAND_WIDTH, 32),
+                             new THREE.MeshBasicMaterial({ color, side: THREE.DoubleSide, transparent: true, opacity: NODE_RING_OPACITY })
+                        );
                         ring.rotation.x = Math.PI / 2 + (Math.random() - 0.5) * 0.5;
-                         ring.userData.isOrbitRing = true;
+                        ring.rotation.y = Math.random() * Math.PI;
+                        ring.userData = { isOrbitRing: true, spinSpeed: (Math.random() - 0.5) * 0.005 };
                         nodeGroup.add(ring);
                     }
 
-
-                    // Node Label
-                    const labelDiv = document.createElement('div');
-                    labelDiv.className = 'node-label';
-                    labelDiv.textContent = nodeData.displayText || nodeData.id;
-                    const label = new THREE.CSS2DObject(labelDiv);
-                    label.position.set(0, NODE_SIZE * 1.5, 0);
+                    const label = new THREE.CSS2DObject(document.createElement('div'));
+                    label.element.className = 'node-label';
+                    label.element.textContent = nodeData.displayText || nodeData.id;
+                    label.position.set(0, size * 1.5, 0);
                     nodeGroup.add(label);
                     
-                    // Store references
-                    nodeGroup.userData.nodeData = nodeData;
-                    nodeGroup.userData.label = label;
+                    nodeGroup.userData = { nodeData, label };
                     nodes.set(nodeData.id, nodeGroup);
                     graphGroup.add(nodeGroup);
                 });
             });
 
-            // Create Edge Objects
             graphDataFull.edges.forEach(edgeData => {
                 const sourceNode = nodes.get(edgeData.source);
                 const targetNode = nodes.get(edgeData.target);
-
                 if (sourceNode && targetNode) {
-                    const points = [sourceNode.position, targetNode.position];
-                    const geometry = new THREE.BufferGeometry().setFromPoints(points);
-                    const color = relationToColor(edgeData.relation);
-                    const material = new THREE.LineBasicMaterial({
-                        color: color,
-                        transparent: true,
-                        opacity: NORMAL_EDGE_OPACITY
-                    });
+                    const startPos = sourceNode.position;
+                    const endPos = targetNode.position;
+                    const distance = startPos.distanceTo(endPos);
+                    
+                    const edgeMesh = new THREE.Mesh(
+                        new THREE.CylinderGeometry(EDGE_THICKNESS, EDGE_THICKNESS, distance, 8, 1),
+                        new THREE.MeshBasicMaterial({ color: relationToColor(edgeData.relation), transparent: true, opacity: NORMAL_EDGE_OPACITY })
+                    );
 
-                    const line = new THREE.Line(geometry, material);
-                    line.userData.edgeData = edgeData;
-                    graphGroup.add(line);
+                    edgeMesh.position.copy(startPos).lerp(endPos, 0.5);
+                    edgeMesh.lookAt(endPos);
+                    edgeMesh.rotateX(Math.PI / 2);
                     
-                    // Edge Label
-                    const labelDiv = document.createElement('div');
-                    labelDiv.className = 'edge-relation-label';
-                    labelDiv.textContent = edgeData.relation;
-                    const label = new THREE.CSS2DObject(labelDiv);
-                    
-                    label.position.copy(sourceNode.position).add(targetNode.position).multiplyScalar(0.5);
+                    graphGroup.add(edgeMesh);
+
+                    const label = new THREE.CSS2DObject(document.createElement('div'));
+                    label.element.className = 'edge-relation-label';
+                    label.element.textContent = edgeData.relation;
+                    label.position.copy(edgeMesh.position);
                     graphGroup.add(label);
 
-                    // Add click listener for edges with definitions
-                     if(edgeData.definition) {
+                    if (edgeData.definition) {
                         label.element.addEventListener('click', () => {
                             clearHighlights();
-                            applyEdgeHighlight(edgeData);
+                            isHighlightActive = true;
+                            nodes.forEach(n => n.getObjectByProperty('isNodeSphere', true).material.opacity = FAINT_OPACITY);
+                            edges.forEach(e => e.mesh.material.opacity = FAINT_OPACITY);
+                            sourceNode.getObjectByProperty('isNodeSphere', true).material.opacity = HIGHLIGHT_OPACITY;
+                            targetNode.getObjectByProperty('isNodeSphere', true).material.opacity = HIGHLIGHT_OPACITY;
+                            edgeMesh.material.opacity = HIGHLIGHT_OPACITY;
+                            edgeMesh.material.color.set(HIGHLIGHT_EDGE_COLOR);
+                            label.element.style.fontWeight = 'bold';
+                            edgeDefinitionText.textContent = edgeData.definition;
+                            edgeDefinitionDisplay.style.display = 'block';
+                            nodeInspectorDisplay.style.display = 'none';
                             briefInteractionPauseUntil = Date.now() + ROTATION_PAUSE_DURATION;
                         });
-                     }
+                    }
 
-                    edges.push({ ...edgeData, line, label, originalColor: color });
+                    edges.push({ ...edgeData, mesh: edgeMesh, label, originalColor: edgeMesh.material.color.getHex() });
                 }
             });
 
-            // Add Event Listeners
             window.addEventListener('resize', onWindowResize);
             renderer.domElement.addEventListener('click', onCanvasClick);
-
-            console.log("INIT: Setup complete. Starting animation loop.");
-            animate(0);
+            
+            animate();
         }
 
-        // --- Main Animation Loop ---
         function animate(currentTime) {
             requestAnimationFrame(animate);
-            const deltaTime = currentTime - lastFrameTime;
-
             controls.update();
 
-            // Auto-rotation logic
             if (!isGraphDragging && Date.now() > briefInteractionPauseUntil) {
                 graphGroup.rotation.y += autoRotationSpeed;
             }
-
-            updateNodeHeartbeats(deltaTime);
-            updateEdgePulses(deltaTime);
+            
+            updateNodeHeartbeats(currentTime || 0);
+            updateRingSpins();
 
             renderer.render(scene, camera);
             labelRenderer.render(scene, camera);
@@ -858,20 +742,15 @@
             lastFrameTime = currentTime;
         }
 
-        // --- Window Load ---
         window.onload = function() {
             try {
                 init();
             } catch (error) {
                 console.error("Failed to initialize the knowledge graph:", error);
                 const errorDiv = document.createElement('div');
-                errorDiv.style.position = 'absolute';
-                errorDiv.style.top = '50%';
-                errorDiv.style.left = '50%';
-                errorDiv.style.transform = 'translate(-50%, -50%)';
-                errorDiv.style.color = 'red';
-                errorDiv.style.backgroundColor = 'black';
-                errorDiv.style.padding = '20px';
+                errorDiv.style.position = 'absolute'; errorDiv.style.top = '50%'; errorDiv.style.left = '50%';
+                errorDiv.style.transform = 'translate(-50%, -50%)'; errorDiv.style.color = 'red';
+                errorDiv.style.backgroundColor = 'black'; errorDiv.style.padding = '20px';
                 errorDiv.style.border = '2px solid red';
                 errorDiv.innerHTML = '<h2>Error Initializing Graph</h2><p>' + error.message + '</p>';
                 document.body.appendChild(errorDiv);
